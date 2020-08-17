@@ -50,90 +50,90 @@ void buildSVMap() {
 
 /* help message block */
 void displayCmdUsage() {
-	puts("Usage: ./generateGPSPRN [OPTIONS] \n\
-	-s	--space-vehicle    Plots the geolocations, target locations and ellipses \n\
-	-p	--prn              Uses shared memory kernels for comparison \n\
-	-t	--taps             Uses constant memory kernels for comparison\n\
-	-v	--verbose          Prints additional output \n\
-		--vv               Additional debug type information, including the output of EVERY operation \n\
-		--help             Display this message \n");
+    puts("Usage: ./generateGPSPRN [OPTIONS] \n\
+    -s	--space-vehicle    SV to use for PRN generation \n\
+    -p	--prn              PRN to generate \n\
+    -t	--taps             Taps to use for PRN generation \n\
+    -v	--verbose          Prints additional output \n\
+    --vv                   Additional debug type information, including the output of EVERY operation \n\
+    --help                 Display this message \n");
     std::cout << "\nValid input:" << std::endl;
     buildSVMap();
     for (int i=1; i<=gpssig.size(); i++) {
         std::cout << "        SV: " << i << " with taps: " << gpssig[i][0] << "," << gpssig[i][1] << std::endl;
     }
-	exit(1);
+    exit(1);
 }
 
 std::vector<int> parseVectorString(std::string s) {
-	size_t pos = 0;
-	std::string token;
-	std::vector<int> v;
-	while ((pos = s.find(delimiter)) != std::string::npos) {
-		token = s.substr(0, pos);
-		v.push_back(std::stoi(token));
-		s.erase(0, pos + delimiter.length());
-	}
-	v.push_back(std::stoi(s));
-	// sort vector
-	std::sort(v.begin(), v.end());
-	return v;
+    size_t pos = 0;
+    std::string token;
+    std::vector<int> v;
+    while ((pos = s.find(delimiter)) != std::string::npos) {
+        token = s.substr(0, pos);
+        v.push_back(std::stoi(token));
+        s.erase(0, pos + delimiter.length());
+    }
+    v.push_back(std::stoi(s));
+    // sort vector
+    std::sort(v.begin(), v.end());
+    return v;
 }
 
 // MSB -> LSB
 int convertVectorToDecimal(std::vector<int> v) {
-	int d = 0;
-	int j = 0;
-	for (int i=v.size()-1; i>=0; i--) {
-		if (v[i] == 1) {
-			d = d + pow(2.0,j);
-		}
-		j = j + 1;
-	}
-	return d;
+    int d = 0;
+    int j = 0;
+    for (int i=v.size()-1; i>=0; i--) {
+        if (v[i] == 1) {
+            d = d + pow(2.0,j);
+        }
+        j = j + 1;
+    }
+    return d;
 }
 
 /* Use getopt to read cmd line arguments */
 void checkCmdArgs(int argc, char **argv) {
     int c;
-	char *ptr;
+    char *ptr;
    	while (1) {
         int option_index = 0;
 
         static struct option long_options[] = {
-			{"space-vehicle", required_argument, 	     0, 's'},
-			{"prn",           required_argument, 	     0, 'p'},
-			{"taps",          required_argument,         0, 't'},
-			{"vv",                  no_argument,       &vv,   1},
-			{"verbose",             no_argument,  &verbose,   1},
-			{"help",                no_argument,         0, 'h'},
-			{0,                               0,         0,   0},
-		};
+            {"space-vehicle", required_argument, 	     0, 's'},
+            {"prn",           required_argument, 	     0, 'p'},
+            {"taps",          required_argument,         0, 't'},
+            {"vv",                  no_argument,       &vv,   1},
+            {"verbose",             no_argument,  &verbose,   1},
+            {"help",                no_argument,         0, 'h'},
+            {0,                               0,         0,   0},
+            };
 
-		c = getopt_long_only(argc, argv, "s:p:t:hv", long_options, &option_index);
+        c = getopt_long_only(argc, argv, "s:p:t:hv", long_options, &option_index);
 
-		if (c == -1) { break; }
+        if (c == -1) { break; }
 
        	switch (c) {
-			 case 0:
-				/* If this option set a flag, do nothing else now. */
-				if (long_options[option_index].flag != 0) {
-					break;
-				}
-				printf ("option %s", long_options[option_index].name);
-				if (optarg) {
-					printf (" with arg %s", optarg);
-				}
-				printf ("\n");
-				break;
-			case 's':
-				space_vehicle = strtoul(optarg, &ptr, 10);
-				if (strcmp(ptr,"")) {
-					printf("Value %s of option %s is not a number \n", ptr, long_options[option_index].name);
-					exit(1);
-				}
-		        break;
-			case 'p':
+            case 0:
+                /* If this option set a flag, do nothing else now. */
+                if (long_options[option_index].flag != 0) {
+                    break;
+                }
+                printf ("option %s", long_options[option_index].name);
+                if (optarg) {
+                    printf (" with arg %s", optarg);
+                }
+                printf ("\n");
+                break;
+            case 's':
+                space_vehicle = strtoul(optarg, &ptr, 10);
+                if (strcmp(ptr,"")) {
+                    printf("Value %s of option %s is not a number \n", ptr, long_options[option_index].name);
+                    exit(1);
+                }
+                break;
+            case 'p':
                 prn_num = strtoul(optarg, &ptr, 10);
                 if (strcmp(ptr,"")) {
                     printf("Value %s of option %s is not a number \n", ptr, long_options[option_index].name);
@@ -141,41 +141,41 @@ void checkCmdArgs(int argc, char **argv) {
                 }
                 break;
        		case 't':
-				taps_str = optarg;
-				G2_output_taps = parseVectorString(taps_str);
-		        break;
+                taps_str = optarg;
+                G2_output_taps = parseVectorString(taps_str);
+                break;
        		case 'v':
-				verbose = 1;
-		        break;
+                verbose = 1;
+                break;
        		default:
-				displayCmdUsage();
-	    }
-	}
-	if (optind < argc) {
+                displayCmdUsage();
+        }
+    }
+    if (optind < argc) {
       	printf ("Unrecognized options: ");
       	while (optind < argc) {
         	printf ("%s ", argv[optind++]);
       	}
-		printf("\n"); //putchar ('\n');
-		displayCmdUsage();
+        printf("\n"); //putchar ('\n');
+        displayCmdUsage();
     }
-	return;
+    return;
 }
 
 // TODO should first output bit be before or after first shift operation?
 std::vector<int> generatePRN(int order, std::vector<int> fill, std::vector<int> ftaps, std::vector<int> otaps) {
-	// sequence bit length, also the number of possible orthogonal PRN at this order
-	int N = pow(2.0,order) - 1;
-	// initialize output sequence with zeros
-	std::vector<int> output(N);
+    // sequence bit length, also the number of possible orthogonal PRN at this order
+    int N = pow(2.0,order) - 1;
+    // initialize output sequence with zeros
+    std::vector<int> output(N);
 
-	// clock registers N times to produce full repeating sequence
-	for (int i=0; i<N; i++) {
-		int ftap_index = ftaps.size()-1;
-		int otap_index = otaps.size()-1;
-		int feedback = 0;
-		// loop through all registers from right to left (1 <- highest poly) to check for taps and shift
-		for (int j=order-1; j>0; j--) {
+    // clock registers N times to produce full repeating sequence
+    for (int i=0; i<N; i++) {
+        int ftap_index = ftaps.size()-1;
+        int otap_index = otaps.size()-1;
+        int feedback = 0;
+        // loop through all registers from right to left (1 <- highest poly) to check for taps and shift
+        for (int j=order-1; j>0; j--) {
             // check if this register is tapped for feedback
             // NOTE don't forget to subtract 1 from tap number, since registers are indexed from 0 not 1
             //      ex. for taps 1 + x3 + x10, or [3, 10], we really look for j = [2, 9]
@@ -188,12 +188,12 @@ std::vector<int> generatePRN(int order, std::vector<int> fill, std::vector<int> 
                 output[i] = output[i] ^ fill[j];
                 if (otap_index > 0) { otap_index--; }
             }
-			// shift bits
-			fill[j] = fill[j-1];
-		}
-		fill[0] = feedback;
-	}
-	return output;
+            // shift bits
+            fill[j] = fill[j-1];
+        }
+        fill[0] = feedback;
+    }
+    return output;
 }
 
 
@@ -222,10 +222,10 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-	// print out args
-	if (verbose) { std::cout << "\nSpace Vehicle: " << space_vehicle << std::endl; }
+    // print out args
+    if (verbose) { std::cout << "\nSpace Vehicle: " << space_vehicle << std::endl; }
     if (verbose) { std::cout << "PRN number:    " << prn_num << std::endl; }
-	if (verbose) { std::cout << "G2 taps:       " << G2_output_taps[0] << "," << G2_output_taps[1] << std::endl; }
+    if (verbose) { std::cout << "G2 taps:       " << G2_output_taps[0] << "," << G2_output_taps[1] << std::endl; }
 
     // standard inputs for GPS C/A codes
     int polynomial_order = 10;
@@ -236,7 +236,7 @@ int main(int argc, char **argv) {
 
     // generate G1 and G2, G2 is based on user chosen SV, PRN number, or expected taps
     std::vector<int> G1 = generatePRN(polynomial_order, initial_fill, G1_feedback_taps, G1_output_taps);
-	std::vector<int> G2 = generatePRN(polynomial_order, initial_fill, G2_feedback_taps, G2_output_taps);
+    std::vector<int> G2 = generatePRN(polynomial_order, initial_fill, G2_feedback_taps, G2_output_taps);
 
     // xor G1 and G2 for final GPS PRN
     if (verbose) { std::cout << "PRN:" << std::endl; }
