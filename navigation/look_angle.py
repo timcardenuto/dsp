@@ -185,9 +185,34 @@ if __name__ == "__main__":
     parser.add_argument('--elon', type=float, default=0, help='Earth station longitude')
     parser.add_argument('--slat', type=float, default=0, help='Satellite latitude')
     parser.add_argument('--slon', type=float, default=0, help='Satellite longitude')
-    parser.add_argument('--sat', type=str, default=0, help='Satellite name')
+    parser.add_argument('--sat', type=str, help='Satellite name')
+    parser.add_argument('list', nargs="?", help='List known satellites')
     args = parser.parse_args()
-    
+
+    # Based on satellites listed at https://www.fcc.gov/approved-space-station-list
+    if args.list:
+        print("Known satellites:")
+        print("----------------------------------------------------------------------------------------------")
+        with open("geo-satellites.yaml", "r") as stream:
+            try:
+                data = yaml.safe_load(stream)
+            except yaml.YAMLError as ex:
+                print(ex)
+            
+        # get list of satellite names
+        names = []    
+        for sat in data['satellites']:
+            if sat['name'] != "RESERVED" and sat['name'] != "TDRSS":
+                names.append(sat['name'])
+        
+        # sort them alphabetically
+        names.sort()
+        
+        # print them in 4 columns (should fit on normal half screen width terminal) 
+        for a,b,c,d in zip(names[::4],names[1::4],names[2::4],names[3::4]):
+            print('{:<25}{:<25}{:<25}{:<}'.format(a,b,c,d))
+        print("----------------------------------------------------------------------------------------------")
+        sys.exit(0)
     
     # Based on satellites listed at https://www.fcc.gov/approved-space-station-list
     if args.sat is not None:
