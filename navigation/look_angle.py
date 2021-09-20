@@ -27,11 +27,34 @@
 #------------------------------------------------------------------------------
 
 import sys
+import csv
 import argparse
 import yaml
-import numpy as np
 from math import pi, pow, sqrt, cos, sin, tan, atan2, asin
 
+
+def convert_csv_to_yaml_list(filename):
+    """
+    Only works on copied table from https://www.n2yo.com/satellites/?c=10&srt=11&dir=1
+    """
+    dictdata = []
+    with open(filename, "r") as stream:
+        data = csv.reader(stream)
+        for row in data:
+            if row[4][-1:] == "W":
+                longitude = float(row[4][:-1]) * -1
+            elif row[4][-1:] == "E":
+                longitude = float(row[4][:-1])
+            else:
+                longitude = float(row[4]) # Assume it's just a number
+            r = {"name": str(row[0]), "norad_id": int(row[1]), "international_code": str(row[2]), "period": float(row[3]), "longitude": longitude}
+            print(r)
+            dictdata.append(r)
+            
+    yamldata = yaml.dump(dictdata, explicit_start=True, default_flow_style=False)
+    f = open("geo-satellites.yaml", "w")
+    f.write(yamldata) 
+    f.close() 
 
 
 def angle_to_gps_satellite(earth_lat, earth_lon):
@@ -178,6 +201,77 @@ def angle_to_geo_satellite(earth_lat, earth_lon, sat_lat, sat_lon):
 
 
 
+
+def print_list_as_columns(alist):
+    # sort them alphabetically
+    alist.sort()
+    
+    # print them in 4 columns (should fit on normal half screen width terminal) 
+    count = 0
+    for a,b,c,d in zip(alist[::4],alist[1::4],alist[2::4],alist[3::4]):
+        count = count + 4
+        print('{:<25}{:<25}{:<25}{:<}'.format(a,b,c,d))
+
+    # TODO the above fancy thing won't print a line if it's less than 4 items
+    leftover = len(alist) - count
+    if leftover == 3:
+        print('{:<25}{:<25}{:<}'.format(alist[-3:-2][0], alist[-2:-1][0], alist[-1:][0]))
+    elif leftover == 2:
+        print('{:<25}{:<}'.format(alist[-2:-1][0], alist[-1:][0]))
+    elif leftover == 1:
+        print('{:<}'.format(alist[-1:][0]))
+    else:
+        print("How did this happen??")
+        sys.exit(1)
+        
+        
+        
+def list_known_satellites(afilter=""):
+    print("Known satellites:")
+    print("----------------------------------------------------------------------------------------------")
+    with open("geo-satellites.yaml", "r") as stream:
+        try:
+            data = yaml.safe_load(stream)
+        except yaml.YAMLError as ex:
+            print(ex)
+        
+    # get list of satellite names
+    names = []    
+    for sat in data:
+        if afilter in sat['name']:
+            names.append(sat['name'])
+            
+    print_list_as_columns(names)
+    print("----------------------------------------------------------------------------------------------")
+    sys.exit(0)
+    
+    
+
+def get_satellite_longitude(sat_name):
+    with open("geo-satellites.yaml", "r") as stream:
+        try:
+            data = yaml.safe_load(stream)
+        except yaml.YAMLError as ex:
+            print(ex)
+            
+    found = []
+    for sat in data:
+        if sat_name in sat['name']:
+            sat_lon = float(sat['longitude'])
+            found.append(sat['name'])
+
+    if len(found) == 0:
+        print("[ERROR] Could not find entry for satellite `"+sat_name+"`")
+        sys.exit(1)
+    elif len(found) > 1:
+        print("[ERROR] Found duplicate entries for satellite `"+sat_name+"`  Perhaps you meant one of these?")
+        print_list_as_columns(found)
+        sys.exit(1)
+    else:
+        return sat_lon
+    
+
+
 	
 if __name__ == "__main__":   
     parser = argparse.ArgumentParser(description='Calculate look angle from Earth to Satellite')
@@ -185,52 +279,20 @@ if __name__ == "__main__":
     parser.add_argument('--elon', type=float, default=0, help='Earth station longitude')
     parser.add_argument('--slat', type=float, default=0, help='Satellite latitude')
     parser.add_argument('--slon', type=float, default=0, help='Satellite longitude')
-    parser.add_argument('--sat', type=str, help='Satellite name')
-    parser.add_argument('list', nargs="?", help='List known satellites')
+    parser.add_argument('--sat', type=str, help='Satellite name.')
+    parser.add_argument('--list', nargs="*", help='List known satellites. Can use a substring as an argument to filter for.')
     args = parser.parse_args()
 
-    # Based on satellites listed at https://www.fcc.gov/approved-space-station-list
-    if args.list:
-        print("Known satellites:")
-        print("----------------------------------------------------------------------------------------------")
-        with open("geo-satellites.yaml", "r") as stream:
-            try:
-                data = yaml.safe_load(stream)
-            except yaml.YAMLError as ex:
-                print(ex)
-            
-        # get list of satellite names
-        names = []    
-        for sat in data['satellites']:
-            if sat['name'] != "RESERVED" and sat['name'] != "TDRSS":
-                names.append(sat['name'])
-        
-        # sort them alphabetically
-        names.sort()
-        
-        # print them in 4 columns (should fit on normal half screen width terminal) 
-        for a,b,c,d in zip(names[::4],names[1::4],names[2::4],names[3::4]):
-            print('{:<25}{:<25}{:<25}{:<}'.format(a,b,c,d))
-        print("----------------------------------------------------------------------------------------------")
-        sys.exit(0)
-    
-    # Based on satellites listed at https://www.fcc.gov/approved-space-station-list
+    # NOTE: satellite list is based on what's listed at https://www.n2yo.com/satellites/?c=10&srt=11&dir=1
+    if args.list is not None:
+        try:
+            filter_for = args.list[0]
+        except:
+            filter_for = ""
+        list_known_satellites(filter_for)
+
     if args.sat is not None:
-        with open("geo-satellites.yaml", "r") as stream:
-            try:
-                data = yaml.safe_load(stream)
-            except yaml.YAMLError as ex:
-                print(ex)
-                
-        found = False
-        for sat in data['satellites']:
-            if sat['name'] == args.sat:
-                args.slon = float(sat['longitude'])
-                found = True
-    
-        if not found:
-            print("Could not find data on satellite: "+args.sat)
-            sys.exit(1)
+        args.slon = get_satellite_longitude(args.sat)
     
     
     print("Provided")

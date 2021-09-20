@@ -1,3 +1,5 @@
 pyyaml
-numpy
 argparse
+sys
+cvs
+math

@@ -1,578 +1,4876 @@
-satellites: 
-    - longitude: -1
-      name: INTELSAT 10-02
-      call_sign: S2414
-    - longitude: -3
-      name: ABS-3A
-      call_sign: S2987
-    - longitude: -8
-      name: EUTELSAT 8 WEST
-      call_sign: S3056
-    - longitude: -10
-      name: RESERVED
-      call_sign: 
-    - longitude: -12.5
-      name: EUTELSAT 12 WEST B
-      call_sign: S2596
-    - longitude: -13
-      name: RESERVED
-      call_sign: 
-    - longitude: -15
-      name: TELSTAR 12V
-      call_sign: S2933
-    - longitude: -18
-      name: INTELSAT 37e
-      call_sign: S2972
-    - longitude: -20
-      name: NSS-7
-      call_sign: S2463
-    - longitude: -20
-      name: NSS-7
-      call_sign: S2854
-    - longitude: -22
-      name: SES-4
-      call_sign: S2828
-    - longitude: -24
-      name: RESERVED
-      call_sign: 
-    - longitude: -24.5
-      name: INTELSAT 905
-      call_sign: S2409
-    - longitude: -27.5
-      name: INTELSAT 901
-      call_sign: S2405
-    - longitude: -29.5
-      name: INTELSAT 904
-      call_sign: S2408
-    - longitude: -30
-      name: HISPASAT 30W-6
-      call_sign: S2969
-    - longitude: -30
-      name: RESERVED
-      call_sign: 
-    - longitude: -30.4
-      name: RESERVED
-      call_sign: 
-    - longitude: -31.5
-      name: INTELSAT 25
-      call_sign: S2804
-    - longitude: -31.5
-      name: INTELSAT 903
-      call_sign: S2407
-    - longitude: -34.5
-      name: INTELSAT 35e
-      call_sign: S2959
-    - longitude: -37.45
-      name: NSS-10
-      call_sign: S2415
-    - longitude: -37.55
-      name: TELSTAR 11N
-      call_sign: S2357
-    - longitude: -40.5
-      name: SES-6
-      call_sign: S2870
-    - longitude: -41
-      name: TDRSS
-      call_sign: 
-    - longitude: -43
-      name: INTELSAT 11
-      call_sign: S2237
-    - longitude: -43.15
-      name: SKY-B1
-      call_sign: S2922
-    - longitude: -45
-      name: INTELSAT 14
-      call_sign: S2785
-    - longitude: -45.2
-      name: DIRECTV KU-45W
-      call_sign: S2893
-    - longitude: -47
-      name: TDRSS
-      call_sign: 
-    - longitude: -47.5
-      name: SES-14
-      call_sign: S2974
-    - longitude: -50
-      name: INTELSAT 29E
-      call_sign: S2913
-    - longitude: -50
-      name: INTELSAT 9
-      call_sign: S2380
-    - longitude: -50.1
-      name: INTELSAT 902
-      call_sign: S2406
-    - longitude: -53
-      name: INTELSAT 23
-      call_sign: S2831
-    - longitude: -54
-      name: INMARSAT 3F5
-      call_sign: S2949
-    - longitude: -55
-      name: INMARSAT 5F2
-      call_sign: E120072
-    - longitude: -55.5
-      name: INTELSAT 34
-      call_sign: S2915
-    - longitude: -58
-      name: INTELSAT 21
-      call_sign: S2863
-    - longitude: -61
-      name: AMAZONAS-2
-      call_sign: S2793
-    - longitude: -61
-      name: AMAZONAS-3
-      call_sign: S2886
-    - longitude: -61.35
-      name: ECHOSTAR 18
-      call_sign: S2931
-    - longitude: -61.65
-      name: ECHOSTAR 15
-      call_sign: S2811
-    - longitude: -61.65
-      name: ECHOSTAR 16
-      call_sign: S2844
-    - longitude: -63
-      name: ESTRELA DO SUL 2
-      call_sign: S2821
-    - longitude: -63
-      name: TELSTAR 19V
-      call_sign: S2955
-    - longitude: -65
-      name: STAR ONE C1
-      call_sign: S2677
-    - longitude: -65
-      name: EUTELSAT 65 WEST A
-      call_sign: E990402
-    - longitude: -65
-      name: RESERVED
-      call_sign: 
-    - longitude: -66.9
-      name: SES-10
-      call_sign: S2950
-    - longitude: -67.1
-      name: SES-17
-      call_sign: S3043
-    - longitude: -69.9
-      name: VIASAT-2
-      call_sign: S2902
-    - longitude: -70
-      name: STAR ONE C2
-      call_sign: S2678
-    - longitude: -72
-      name: AMC-3
-      call_sign: S2162
-    - longitude: -72.7
-      name: NIMIQ 5
-      call_sign: E080107
-    - longitude: -73.8
-      name: HORIZONS 2
-      call_sign: S2423
-    - longitude: -75
-      name: STAR ONE C3
-      call_sign: S2845
-    - longitude: -76.2
-      name: INTELSAT 16
-      call_sign: S2750
-    - longitude: -77
-      name: QUETZSAT-1
-      call_sign: E090020
-    - longitude: -78.8
-      name: DIRECTV KU-79W
-      call_sign: S2861
-    - longitude: -79
-      name: VIASAT-79W
-      call_sign: S2952
-    - longitude: -81
-      name: ARSAT-2
-      call_sign: S2956
-    - longitude: -83
-      name: AMC-18
-      call_sign: S2713
-    - longitude: -85
-      name: AMC-16
-      call_sign: S2181
-    - longitude: -85.15
-      name: XM-3
-      call_sign: S2617
-    - longitude: -85.15
-      name: XM-5
-      call_sign: S2786
-    - longitude: -85.15
-      name: SXM-7
-      call_sign: S3033
-    - longitude: -86.15
-      name: FM-5
-      call_sign: S2710
-    - longitude: -86.4
-      name: ECHOSTAR 12
-      call_sign: S2653
-    - longitude: -87
-      name: SES-2
-      call_sign: S2826
-    - longitude: -88.9
-      name: VIASAT-3
-      call_sign: S2917
-    - longitude: -88.9
-      name: VIASAT-89US
-      call_sign: S3050
-    - longitude: -89
-      name: GALAXY 28
-      call_sign: S2160
-    - longitude: -91
-      name: GALAXY 17
-      call_sign: S2715
-    - longitude: -92.85
-      name: DBSD G1
-      call_sign: S2651
-    - longitude: -93.1
-      name: GALAXY 25
-      call_sign: S2154
-    - longitude: -93.1
-      name: GALAXY 11
-      call_sign: S2253
-    - longitude: -94.95
-      name: SPACEWAY 3
-      call_sign: S2663
-    - longitude: -95.05
-      name: GALAXY 3C
-      call_sign: S2381
-    - longitude: -95.05
-      name: INTELSAT 30
-      call_sign: S2887
-    - longitude: -95.05
-      name: INTELSAT 31
-      call_sign: S2924
-    - longitude: -95.2
-      name: HNS-95W
-      call_sign: S3017
-    - longitude: -97
-      name: GALAXY 19
-      call_sign: S2647
-    - longitude: -97.1
-      name: ECHOSTAR 19
-      call_sign: S2834
-    - longitude: -98
-      name: INMARSAT 4F3
-      call_sign: S2932
-    - longitude: -99
-      name: GALAXY 16
-      call_sign: S2687
-    - longitude: -99.185
-      name: DIRECTV T11
-      call_sign: S2640
-    - longitude: -99.235
-      name: DIRECTV T14
-      call_sign: S2869
-    - longitude: -100.85
-      name: DIRECTV T16
-      call_sign: S3039
-    - longitude: -101
-      name: SES-1
-      call_sign: S2807
-    - longitude: -101.2
-      name: DIRECTV T9S
-      call_sign: S2669
-    - longitude: -101.3
-      name: SKYTERRA-1
-      call_sign: S2358
-    - longitude: -102.725
-      name: DIRECTV T12
-      call_sign: S2797
-    - longitude: -102.8
-      name: DIRECTV T10
-      call_sign: S2641
-    - longitude: -102.875
-      name: DIRECTV T15
-      call_sign: S2930
-    - longitude: -103
-      name: SES-3
-      call_sign: S2892
-    - longitude: -103
-      name: CIEL-6i
-      call_sign: E140100
-    - longitude: -104.95
-      name: SES-11
-      call_sign: S2964
-    - longitude: -105.05
-      name: AMC-15
-      call_sign: S2180
-    - longitude: -106.5
-      name: MSAT-2
-      call_sign: AMSC-1
-    - longitude: -107.1
-      name: ECHOSTAR XVII
-      call_sign: S2753
-    - longitude: -107.3
-      name: LM-RPS2
-      call_sign: S2371
-    - longitude: -107.3
-      name: ANIK F1R
-      call_sign: S2674
-    - longitude: -107.5
-      name: MSAT-1
-      call_sign: E980179
-    - longitude: -109.1
-      name: VIASAT-109W
-      call_sign: S2953
-    - longitude: -110
-      name: ECHOSTAR 11
-      call_sign: S2738
-    - longitude: -110.1
-      name: DIRECTV T5
-      call_sign: S2673
-    - longitude: -110.2
-      name: ECHOSTAR 10
-      call_sign: S2694
-    - longitude: -111
-      name: TERRESTAR 1
-      call_sign: S2633
-    - longitude: -111.1
-      name: ANIK F2
-      call_sign: S2472
-    - longitude: -111.1
-      name: WILDBLUE-1
-      call_sign: E040213
-    - longitude: -113
-      name: EUTELSAT 113 WEST A
-      call_sign: S2695
-    - longitude: -114.9
-      name: EUTELSAT 115 WEST B
-      call_sign: S2938
-    - longitude: -115.1
-      name: VIASAT-1
-      call_sign: S2747
-    - longitude: -115.25
-      name: XM-4
-      call_sign: S2616
-    - longitude: -115.25
-      name: SXM-8
-      call_sign: S3034
-    - longitude: -116.15
-      name: FM-6
-      call_sign: S2812
-    - longitude: -116.8
-      name: EUTELSAT 117 WEST A
-      call_sign: S2873
-    - longitude: -117
-      name: EUTELSAT 117 WEST B
-      call_sign: S2926
-    - longitude: -118.7
-      name: ANIK F3
-      call_sign: S2703
-    - longitude: -118.8
-      name: ECHOSTAR 7
-      call_sign: S2740
-    - longitude: -118.9
-      name: ECHOSTAR 14
-      call_sign: S2790
-    - longitude: -119.05
-      name: DIRECTV T7S
-      call_sign: S2455
-    - longitude: -119.05
-      name: DIRECTV T8
-      call_sign: S2632
-    - longitude: -121
-      name: ECHOSTAR 9
-      call_sign: S2179
-    - longitude: -121
-      name: GALAXY 23
-      call_sign: S2592
-    - longitude: -123
-      name: GALAXY 18
-      call_sign: S2733
-    - longitude: -124.9
-      name: AMC-21
-      call_sign: S2676
-    - longitude: -125
-      name: GALAXY 14
-      call_sign: S2385
-    - longitude: -125
-      name: GALAXY 30
-      call_sign: S3016
-    - longitude: -127
-      name: GALAXY 13
-      call_sign: S2386
-    - longitude: -127
-      name: HORIZON 1
-      call_sign: S2475
-    - longitude: -127
-      name: RESERVED
-      call_sign: 
-    - longitude: -128.85
-      name: CIEL-2
-      call_sign: E050029
-    - longitude: -129
-      name: GALAXY 12
-      call_sign: S2422
-    - longitude: -129.15
-      name: SES-15
-      call_sign: S2951
-    - longitude: -130.9
-      name: AMC-1
-      call_sign: S2445
-    - longitude: -131
-      name: AMC-11
-      call_sign: S2433
-    - longitude: -132.85
-      name: EUTELSAT 133 WEST A
-      call_sign: S3031
-    - longitude: -133
-      name: GALAXY 15
-      call_sign: S2387
-    - longitude: -133
-      name: GALAXY 15R
-      call_sign: S3015
-    - longitude: -134.9
-      name: AMC-4
-      call_sign: S2135
-    - longitude: -135
-      name: AMC-8
-      call_sign: S2379
-    - longitude: -137
-      name: INTELSAT 5
-      call_sign: S2704
-    - longitude: -138.9
-      name: SPACEWAY 2
-      call_sign: S2133
-    - longitude: -139
-      name: AMC-6
-      call_sign: S2347
-    - longitude: -139.2
-      name: EUTELSAT 139 WEST A
-      call_sign: S3055
-    - longitude: -141
-      name: RESERVED
-      call_sign: 
-    - longitude: -143
-      name: HISPASAT 143W-1
-      call_sign: S3058
-    - longitude: -144
-      name: RESERVED
-      call_sign: 
-    - longitude: -169.5
-      name: NSS-6
-      call_sign: S3048
-    - longitude: -171
-      name: TDRSS
-      call_sign: 
-    - longitude: -174
-      name: TDRSS
-      call_sign: 
-    - longitude: -177
-      name: NSS-9
-      call_sign: S2756
-    - longitude: -179.6
-      name: INMARSAT 5F3
-      call_sign: E150028
-    - longitude: -180
-      name: INTELSAT 18
-      call_sign: S2817
-    - longitude: 178
-      name: INMARSAT 3F3
-      call_sign: E000284
-    - longitude: 176
-      name: NSS-11
-      call_sign: S3037
-    - longitude: 174
-      name: EUTELSAT 174A
-      call_sign: S2610
-    - longitude: 172
-      name: EUTELSAT 172B
-      call_sign: S3021
-    - longitude: 170
-      name: RESERVED
-      call_sign: 
-    - longitude: 169
-      name: HORIZONS-3e
-      call_sign: S2947
-    - longitude: 169
-      name: JCSAT-RA
-      call_sign: S2960
-    - longitude: 166
-      name: INTELSAT 19
-      call_sign: S2850
-    - longitude: 157.1
-      name: INTELSAT 1R
-      call_sign: S2368
-    - longitude: 157
-      name: TELKOM-2
-      call_sign: S2988
-    - longitude: 154
-      name: JCSAT-2B
-      call_sign: E120106
-    - longitude: 144
-      name: SUPERBIRD C2
-      call_sign: E100089
-    - longitude: 143.5
-      name: INMARSAT 4F1
-      call_sign: KA25
-    - longitude: 138
-      name: APSTAR 5
-      call_sign: E980250
-    - longitude: 134
-      name: APSTAR 6
-      call_sign: KA279
-    - longitude: 132
-      name: JCSAT-5A
-      call_sign: E010016
-    - longitude: 128
-      name: JCSAT-3A
-      call_sign: E960207
-    - longitude: 110
-      name: RESERVED
-      call_sign: 
-    - longitude: 100
-      name: RESERVED
-      call_sign: 
-    - longitude: 92
-      name: RESERVED
-      call_sign: 
-    - longitude: 85.15
-      name: INTELSAT 15
-      call_sign: S2789
-    - longitude: 85
-      name: INTELSAT 15R
-      call_sign: S3022
-    - longitude: 82
-      name: RESERVED
-      call_sign: 
-    - longitude: 75
-      name: RESERVED
-      call_sign: 
-    - longitude: 72.1
-      name: INTELSAT 22
-      call_sign: S2846
-    - longitude: 68.5
-      name: INTELSAT 20
-      call_sign: S2847
-    - longitude: 68.5
-      name: INTELSAT 36
-      call_sign: S2948
-    - longitude: 66
-      name: INTELSAT 17
-      call_sign: S2814
-    - longitude: 64.15
-      name: INTELSAT 906
-      call_sign: S2410
-    - longitude: 61.95
-      name: INTELSAT 39
-      call_sign: S3023
-    - longitude: 60
-      name: INTELSAT 33e
-      call_sign: S2939
-    - longitude: 47.5
-      name: INTELSAT 10
-      call_sign: S2382
-    - longitude: 44
-      name: RESERVED
-      call_sign: 
-    - longitude: 32.8
-      name: INTELSAT 28
-      call_sign: S2751
-    - longitude: 21
-      name: AFRISTAR-2
-      call_sign: S2666
-    - longitude: 0
-      name: RESERVED
-      call_sign: 
-      
+---
+- international_code: 2011-056A
+  longitude: -180.0
+  name: INTELSAT 18
+  norad_id: 37834
+  period: 1436.1
+- international_code: 2002-043A
+  longitude: -179.8
+  name: KALPANA 1 (METSAT 1)
+  norad_id: 27525
+  period: 1464.3
+- international_code: 2002-002A
+  longitude: -179.5
+  name: INSAT 3C
+  norad_id: 27298
+  period: 1450.1
+- international_code: 1994-082A
+  longitude: -179.0
+  name: LUCH
+  norad_id: 23426
+  period: 1436.0
+- international_code: 1995-043A
+  longitude: -178.9
+  name: JCSAT 3
+  norad_id: 23649
+  period: 1452.4
+- international_code: 2009-010A
+  longitude: -178.9
+  name: RADUGA-1 8
+  norad_id: 34264
+  period: 1442.4
+- international_code: 1981-096A
+  longitude: -178.7
+  name: SBS 2
+  norad_id: 12855
+  period: 1437.7
+- international_code: 2005-012A
+  longitude: -178.6
+  name: APSTAR 6
+  norad_id: 28638
+  period: 1460.9
+- international_code: 1997-027A
+  longitude: -178.0
+  name: INMARSAT 3-F4
+  norad_id: 24819
+  period: 1447.2
+- international_code: 2002-038A
+  longitude: -177.8
+  name: EUTE HOT BIRD 13A (HB 6)
+  norad_id: 27499
+  period: 1449.8
+- international_code: 2012-061B
+  longitude: -177.0
+  name: YAMAL 300K
+  norad_id: 38978
+  period: 1436.1
+- international_code: 2009-008A
+  longitude: -176.9
+  name: NSS 9
+  norad_id: 33749
+  period: 1436.1
+- international_code: 1998-056A
+  longitude: -176.8
+  name: EUTELSAT W2
+  norad_id: 25491
+  period: 1450.7
+- international_code: 1997-002B
+  longitude: -176.1
+  name: NAHUEL 1A
+  norad_id: 24714
+  period: 1448.9
+- international_code: 1998-013A
+  longitude: -175.2
+  name: EUTE 16B (HB 4)
+  norad_id: 25237
+  period: 1465.2
+- international_code: 2003-007A
+  longitude: -175.0
+  name: INTELSAT 907
+  norad_id: 27683
+  period: 1452.2
+- international_code: 1998-063B
+  longitude: -174.6
+  name: AMC-5 (GE-5)
+  norad_id: 25516
+  period: 1449.6
+- international_code: 1983-081A
+  longitude: -174.3
+  name: SAKURA 2B (CS-2B)
+  norad_id: 14248
+  period: 1457.3
+- international_code: 2013-004A
+  longitude: -174.2
+  name: TDRS 11
+  norad_id: 39070
+  period: 1436.0
+- international_code: 1989-101A
+  longitude: -174.2
+  name: COSMOS 2054
+  norad_id: 20391
+  period: 1436.5
+- international_code: 2000-046B
+  longitude: -173.8
+  name: NILESAT 102
+  norad_id: 26470
+  period: 1468.8
+- international_code: 1980-087A
+  longitude: -172.8
+  name: OPS 6394 (FLTSATCOM 4)
+  norad_id: 12046
+  period: 1455.3
+- international_code: 1998-037A
+  longitude: -172.3
+  name: INTELSAT 805
+  norad_id: 25371
+  period: 1447.6
+- international_code: 1984-129A
+  longitude: -172.3
+  name: USA 7
+  norad_id: 15453
+  period: 1456.7
+- international_code: 1992-060A
+  longitude: -171.7
+  name: HISPASAT 1A
+  norad_id: 22116
+  period: 1449.9
+- international_code: 1998-065A
+  longitude: -171.0
+  name: INTELSAT 8 (PAS 8)
+  norad_id: 25522
+  period: 1512.8
+- international_code: 2002-055A
+  longitude: -170.8
+  name: TDRS 10
+  norad_id: 27566
+  period: 1436.1
+- international_code: 1967-066E
+  longitude: -170.4
+  name: LES 5
+  norad_id: 2866
+  period: 1316.0
+- international_code: 1977-005A
+  longitude: -170.3
+  name: NATO 3B
+  norad_id: 9785
+  period: 1511.5
+- international_code: 2002-057A
+  longitude: -169.5
+  name: NSS 6
+  norad_id: 27603
+  period: 1436.1
+- international_code: 1999-047A
+  longitude: -169.3
+  name: YAMAL 101
+  norad_id: 25896
+  period: 1441.9
+- international_code: 2002-039A
+  longitude: -168.9
+  name: ECHOSTAR 8
+  norad_id: 27501
+  period: 1461.8
+- international_code: 1991-054B
+  longitude: -167.8
+  name: TDRS 5
+  norad_id: 21639
+  period: 1436.1
+- international_code: 1998-068A
+  longitude: -167.4
+  name: BONUM 1
+  norad_id: 25546
+  period: 1454.0
+- international_code: 1993-031A
+  longitude: -167.2
+  name: ASTRA 1C
+  norad_id: 22653
+  period: 1456.9
+- international_code: 2006-004A
+  longitude: -166.7
+  name: MTSAT-2
+  norad_id: 28937
+  period: 1453.4
+- international_code: 2010-065A
+  longitude: -166.3
+  name: HYLAS 1
+  norad_id: 37237
+  period: 1431.6
+- international_code: 1984-093B
+  longitude: -165.7
+  name: SBS 4
+  norad_id: 15235
+  period: 1458.0
+- international_code: 1997-078A
+  longitude: -164.1
+  name: GALAXY 8
+  norad_id: 25086
+  period: 1444.3
+- international_code: 1995-067B
+  longitude: -163.5
+  name: INSAT 2C
+  norad_id: 23731
+  period: 1443.1
+- international_code: 1992-021B
+  longitude: -160.0
+  name: INMARSAT 2-F4
+  norad_id: 21940
+  period: 1470.2
+- international_code: 1982-009A
+  longitude: -158.4
+  name: EKRAN 8
+  norad_id: 13056
+  period: 1440.9
+- international_code: 2000-011A
+  longitude: -156.2
+  name: GARUDA 1
+  norad_id: 26089
+  period: 1441.2
+- international_code: 2000-060A
+  longitude: -156.1
+  name: NSAT 110
+  norad_id: 26559
+  period: 1451.9
+- international_code: 2013-050A
+  longitude: -155.4
+  name: AEHF-3 (USA 246)
+  norad_id: 39256
+  period: 1436.2
+- international_code: 1993-078A
+  longitude: -154.2
+  name: DIRECTV 1 (DBS 1)
+  norad_id: 22930
+  period: 1454.8
+- international_code: 1994-067A
+  longitude: -153.9
+  name: EXPRESS 1
+  norad_id: 23319
+  period: 1442.5
+- international_code: 1984-081B
+  longitude: -152.4
+  name: TELECOM 1A
+  norad_id: 15159
+  period: 1463.5
+- international_code: 2000-019A
+  longitude: -152.3
+  name: EUTE 16C (SESAT 1)
+  norad_id: 26243
+  period: 1455.2
+- international_code: 1996-033A
+  longitude: -151.4
+  name: GALAXY 9
+  norad_id: 23877
+  period: 1446.7
+- international_code: 1974-039A
+  longitude: -150.2
+  name: ATS 6
+  norad_id: 7318
+  period: 1412.1
+- international_code: 1999-052A
+  longitude: -149.3
+  name: GALAXY 27 (TELSTAR 7)
+  norad_id: 25922
+  period: 1454.3
+- international_code: 1988-034A
+  longitude: -148.9
+  name: COSMOS 1940
+  norad_id: 19073
+  period: 1430.5
+- international_code: 1989-053A
+  longitude: -147.5
+  name: OLYMPUS 1
+  norad_id: 20122
+  period: 1420.6
+- international_code: 2003-043E
+  longitude: -147.2
+  name: INSAT 3E
+  norad_id: 27951
+  period: 1428.6
+- international_code: 1981-073A
+  longitude: -146.8
+  name: FLTSATCOM 5
+  norad_id: 12635
+  period: 1460.4
+- international_code: 1983-059C
+  longitude: -146.6
+  name: PALAPA B1
+  norad_id: 14134
+  period: 1437.7
+- international_code: 2003-060A
+  longitude: -146.3
+  name: SESAT 2 (EXPRESS AM-22)
+  norad_id: 28134
+  period: 1449.4
+- international_code: 1966-053A
+  longitude: -146.1
+  name: OPS 9381 (GGTS)
+  norad_id: 2207
+  period: 1333.4
+- international_code: 1997-009A
+  longitude: -146.1
+  name: INTELSAT 801
+  norad_id: 24742
+  period: 1458.5
+- international_code: 1997-075A
+  longitude: -145.6
+  name: JCSAT 5
+  norad_id: 25067
+  period: 1459.7
+- international_code: 1990-063A
+  longitude: -145.1
+  name: TDF 2
+  norad_id: 20705
+  period: 1460.3
+- international_code: 1995-067A
+  longitude: -145.1
+  name: TELECOM 2C
+  norad_id: 23730
+  period: 1470.3
+- international_code: 2000-029A
+  longitude: -144.9
+  name: GORIZONT 33
+  norad_id: 26372
+  period: 1434.8
+- international_code: 2000-054A
+  longitude: -144.4
+  name: ASTRA 2B
+  norad_id: 26494
+  period: 1455.8
+- international_code: 2002-044A
+  longitude: -142.9
+  name: HISPASAT 1D
+  norad_id: 27528
+  period: 1436.1
+- international_code: 1997-086A
+  longitude: -142.3
+  name: HGS-1 (ASIASAT 3)
+  norad_id: 25126
+  period: 1435.0
+- international_code: 1990-001B
+  longitude: -142.0
+  name: JCSAT 2
+  norad_id: 20402
+  period: 1461.4
+- international_code: 1989-041A
+  longitude: -141.8
+  name: SUPERBIRD A
+  norad_id: 20040
+  period: 1443.7
+- international_code: 1984-008A
+  longitude: -141.5
+  name: STTW-T1
+  norad_id: 14670
+  period: 160.2
+- international_code: 1996-020A
+  longitude: -140.9
+  name: INMARSAT 3-F1
+  norad_id: 23839
+  period: 1440.2
+- international_code: 1995-016A
+  longitude: -140.8
+  name: BRAZILSAT B2
+  norad_id: 23536
+  period: 1451.1
+- international_code: 1981-057B
+  longitude: -139.3
+  name: APPLE
+  norad_id: 12545
+  period: 1439.5
+- international_code: 2004-008A
+  longitude: -139.2
+  name: EUTE 7A (EUTE W3A)
+  norad_id: 28187
+  period: 1436.1
+- international_code: 2000-067A
+  longitude: -139.0
+  name: AMC-6 (GE-6)
+  norad_id: 26580
+  period: 1436.1
+- international_code: 2005-046B
+  longitude: -138.9
+  name: SPACEWAY 2
+  norad_id: 28903
+  period: 1436.1
+- international_code: 1977-007A
+  longitude: -138.8
+  name: OPS 3151
+  norad_id: 9803
+  period: 1476.5
+- international_code: 1984-037A
+  longitude: -138.7
+  name: OPS 7641
+  norad_id: 14930
+  period: 1459.3
+- international_code: 1967-066F
+  longitude: -137.6
+  name: DODGE 1
+  norad_id: 2867
+  period: 1319.1
+- international_code: 1997-071A
+  longitude: -137.5
+  name: SIRIUS 2 (GE-1E)
+  norad_id: 25049
+  period: 1448.7
+- international_code: 2018-022A
+  longitude: -137.2
+  name: GOES 17
+  norad_id: 43226
+  period: 1436.1
+- international_code: 1997-046A
+  longitude: -136.8
+  name: INTELSAT 5 (PAS 5)
+  norad_id: 24916
+  period: 1436.1
+- international_code: 1984-101A
+  longitude: -136.0
+  name: GALAXY 3
+  norad_id: 15308
+  period: 1442.4
+- international_code: 1998-075A
+  longitude: -135.8
+  name: INTELSAT 6B (PAS 6B)
+  norad_id: 25585
+  period: 1452.3
+- international_code: 2000-082A
+  longitude: -135.4
+  name: BEIDOU 1B
+  norad_id: 26643
+  period: 1450.9
+- international_code: 2013-041A
+  longitude: -135.2
+  name: WGS F6 (USA 244)
+  norad_id: 39222
+  period: 1436.1
+- international_code: 2000-081B
+  longitude: -134.9
+  name: AMC-8 (GE-8)
+  norad_id: 26639
+  period: 1436.1
+- international_code: 1999-060A
+  longitude: -134.9
+  name: AMC-4 (GE-4)
+  norad_id: 25954
+  period: 1436.1
+- international_code: 1976-004A
+  longitude: -134.8
+  name: CTS
+  norad_id: 8585
+  period: 1435.5
+- international_code: 1978-038A
+  longitude: -134.5
+  name: OPS 8790
+  norad_id: 10787
+  period: 1433.0
+- international_code: 2000-038A
+  longitude: -134.4
+  name: ECHOSTAR 6
+  norad_id: 26402
+  period: 1457.7
+- international_code: 1990-056A
+  longitude: -134.2
+  name: INTELSAT 604
+  norad_id: 20667
+  period: 1462.9
+- international_code: 2005-041A
+  longitude: -132.9
+  name: GALAXY 15
+  norad_id: 28884
+  period: 1436.1
+- international_code: 1997-049A
+  longitude: -132.9
+  name: W75/ABS-1B (HOT BIRD 3)
+  norad_id: 24931
+  period: 1405.2
+- international_code: 2001-011A
+  longitude: -132.8
+  name: EUTE 28A (EB 1)
+  norad_id: 26719
+  period: 1436.1
+- international_code: 1998-056B
+  longitude: -131.5
+  name: SIRIUS 3
+  norad_id: 25492
+  period: 1454.1
+- international_code: 2004-017A
+  longitude: -131.0
+  name: AMC-11 (GE-11)
+  norad_id: 28252
+  period: 1436.1
+- international_code: 1996-054A
+  longitude: -130.8
+  name: AMC-1 (GE-1)
+  norad_id: 24315
+  period: 1436.1
+- international_code: 1977-118A
+  longitude: -129.5
+  name: SAKURA 1A (CS-1A)
+  norad_id: 10516
+  period: 1455.8
+- international_code: 1996-048A
+  longitude: -129.2
+  name: CHINASAT 7
+  norad_id: 24282
+  period: 1350.1
+- international_code: 2017-026A
+  longitude: -129.1
+  name: SES-15
+  norad_id: 42709
+  period: 1436.1
+- international_code: 2003-013B
+  longitude: -129.0
+  name: GALAXY 12
+  norad_id: 27715
+  period: 1436.1
+- international_code: 1976-035A
+  longitude: -128.9
+  name: NATO 3A
+  norad_id: 8808
+  period: 1442.3
+- international_code: 1964-047A
+  longitude: -128.9
+  name: SYNCOM 3
+  norad_id: 858
+  period: 1437.7
+- international_code: 2008-063A
+  longitude: -128.8
+  name: CIEL-2
+  norad_id: 33453
+  period: 1436.1
+- international_code: 1998-028A
+  longitude: -128.7
+  name: ECHOSTAR 4
+  norad_id: 25331
+  period: 1455.3
+- international_code: 1984-093C
+  longitude: -128.1
+  name: LEASAT 2
+  norad_id: 15236
+  period: 1477.6
+- international_code: 2010-008A
+  longitude: -127.9
+  name: GOES 15
+  norad_id: 36411
+  period: 1436.0
+- international_code: 1978-116A
+  longitude: -127.4
+  name: ANIK B1 (TELESAT-4)
+  norad_id: 11153
+  period: 1442.8
+- international_code: 2003-044A
+  longitude: -127.0
+  name: HORIZONS 1 (GALAXY 13)
+  norad_id: 27954
+  period: 1436.0
+- international_code: 1968-081A
+  longitude: -126.8
+  name: OV2-5
+  norad_id: 3428
+  period: 1417.9
+- international_code: 1987-095A
+  longitude: -126.1
+  name: TVSAT 1
+  norad_id: 18570
+  period: 1455.8
+- international_code: 2020-056C
+  longitude: -125.0
+  name: GALAXY 30
+  norad_id: 46114
+  period: 1436.1
+- international_code: 1990-100A
+  longitude: -124.9
+  name: SATCOM C1
+  norad_id: 20945
+  period: 1451.9
+- international_code: 2008-038B
+  longitude: -124.9
+  name: AMC-21
+  norad_id: 33275
+  period: 1436.1
+- international_code: 2007-063A
+  longitude: -124.9
+  name: RASCOM 1
+  norad_id: 32387
+  period: 1453.6
+- international_code: 2001-009A
+  longitude: -124.6
+  name: USA 157
+  norad_id: 26715
+  period: 1436.1
+- international_code: 1991-026A
+  longitude: -124.6
+  name: ANIK E2
+  norad_id: 21222
+  period: 1452.7
+- international_code: 1996-022A
+  longitude: -124.6
+  name: MSAT M1
+  norad_id: 23846
+  period: 1459.8
+- international_code: 1999-009A
+  longitude: -124.4
+  name: ARABSAT 3A
+  norad_id: 25638
+  period: 1438.2
+- international_code: 1996-002A
+  longitude: -124.4
+  name: INTELSAT 3R (PAS 3R)
+  norad_id: 23764
+  period: 1453.3
+- international_code: 1999-047B
+  longitude: -124.1
+  name: YAMAL 102
+  norad_id: 25897
+  period: 1440.3
+- international_code: 1976-101A
+  longitude: -123.7
+  name: MARISAT 2
+  norad_id: 9478
+  period: 1475.6
+- international_code: 1995-073A
+  longitude: -123.4
+  name: ECHOSTAR 1
+  norad_id: 23754
+  period: 1455.6
+- international_code: 2008-024A
+  longitude: -123.0
+  name: GALAXY 18
+  norad_id: 32951
+  period: 1436.1
+- international_code: 2009-068A
+  longitude: -121.9
+  name: WGS F3 (USA 211)
+  norad_id: 36108
+  period: 1436.1
+- international_code: 2003-034A
+  longitude: -120.9
+  name: GALAXY 23 (TELSTAR 13)
+  norad_id: 27854
+  period: 1436.1
+- international_code: 1995-060A
+  longitude: -120.7
+  name: USA 115
+  norad_id: 23712
+  period: 1436.1
+- international_code: 2005-019A
+  longitude: -119.0
+  name: DIRECTV 8
+  norad_id: 28659
+  period: 1436.1
+- international_code: 2010-010A
+  longitude: -118.9
+  name: ECHOSTAR 14
+  norad_id: 36499
+  period: 1436.1
+- international_code: 2002-006A
+  longitude: -118.8
+  name: ECHOSTAR 7
+  norad_id: 27378
+  period: 1436.1
+- international_code: 2007-009A
+  longitude: -118.7
+  name: ANIK F3
+  norad_id: 31102
+  period: 1436.1
+- international_code: 1991-055A
+  longitude: -118.4
+  name: INTELSAT 605
+  norad_id: 21653
+  period: 1449.8
+- international_code: 2016-038B
+  longitude: -117.0
+  name: EUTELSAT 117W B
+  norad_id: 41589
+  period: 1436.2
+- international_code: 1970-069A
+  longitude: -116.9
+  name: OPS 7329
+  norad_id: 4510
+  period: 1437.7
+- international_code: 2000-046A
+  longitude: -116.8
+  name: BRAZILSAT B4
+  norad_id: 26469
+  period: 1452.2
+- international_code: 2013-012A
+  longitude: -116.8
+  name: SATMEX 8
+  norad_id: 39122
+  period: 1436.1
+- international_code: 2001-002A
+  longitude: -115.9
+  name: TURKSAT 2A
+  norad_id: 26666
+  period: 1466.3
+- international_code: 2006-049A
+  longitude: -115.2
+  name: XM-4
+  norad_id: 29520
+  period: 1436.1
+- international_code: 2011-059A
+  longitude: -115.1
+  name: VIASAT 1
+  norad_id: 37843
+  period: 1436.1
+- international_code: 2015-010B
+  longitude: -114.9
+  name: EUTE 115 WEST B (SATMEX 7
+  norad_id: 40425
+  period: 1436.1
+- international_code: 2012-075B
+  longitude: -114.8
+  name: MEXSAT 3
+  norad_id: 39035
+  period: 1436.1
+- international_code: 1994-065A
+  longitude: -114.5
+  name: SOLIDARIDAD 2
+  norad_id: 23313
+  period: 1456.6
+- international_code: 1994-034A
+  longitude: -114.3
+  name: INTELSAT 702
+  norad_id: 23124
+  period: 1455.5
+- international_code: 2004-016A
+  longitude: -114.0
+  name: DIRECTV 7S
+  norad_id: 28238
+  period: 1455.8
+- international_code: 1963-004A
+  longitude: -113.7
+  name: SYNCOM 1
+  norad_id: 553
+  period: 1236.2
+- international_code: 2015-056A
+  longitude: -113.0
+  name: MORELOS 3
+  norad_id: 40946
+  period: 1436.1
+- international_code: 1977-114A
+  longitude: -113.0
+  name: OPS 4258
+  norad_id: 10508
+  period: 1436.3
+- international_code: 2006-020A
+  longitude: -113.0
+  name: SATMEX 6
+  norad_id: 29162
+  period: 1436.1
+- international_code: 1997-065A
+  longitude: -112.6
+  name: USA 134
+  norad_id: 25019
+  period: 1436.1
+- international_code: 1985-024A
+  longitude: -112.3
+  name: EKRAN 14
+  norad_id: 15626
+  period: 1519.0
+- international_code: 1992-084A
+  longitude: -112.1
+  name: SUPERBIRD A1
+  norad_id: 22253
+  period: 1452.8
+- international_code: 1977-029A
+  longitude: -111.6
+  name: ESA/GOES
+  norad_id: 9931
+  period: 734.0
+- international_code: 2005-010A
+  longitude: -111.3
+  name: EXPRESS AM-2
+  norad_id: 28629
+  period: 1454.0
+- international_code: 1991-001A
+  longitude: -111.2
+  name: NATO 4A
+  norad_id: 21047
+  period: 1465.2
+- international_code: 2006-054A
+  longitude: -111.2
+  name: WILDBLUE 1
+  norad_id: 29643
+  period: 1436.1
+- international_code: 2004-027A
+  longitude: -111.1
+  name: ANIK F2
+  norad_id: 28378
+  period: 1436.1
+- international_code: 2009-035A
+  longitude: -111.0
+  name: TERRESTAR 1
+  norad_id: 35496
+  period: 1436.1
+- international_code: 1971-039A
+  longitude: -110.7
+  name: OPS 3811
+  norad_id: 5204
+  period: 1467.0
+- international_code: 1987-022A
+  longitude: -110.6
+  name: GOES 7
+  norad_id: 17561
+  period: 1441.6
+- international_code: 2006-003A
+  longitude: -110.2
+  name: ECHOSTAR 10
+  norad_id: 28935
+  period: 1436.1
+- international_code: 2002-023A
+  longitude: -110.1
+  name: DIRECTV 5 (TEMPO 1)
+  norad_id: 27426
+  period: 1436.1
+- international_code: 2008-035A
+  longitude: -110.0
+  name: ECHOSTAR 11
+  norad_id: 33207
+  period: 1436.1
+- international_code: 2000-076A
+  longitude: -109.1
+  name: ANIK F1
+  norad_id: 26624
+  period: 1436.1
+- international_code: 1995-063A
+  longitude: -108.9
+  name: GALS 2
+  norad_id: 23717
+  period: 1441.8
+- international_code: 1981-122A
+  longitude: -108.7
+  name: MARECS A
+  norad_id: 13010
+  period: 1515.2
+- international_code: 1996-035A
+  longitude: -108.5
+  name: INTELSAT 709
+  norad_id: 23915
+  period: 1451.9
+- international_code: 1995-019A
+  longitude: -108.0
+  name: AMSC 1
+  norad_id: 23553
+  period: 1436.1
+- international_code: 2006-038A
+  longitude: -108.0
+  name: CHINASAT 22A
+  norad_id: 29398
+  period: 1439.0
+- international_code: 1976-023A
+  longitude: -107.6
+  name: LES 8
+  norad_id: 8746
+  period: 1436.1
+- international_code: 2005-036A
+  longitude: -107.3
+  name: ANIK F1-R
+  norad_id: 28868
+  period: 1436.1
+- international_code: 2013-014A
+  longitude: -107.3
+  name: ANIK G1
+  norad_id: 39127
+  period: 1436.1
+- international_code: 1994-022A
+  longitude: -107.2
+  name: GOES 8
+  norad_id: 23051
+  period: 1456.0
+- international_code: 2005-006A
+  longitude: -107.1
+  name: MTSAT-1R
+  norad_id: 28622
+  period: 1455.9
+- international_code: 2012-035A
+  longitude: -107.1
+  name: ECHOSTAR 17
+  norad_id: 38551
+  period: 1436.1
+- international_code: 1993-058B
+  longitude: -106.9
+  name: ACTS
+  norad_id: 22796
+  period: 1436.1
+- international_code: 2001-011B
+  longitude: -106.7
+  name: BSAT-2A
+  norad_id: 26720
+  period: 1452.0
+- international_code: 1999-016A
+  longitude: -106.0
+  name: INSAT 2E (APR-1)
+  norad_id: 25666
+  period: 1445.0
+- international_code: 1985-035A
+  longitude: -105.9
+  name: GSTAR 1
+  norad_id: 15677
+  period: 1436.1
+- international_code: 2004-041A
+  longitude: -105.0
+  name: AMC-15
+  norad_id: 28446
+  period: 1436.1
+- international_code: 1988-081A
+  longitude: -105.0
+  name: GSTAR 3
+  norad_id: 19483
+  period: 1436.1
+- international_code: 2017-063A
+  longitude: -104.9
+  name: ECHOSTAR 105/SES 11
+  norad_id: 42967
+  period: 1436.1
+- international_code: 1982-105A
+  longitude: -104.8
+  name: SATCOM C5
+  norad_id: 13631
+  period: 1436.1
+- international_code: 1976-023B
+  longitude: -104.6
+  name: LES 9
+  norad_id: 8747
+  period: 1436.1
+- international_code: 2000-052A
+  longitude: -104.6
+  name: EUROBIRD 4A(EUTELSAT W1)
+  norad_id: 26487
+  period: 1466.7
+- international_code: 1971-009A
+  longitude: -104.6
+  name: NATO 2B
+  norad_id: 4902
+  period: 1436.1
+- international_code: 2004-031A
+  longitude: -104.3
+  name: AMAZONAS
+  norad_id: 28393
+  period: 1462.6
+- international_code: 1969-101A
+  longitude: -104.1
+  name: SKYNET 1
+  norad_id: 4250
+  period: 1436.1
+- international_code: 1989-027A
+  longitude: -104.1
+  name: TELE-X
+  norad_id: 19919
+  period: 1452.0
+- international_code: 2009-033A
+  longitude: -104.1
+  name: GOES 14
+  norad_id: 35491
+  period: 1436.1
+- international_code: 2003-059A
+  longitude: -103.3
+  name: AMOS 2
+  norad_id: 28132
+  period: 1448.8
+- international_code: 2011-035A
+  longitude: -103.0
+  name: SES 3
+  norad_id: 37748
+  period: 1436.1
+- international_code: 2014-027A
+  longitude: -102.9
+  name: USA 252
+  norad_id: 39751
+  period: 1436.1
+- international_code: 2015-026A
+  longitude: -102.9
+  name: DIRECTV 15
+  norad_id: 40663
+  period: 1436.0
+- international_code: 1991-067A
+  longitude: -102.9
+  name: ANIK E1
+  norad_id: 21726
+  period: 1452.0
+- international_code: 2007-032A
+  longitude: -102.8
+  name: DIRECTV 10
+  norad_id: 31862
+  period: 1436.1
+- international_code: 2009-075A
+  longitude: -102.7
+  name: DIRECTV 12
+  norad_id: 36131
+  period: 1436.1
+- international_code: 1993-073A
+  longitude: -102.5
+  name: SOLIDARIDAD 1
+  norad_id: 22911
+  period: 1436.0
+- international_code: 1993-077A
+  longitude: -102.3
+  name: TELSTAR 401
+  norad_id: 22927
+  period: 1435.9
+- international_code: 1995-029A
+  longitude: -101.8
+  name: DIRECTV 3 (DBS/NIMIQ 3)
+  norad_id: 23598
+  period: 1454.5
+- international_code: 1970-021A
+  longitude: -101.7
+  name: NATO 2A
+  norad_id: 4353
+  period: 1436.0
+- international_code: 2005-049A
+  longitude: -101.7
+  name: INSAT 4A
+  norad_id: 28911
+  period: 1451.7
+- international_code: 1988-098A
+  longitude: -101.7
+  name: TDF 1
+  norad_id: 19621
+  period: 1451.7
+- international_code: 2004-011A
+  longitude: -101.4
+  name: SUPERBIRD 6
+  norad_id: 28218
+  period: 1447.8
+- international_code: 2010-061A
+  longitude: -101.3
+  name: SKYTERRA 1
+  norad_id: 37218
+  period: 1436.1
+- international_code: 2006-043A
+  longitude: -101.2
+  name: DIRECTV 9S
+  norad_id: 29494
+  period: 1436.1
+- international_code: 2010-016A
+  longitude: -101.0
+  name: SES 1
+  norad_id: 36516
+  period: 1436.1
+- international_code: 2019-034A
+  longitude: -100.8
+  name: AT&T T-16
+  norad_id: 44333
+  period: 1436.1
+- international_code: 2012-009A
+  longitude: -100.5
+  name: MUOS
+  norad_id: 38093
+  period: 1436.1
+- international_code: 2004-003A
+  longitude: -99.7
+  name: AMC-10 (GE-10)
+  norad_id: 28154
+  period: 1452.8
+- international_code: 2000-031A
+  longitude: -99.4
+  name: EXPRESS 3A
+  norad_id: 26378
+  period: 1458.0
+- international_code: 2014-078B
+  longitude: -99.2
+  name: DIRECTV 14
+  norad_id: 40333
+  period: 1436.1
+- international_code: 2008-013A
+  longitude: -99.2
+  name: DIRECTV 11
+  norad_id: 32729
+  period: 1436.1
+- international_code: 1995-025A
+  longitude: -99.1
+  name: GOES 9
+  norad_id: 23581
+  period: 1457.5
+- international_code: 2006-023A
+  longitude: -99.0
+  name: GALAXY 16
+  norad_id: 29236
+  period: 1436.1
+- international_code: 2008-039A
+  longitude: -98.0
+  name: INMARSAT 4-F3
+  norad_id: 33278
+  period: 1436.1
+- international_code: 2016-079A
+  longitude: -97.1
+  name: ECHOSTAR 19
+  norad_id: 41893
+  period: 1436.1
+- international_code: 2008-045A
+  longitude: -97.0
+  name: GALAXY 19
+  norad_id: 33376
+  period: 1436.1
+- international_code: 1986-026A
+  longitude: -96.7
+  name: GSTAR 2
+  norad_id: 16649
+  period: 1443.0
+- international_code: 2003-020A
+  longitude: -95.1
+  name: HELLAS-SAT 2
+  norad_id: 27811
+  period: 1436.1
+- international_code: 2014-062A
+  longitude: -95.1
+  name: INTELSAT 30 (IS-30)
+  norad_id: 40271
+  period: 1436.1
+- international_code: 2002-030A
+  longitude: -95.0
+  name: GALAXY 3C
+  norad_id: 27445
+  period: 1436.1
+- international_code: 2007-036A
+  longitude: -94.9
+  name: SPACEWAY 3
+  norad_id: 32018
+  period: 1436.1
+- international_code: 1996-067A
+  longitude: -94.7
+  name: EUTE 48A (HB2)
+  norad_id: 24665
+  period: 1463.7
+- international_code: 1993-069A
+  longitude: -94.5
+  name: GORIZONT 28
+  norad_id: 22880
+  period: 1445.1
+- international_code: 1991-060A
+  longitude: -94.2
+  name: BS-3B (YURI 3B)
+  norad_id: 21668
+  period: 1457.6
+- international_code: 1999-071A
+  longitude: -93.1
+  name: GALAXY 11
+  norad_id: 26038
+  period: 1436.1
+- international_code: 2008-016A
+  longitude: -92.9
+  name: ICO G-1
+  norad_id: 32763
+  period: 1436.1
+- international_code: 1995-049A
+  longitude: -92.8
+  name: TELSTAR 4 (TELSTAR 402R)
+  norad_id: 23670
+  period: 1436.3
+- international_code: 1997-062A
+  longitude: -91.6
+  name: APSTAR 2R (TELSTAR 10)
+  norad_id: 25010
+  period: 1451.5
+- international_code: 1996-030A
+  longitude: -91.4
+  name: PALAPA C2
+  norad_id: 23864
+  period: 1454.5
+- international_code: 2012-026A
+  longitude: -91.1
+  name: NIMIQ 6
+  norad_id: 38342
+  period: 1436.1
+- international_code: 2007-016B
+  longitude: -91.0
+  name: GALAXY 17
+  norad_id: 31307
+  period: 1436.1
+- international_code: 1994-009A
+  longitude: -90.9
+  name: USA 99
+  norad_id: 22988
+  period: 1436.1
+- international_code: 1988-036A
+  longitude: -90.8
+  name: EKRAN 18
+  norad_id: 19090
+  period: 1512.9
+- international_code: 1997-025A
+  longitude: -89.5
+  name: THOR 2A
+  norad_id: 24808
+  period: 1455.0
+- international_code: 2005-022A
+  longitude: -89.0
+  name: GALAXY 28 (IA 8)
+  norad_id: 28702
+  period: 1436.0
+- international_code: 1998-044A
+  longitude: -88.4
+  name: CHINASAT 5B (SINOSAT 1)
+  norad_id: 25404
+  period: 1451.7
+- international_code: 2013-075A
+  longitude: -87.2
+  name: TUPAC KATARI
+  norad_id: 39481
+  period: 1436.1
+- international_code: 2011-049A
+  longitude: -87.0
+  name: SES 2
+  norad_id: 37809
+  period: 1436.1
+- international_code: 2002-015B
+  longitude: -86.9
+  name: ASTRA 3A
+  norad_id: 27400
+  period: 1436.1
+- international_code: 1995-064A
+  longitude: -86.7
+  name: AMOS 5I (ASIASAT 2)
+  norad_id: 23723
+  period: 1450.1
+- international_code: 1999-027A
+  longitude: -86.5
+  name: NIMIQ 1
+  norad_id: 25740
+  period: 1436.1
+- international_code: 2000-054B
+  longitude: -85.5
+  name: AMC-7 (GE-7)
+  norad_id: 26495
+  period: 1452.6
+- international_code: 2005-008A
+  longitude: -85.1
+  name: XM-3
+  norad_id: 28626
+  period: 1436.2
+- international_code: 2010-053A
+  longitude: -85.1
+  name: XM-5
+  norad_id: 37185
+  period: 1436.1
+- international_code: 1999-059A
+  longitude: -84.5
+  name: TELSTAR 12 (ORION 2)
+  norad_id: 25949
+  period: 1461.9
+- international_code: 2016-082B
+  longitude: -84.0
+  name: STARONE D1
+  norad_id: 41904
+  period: 1436.1
+- international_code: 1996-055A
+  longitude: -83.1
+  name: ECHOSTAR 2
+  norad_id: 24313
+  period: 1437.0
+- international_code: 2006-054B
+  longitude: -83.0
+  name: AMC-18
+  norad_id: 29644
+  period: 1436.1
+- international_code: 1976-059A
+  longitude: -82.7
+  name: OPS 2112
+  norad_id: 8916
+  period: 1447.7
+- international_code: 1985-076C
+  longitude: -82.4
+  name: ASC 1
+  norad_id: 15994
+  period: 1435.9
+- international_code: 2008-044A
+  longitude: -82.0
+  name: NIMIQ 4
+  norad_id: 33373
+  period: 1436.2
+- international_code: 1991-028A
+  longitude: -81.2
+  name: SPACENET 4 (ASC 2)
+  norad_id: 21227
+  period: 1446.3
+- international_code: 1984-005A
+  longitude: -81.0
+  name: YURI 2A (BS-2A)
+  norad_id: 14659
+  period: 1453.8
+- international_code: 2015-054B
+  longitude: -81.0
+  name: ARSAT 2
+  norad_id: 40941
+  period: 1436.1
+- international_code: 1999-056A
+  longitude: -80.7
+  name: DIRECTV 1R
+  norad_id: 25937
+  period: 1455.1
+- international_code: 1989-021B
+  longitude: -80.7
+  name: TDRS 4
+  norad_id: 19883
+  period: 1462.2
+- international_code: 1997-027B
+  longitude: -80.5
+  name: INSAT 2D
+  norad_id: 24820
+  period: 1374.1
+- international_code: 1974-075A
+  longitude: -80.4
+  name: WESTAR 2
+  norad_id: 7466
+  period: 1442.2
+- international_code: 1995-045A
+  longitude: -79.9
+  name: COSMOS 2319
+  norad_id: 23653
+  period: 1434.6
+- international_code: 2015-026B
+  longitude: -78.7
+  name: SKY MEXICO-1
+  norad_id: 40664
+  period: 1436.1
+- international_code: 2011-054A
+  longitude: -77.0
+  name: QUETZSAT 1
+  norad_id: 37826
+  period: 1436.1
+- international_code: 2000-022A
+  longitude: -76.5
+  name: GOES 11
+  norad_id: 26352
+  period: 1453.9
+- international_code: 1995-069A
+  longitude: -76.3
+  name: GALAXY 3R
+  norad_id: 23741
+  period: 1435.8
+- international_code: 2010-006A
+  longitude: -76.2
+  name: INTELSAT 16
+  norad_id: 36397
+  period: 1436.1
+- international_code: 1995-016B
+  longitude: -75.8
+  name: HOT BIRD 1
+  norad_id: 23537
+  period: 1449.9
+- international_code: 1992-013A
+  longitude: -75.3
+  name: GALAXY 5
+  norad_id: 21906
+  period: 1450.3
+- international_code: 2016-071A
+  longitude: -75.2
+  name: GOES 16
+  norad_id: 41866
+  period: 1436.1
+- international_code: 2012-062A
+  longitude: -75.0
+  name: STARONE C3
+  norad_id: 38991
+  period: 1436.1
+- international_code: 2017-023B
+  longitude: -74.8
+  name: SGDC
+  norad_id: 42692
+  period: 1436.1
+- international_code: 2001-005B
+  longitude: -74.4
+  name: SKYNET 4F
+  norad_id: 26695
+  period: 1452.4
+- international_code: 2014-011A
+  longitude: -73.9
+  name: AMAZONAS 4A
+  norad_id: 39616
+  period: 1436.1
+- international_code: 1994-070A
+  longitude: -73.3
+  name: ASTRA 1D
+  norad_id: 23331
+  period: 1436.1
+- international_code: 2009-050A
+  longitude: -72.6
+  name: NIMIQ 5
+  norad_id: 35873
+  period: 1436.1
+- international_code: 2001-025A
+  longitude: -72.5
+  name: ASTRA 2C
+  norad_id: 26853
+  period: 1436.1
+- international_code: 2018-079A
+  longitude: -72.4
+  name: AEHF 4 (USA 288)
+  norad_id: 43651
+  period: 1428.2
+- international_code: 1997-050A
+  longitude: -72.0
+  name: AMC-3 (GE-3)
+  norad_id: 24936
+  period: 1436.1
+- international_code: 2014-062B
+  longitude: -71.8
+  name: ARSAT 1
+  norad_id: 40272
+  period: 1436.1
+- international_code: 1977-014A
+  longitude: -70.3
+  name: KIKU 2 (ETS 2)
+  norad_id: 9852
+  period: 1439.9
+- international_code: 2015-034B
+  longitude: -70.0
+  name: STAR ONE C4
+  norad_id: 40733
+  period: 1436.1
+- international_code: 2008-018B
+  longitude: -70.0
+  name: STAR ONE C2
+  norad_id: 32768
+  period: 1436.1
+- international_code: 2017-029A
+  longitude: -69.9
+  name: VIASAT 2
+  norad_id: 42740
+  period: 1436.1
+- international_code: 1989-041B
+  longitude: -69.5
+  name: DFS 1
+  norad_id: 20041
+  period: 1430.5
+- international_code: 1988-012A
+  longitude: -68.7
+  name: CS 3A
+  norad_id: 18877
+  period: 1467.3
+- international_code: 2017-014A
+  longitude: -67.9
+  name: ECHOSTAR 23
+  norad_id: 42070
+  period: 1436.2
+- international_code: 2012-019A
+  longitude: -67.5
+  name: AEHF 2 (USA 235)
+  norad_id: 38254
+  period: 1436.0
+- international_code: 2017-017A
+  longitude: -66.9
+  name: SES-10
+  norad_id: 42432
+  period: 1436.2
+- international_code: 1992-010A
+  longitude: -66.0
+  name: SUPERBIRD B1
+  norad_id: 21893
+  period: 1453.7
+- international_code: 1998-006A
+  longitude: -65.3
+  name: BRAZILSAT B3
+  norad_id: 25152
+  period: 1451.3
+- international_code: 2016-014A
+  longitude: -65.2
+  name: EUTE 65W
+  norad_id: 41382
+  period: 1436.1
+- international_code: 1984-081A
+  longitude: -65.1
+  name: EUTELSAT 1-F2 (ECS 2)
+  norad_id: 15158
+  period: 1457.5
+- international_code: 2007-056A
+  longitude: -65.0
+  name: STAR ONE C1
+  norad_id: 32293
+  period: 1436.1
+- international_code: 2004-015A
+  longitude: -64.4
+  name: EXPRESS AM-11
+  norad_id: 28234
+  period: 1451.1
+- international_code: 1973-040A
+  longitude: -64.2
+  name: OPS 6157
+  norad_id: 6691
+  period: 1442.6
+- international_code: 1975-038A
+  longitude: -64.2
+  name: ANIK A3 (TELESAT-3)
+  norad_id: 7790
+  period: 1439.3
+- international_code: 1975-011A
+  longitude: -64.2
+  name: SMS 2
+  norad_id: 7648
+  period: 1447.1
+- international_code: 1994-047A
+  longitude: -63.7
+  name: DIRECTV 2 (DBS 2)
+  norad_id: 23192
+  period: 1459.9
+- international_code: 2011-021A
+  longitude: -63.0
+  name: TELSTAR 14R
+  norad_id: 37602
+  period: 1436.1
+- international_code: 2018-059A
+  longitude: -63.0
+  name: TELSTAR 19V
+  norad_id: 43562
+  period: 1436.1
+- international_code: 2002-011A
+  longitude: -62.9
+  name: TDRS 9
+  norad_id: 27389
+  period: 1436.2
+- international_code: 1985-048B
+  longitude: -62.4
+  name: MORELOS 1
+  norad_id: 15824
+  period: 1447.7
+- international_code: 1979-053A
+  longitude: -62.0
+  name: OPS 7484
+  norad_id: 11397
+  period: 1458.3
+- international_code: 2010-034A
+  longitude: -61.6
+  name: ECHOSTAR 15
+  norad_id: 36792
+  period: 1436.1
+- international_code: 2012-065A
+  longitude: -61.5
+  name: ECHOSTAR 16
+  norad_id: 39008
+  period: 1436.1
+- international_code: 2016-039B
+  longitude: -61.3
+  name: ECHOSTAR XVIII
+  norad_id: 41592
+  period: 1436.1
+- international_code: 2000-066A
+  longitude: -61.3
+  name: THURAYA 1
+  norad_id: 26578
+  period: 1454.7
+- international_code: 2017-053A
+  longitude: -61.0
+  name: AMAZONAS 5
+  norad_id: 42934
+  period: 1436.1
+- international_code: 2009-054A
+  longitude: -60.9
+  name: AMAZONAS 2
+  norad_id: 35942
+  period: 1436.1
+- international_code: 2013-006A
+  longitude: -60.9
+  name: AMAZONAS 3
+  norad_id: 39078
+  period: 1436.1
+- international_code: 1968-081D
+  longitude: -60.1
+  name: LES 6
+  norad_id: 3431
+  period: 1435.8
+- international_code: 1993-066A
+  longitude: -59.0
+  name: INTELSAT 701
+  norad_id: 22871
+  period: 1449.8
+- international_code: 1993-076A
+  longitude: -58.7
+  name: NATO 4B
+  norad_id: 22921
+  period: 1461.6
+- international_code: 1996-030B
+  longitude: -58.7
+  name: INTELSAT 24 (AMOS 1)
+  norad_id: 23865
+  period: 1482.7
+- international_code: 2002-035B
+  longitude: -58.2
+  name: NSTAR C
+  norad_id: 27461
+  period: 1455.2
+- international_code: 2012-045A
+  longitude: -58.0
+  name: INTELSAT 21
+  norad_id: 38749
+  period: 1436.1
+- international_code: 1980-060A
+  longitude: -57.1
+  name: EKRAN 5
+  norad_id: 11890
+  period: 1436.0
+- international_code: 1997-016A
+  longitude: -56.8
+  name: THAICOM 3
+  norad_id: 24768
+  period: 1458.2
+- international_code: 2015-039A
+  longitude: -55.5
+  name: INTELSAT 34
+  norad_id: 40874
+  period: 1436.1
+- international_code: 1992-027A
+  longitude: -55.1
+  name: PALAPA B4
+  norad_id: 21964
+  period: 1440.8
+- international_code: 2015-005A
+  longitude: -55.0
+  name: INMARSAT 5-F2
+  norad_id: 40384
+  period: 1436.1
+- international_code: 1985-028C
+  longitude: -54.2
+  name: LEASAT 3
+  norad_id: 15643
+  period: 1485.1
+- international_code: 1998-006B
+  longitude: -54.1
+  name: INMARSAT 3-F5
+  norad_id: 25153
+  period: 1436.1
+- international_code: 2012-057A
+  longitude: -53.0
+  name: INTELSAT 23
+  norad_id: 38867
+  period: 1436.1
+- international_code: 1983-077A
+  longitude: -52.9
+  name: ARABSAT 1DR (TELSTAR 3A)
+  norad_id: 14234
+  period: 1446.8
+- international_code: 1998-063A
+  longitude: -52.8
+  name: AFRISTAR
+  norad_id: 25515
+  period: 1454.4
+- international_code: 1988-063B
+  longitude: -52.3
+  name: EUTELSAT 1-F5 (ECS 5)
+  norad_id: 19331
+  period: 1466.9
+- international_code: 2000-043A
+  longitude: -50.1
+  name: INTELSAT 9 (PAS 9)
+  norad_id: 26451
+  period: 1436.1
+- international_code: 2001-039A
+  longitude: -50.1
+  name: INTELSAT 902
+  norad_id: 26900
+  period: 1436.1
+- international_code: 2001-012A
+  longitude: -49.7
+  name: XM-2
+  norad_id: 26724
+  period: 1453.3
+- international_code: 1988-086A
+  longitude: -48.1
+  name: CS 3B
+  norad_id: 19508
+  period: 1451.2
+- international_code: 1988-091B
+  longitude: -48.1
+  name: TDRS 3
+  norad_id: 19548
+  period: 1436.1
+- international_code: 2018-012B
+  longitude: -47.5
+  name: SES 14
+  norad_id: 43175
+  period: 1436.1
+- international_code: 2001-052A
+  longitude: -47.1
+  name: DIRECTV 4S
+  norad_id: 26985
+  period: 1450.7
+- international_code: 2011-048A
+  longitude: -46.5
+  name: COSMOS 2473
+  norad_id: 37806
+  period: 1437.0
+- international_code: 1992-041A
+  longitude: -46.4
+  name: INSAT 2A
+  norad_id: 22027
+  period: 1437.3
+- international_code: 1999-018A
+  longitude: -46.3
+  name: EUTE 21A (EUTE W3)
+  norad_id: 25673
+  period: 1462.9
+- international_code: 2009-046A
+  longitude: -46.0
+  name: PALAPA D
+  norad_id: 35812
+  period: 1458.3
+- international_code: 1990-100B
+  longitude: -45.7
+  name: GSTAR 4
+  norad_id: 20946
+  period: 1452.4
+- international_code: 1999-005A
+  longitude: -45.3
+  name: GALAXY 26 (TELSTAR 6)
+  norad_id: 25626
+  period: 1454.5
+- international_code: 1993-003B
+  longitude: -45.1
+  name: TDRS 6
+  norad_id: 22314
+  period: 1436.1
+- international_code: 2009-064A
+  longitude: -45.0
+  name: INTELSAT 14
+  norad_id: 36097
+  period: 1436.1
+- international_code: 1990-079B
+  longitude: -44.2
+  name: EUTELSAT 2-F1
+  norad_id: 20777
+  period: 1449.4
+- international_code: 2017-007B
+  longitude: -43.2
+  name: INTELSAT 32E (SKY BRASIL 1)
+  norad_id: 41945
+  period: 1436.1
+- international_code: 2007-044B
+  longitude: -43.0
+  name: INTELSAT 11 (PAS 11)
+  norad_id: 32253
+  period: 1436.1
+- international_code: 2003-040A
+  longitude: -42.3
+  name: USA 170
+  norad_id: 27875
+  period: 1436.1
+- international_code: 1997-036A
+  longitude: -42.2
+  name: SUPERBIRD C
+  norad_id: 24880
+  period: 1453.5
+- international_code: 1987-078A
+  longitude: -41.9
+  name: OPTUS A3 (AUSSAT 3)
+  norad_id: 18350
+  period: 1455.9
+- international_code: 1988-081B
+  longitude: -41.2
+  name: SBS 5
+  norad_id: 19484
+  period: 1442.9
+- international_code: 2014-004A
+  longitude: -40.8
+  name: TDRS-12
+  norad_id: 39504
+  period: 1436.0
+- international_code: 2013-026A
+  longitude: -40.5
+  name: SES-6
+  norad_id: 39172
+  period: 1436.1
+- international_code: 1985-048C
+  longitude: -40.1
+  name: ARABSAT 1B
+  norad_id: 15825
+  period: 1434.2
+- international_code: 1969-069A
+  longitude: -39.8
+  name: ATS 5
+  norad_id: 4068
+  period: 1447.3
+- international_code: 1988-109A
+  longitude: -39.3
+  name: SKYNET 4B
+  norad_id: 19687
+  period: 1444.6
+- international_code: 1997-059A
+  longitude: -39.3
+  name: ECHOSTAR 3
+  norad_id: 25004
+  period: 1456.4
+- international_code: 2009-009A
+  longitude: -37.5
+  name: TELSTAR 11N
+  norad_id: 34111
+  period: 1436.1
+- international_code: 2005-003A
+  longitude: -37.4
+  name: NSS 10 (AMC-12)
+  norad_id: 28526
+  period: 1436.1
+- international_code: 1998-049A
+  longitude: -37.3
+  name: ST 1
+  norad_id: 25460
+  period: 1458.2
+- international_code: 2007-058A
+  longitude: -36.6
+  name: RADUGA 1M-1
+  norad_id: 32373
+  period: 1448.7
+- international_code: 1980-004A
+  longitude: -36.6
+  name: OPS 6393 (FLTSATCOM 3)
+  norad_id: 11669
+  period: 1436.7
+- international_code: 2017-006A
+  longitude: -36.0
+  name: HISPASAT 36W-1
+  norad_id: 41942
+  period: 1436.1
+- international_code: 2004-001A
+  longitude: -34.7
+  name: ESTRELA DU SOL-TELSTAR14
+  norad_id: 28137
+  period: 1457.0
+- international_code: 2017-041A
+  longitude: -34.5
+  name: INTELSAT 35E
+  norad_id: 42818
+  period: 1436.1
+- international_code: 1983-026B
+  longitude: -34.0
+  name: TDRS 1
+  norad_id: 13969
+  period: 1458.3
+- international_code: 2001-042A
+  longitude: -33.5
+  name: EUTE 8 WEST A (AB 2)
+  norad_id: 26927
+  period: 1461.5
+- international_code: 1998-024B
+  longitude: -32.9
+  name: BSAT-1B
+  norad_id: 25312
+  period: 1452.8
+- international_code: 2008-034A
+  longitude: -31.5
+  name: INTELSAT 25(PROTOSTAR 1)
+  norad_id: 33153
+  period: 1436.1
+- international_code: 1999-023A
+  longitude: -30.3
+  name: USA 143
+  norad_id: 25724
+  period: 153.6
+- international_code: 2004-036A
+  longitude: -30.3
+  name: GSAT 3 (EDUSAT)
+  norad_id: 28417
+  period: 1450.6
+- international_code: 2006-007A
+  longitude: -30.0
+  name: SPAINSAT
+  norad_id: 28945
+  period: 1436.1
+- international_code: 2010-070A
+  longitude: -29.9
+  name: HISPASAT 1E
+  norad_id: 37264
+  period: 1436.1
+- international_code: 2002-007A
+  longitude: -29.5
+  name: INTELSAT 904
+  norad_id: 27380
+  period: 1436.1
+- international_code: 1985-109C
+  longitude: -28.1
+  name: OPTUS A2 (AUSSAT 2)
+  norad_id: 16275
+  period: 1440.7
+- international_code: 1991-003A
+  longitude: -27.8
+  name: ITALSAT 1
+  norad_id: 21055
+  period: 1440.4
+- international_code: 1989-062A
+  longitude: -27.5
+  name: TVSAT 2
+  norad_id: 20168
+  period: 1442.1
+- international_code: 2001-024A
+  longitude: -27.5
+  name: INTELSAT 901
+  norad_id: 26824
+  period: 1436.1
+- international_code: 1993-048B
+  longitude: -27.3
+  name: INSAT 2B
+  norad_id: 22724
+  period: 1440.2
+- international_code: 1992-057A
+  longitude: -27.3
+  name: SATCOM C4
+  norad_id: 22096
+  period: 1454.3
+- international_code: 1983-006A
+  longitude: -26.4
+  name: SAKURA 2A (CS-2A)
+  norad_id: 13782
+  period: 1448.5
+- international_code: 1989-070A
+  longitude: -25.3
+  name: HIMAWARI 4 (GMS 4)
+  norad_id: 20217
+  period: 1478.3
+- international_code: 2017-078A
+  longitude: -24.8
+  name: ALCOMSAT 1
+  norad_id: 43039
+  period: 1436.1
+- international_code: 2002-027A
+  longitude: -24.5
+  name: INTELSAT 905
+  norad_id: 27438
+  period: 1436.1
+- international_code: 1998-057A
+  longitude: -23.8
+  name: EUTE 25A (HB 5)
+  norad_id: 25495
+  period: 1462.6
+- international_code: 1982-082A
+  longitude: -23.8
+  name: ANIK D1 (TELESAT 6)
+  norad_id: 13431
+  period: 1438.0
+- international_code: 2000-020A
+  longitude: -23.2
+  name: GALAXY 4R
+  norad_id: 26298
+  period: 1442.3
+- international_code: 1998-014A
+  longitude: -22.9
+  name: NSS 806 (INTELSAT 806)
+  norad_id: 25239
+  period: 1453.4
+- international_code: 2012-007A
+  longitude: -22.0
+  name: SES 4
+  norad_id: 38087
+  period: 1436.1
+- international_code: 1993-078B
+  longitude: -21.9
+  name: THAICOM 1
+  norad_id: 22931
+  period: 1451.8
+- international_code: 1996-044A
+  longitude: -21.4
+  name: ITALSAT 2
+  norad_id: 24208
+  period: 1428.9
+- international_code: 1994-060A
+  longitude: -21.3
+  name: COSMOS 2291
+  norad_id: 23267
+  period: 1436.4
+- international_code: 1997-019A
+  longitude: -20.6
+  name: GOES 10
+  norad_id: 24786
+  period: 1452.7
+- international_code: 2018-012A
+  longitude: -20.1
+  name: AL YAH 3
+  norad_id: 43174
+  period: 1436.1
+- international_code: 2002-019A
+  longitude: -20.0
+  name: NSS 7
+  norad_id: 27414
+  period: 1436.1
+- international_code: 2016-004A
+  longitude: -19.9
+  name: INTELSAT 29E
+  norad_id: 41308
+  period: 1431.2
+- international_code: 1997-042A
+  longitude: -19.0
+  name: ABS 3
+  norad_id: 24901
+  period: 1450.7
+- international_code: 1996-044B
+  longitude: -18.3
+  name: TELECOM 2D
+  norad_id: 24209
+  period: 1462.7
+- international_code: 2017-059A
+  longitude: -18.0
+  name: INTELSAT-37E
+  norad_id: 42950
+  period: 1436.1
+- international_code: 2008-030A
+  longitude: -17.8
+  name: SKYNET 5C
+  norad_id: 33055
+  period: 1436.1
+- international_code: 2000-007A
+  longitude: -17.4
+  name: HISPASAT 1C
+  norad_id: 26071
+  period: 1451.5
+- international_code: 1996-070A
+  longitude: -17.3
+  name: INMARSAT 3-F3
+  norad_id: 24674
+  period: 1439.9
+- international_code: 1983-098A
+  longitude: -17.1
+  name: GALAXY 2
+  norad_id: 14365
+  period: 1436.8
+- international_code: 1996-034A
+  longitude: -16.8
+  name: GORIZONT 32
+  norad_id: 23880
+  period: 1437.0
+- international_code: 1985-028B
+  longitude: -16.8
+  name: NAHUEL I1 (ANIK C1)
+  norad_id: 15642
+  period: 1444.8
+- international_code: 2012-061A
+  longitude: -16.3
+  name: LUCH 5B
+  norad_id: 38977
+  period: 1436.1
+- international_code: 1985-035B
+  longitude: -15.8
+  name: TELECOM 1B
+  norad_id: 15678
+  period: 1436.0
+- international_code: 1992-041B
+  longitude: -15.7
+  name: EUTELSAT 2-F4
+  norad_id: 22028
+  period: 1453.4
+- international_code: 2015-002A
+  longitude: -15.3
+  name: MUOS 3
+  norad_id: 40374
+  period: 1436.1
+- international_code: 2015-068A
+  longitude: -15.0
+  name: TELSTAR 12V
+  norad_id: 41036
+  period: 1436.1
+- international_code: 1990-091A
+  longitude: -14.9
+  name: SBS 6
+  norad_id: 20872
+  period: 1454.6
+- international_code: 1988-051C
+  longitude: -14.6
+  name: PAS 1
+  norad_id: 19217
+  period: 1448.8
+- international_code: 2015-074A
+  longitude: -14.5
+  name: ELEKTRO-L 2
+  norad_id: 41105
+  period: 1436.1
+- international_code: 2015-048A
+  longitude: -14.0
+  name: EXPRESS AM-8
+  norad_id: 40895
+  period: 1436.1
+- international_code: 2008-065B
+  longitude: -12.5
+  name: EUTE 28B (EUTE W2M)
+  norad_id: 33460
+  period: 1436.1
+- international_code: 2000-028A
+  longitude: -12.4
+  name: EUTE 36A (EUTE W4)
+  norad_id: 26369
+  period: 1436.1
+- international_code: 2007-037A
+  longitude: -12.0
+  name: INSAT 4CR
+  norad_id: 32050
+  period: 1451.3
+- international_code: 2017-047A
+  longitude: -11.8
+  name: TDRS 13
+  norad_id: 42915
+  period: 1436.1
+- international_code: 1978-044A
+  longitude: -11.7
+  name: OTS 2
+  norad_id: 10855
+  period: 1452.5
+- international_code: 2009-007A
+  longitude: -11.0
+  name: EXPRESS AM-44
+  norad_id: 33595
+  period: 1436.1
+- international_code: 2008-003A
+  longitude: -10.9
+  name: EXPRESS AM-33
+  norad_id: 32478
+  period: 1436.1
+- international_code: 1985-048D
+  longitude: -10.8
+  name: TELSTAR 303
+  norad_id: 15826
+  period: 1441.7
+- international_code: 1969-036A
+  longitude: -10.7
+  name: OPS 3148
+  norad_id: 3889
+  period: 1434.8
+- international_code: 1990-034A
+  longitude: -9.7
+  name: NEWSAT-1 (PALAPA B2R)
+  norad_id: 20570
+  period: 1446.8
+- international_code: 1990-091B
+  longitude: -9.3
+  name: GALAXY 6
+  norad_id: 20873
+  period: 1443.3
+- international_code: 1986-027A
+  longitude: -8.6
+  name: COSMOS 1738
+  norad_id: 16667
+  period: 1436.1
+- international_code: 2015-039B
+  longitude: -8.0
+  name: EUTELSAT 8 WEST B
+  norad_id: 40875
+  period: 1436.1
+- international_code: 2003-013A
+  longitude: -7.4
+  name: INSAT 3A
+  norad_id: 27714
+  period: 1442.7
+- international_code: 2011-051A
+  longitude: -7.3
+  name: EUTE 7 WEST A (AB 7)
+  norad_id: 37816
+  period: 1436.1
+- international_code: 2010-037A
+  longitude: -7.0
+  name: NILESAT 201
+  norad_id: 36830
+  period: 1436.0
+- international_code: 1996-005A
+  longitude: -6.0
+  name: GORIZONT 31
+  norad_id: 23775
+  period: 1441.4
+- international_code: 2006-033B
+  longitude: -5.2
+  name: SYRACUSE 3B
+  norad_id: 29273
+  period: 1436.1
+- international_code: 2019-067A
+  longitude: -5.0
+  name: EUTELSAT 5 WEST B
+  norad_id: 44624
+  period: 1436.1
+- international_code: 2002-035A
+  longitude: -5.0
+  name: EUTE 5 WEST A (STELLAT5)
+  norad_id: 27460
+  period: 1436.1
+- international_code: 2008-022A
+  longitude: -4.1
+  name: AMOS 3
+  norad_id: 32794
+  period: 1436.1
+- international_code: 2008-007A
+  longitude: -3.9
+  name: WINDS (KIZUNA)
+  norad_id: 32500
+  period: 1435.9
+- international_code: 2014-046A
+  longitude: -3.9
+  name: ASIASAT 8
+  norad_id: 40107
+  period: 1436.1
+- international_code: 1985-109B
+  longitude: -3.4
+  name: MORELOS 2
+  norad_id: 16274
+  period: 1446.2
+- international_code: 1976-073A
+  longitude: -3.4
+  name: COMSTAR 2
+  norad_id: 9047
+  period: 1440.2
+- international_code: 2015-010A
+  longitude: -3.0
+  name: ABS 3A
+  norad_id: 40424
+  period: 1436.1
+- international_code: 1978-068A
+  longitude: -2.9
+  name: COMSTAR 3
+  norad_id: 10975
+  period: 1451.6
+- international_code: 1987-084A
+  longitude: -2.9
+  name: COSMOS 1888
+  norad_id: 18384
+  period: 1436.4
+- international_code: 1977-018A
+  longitude: -2.8
+  name: PALAPA 2
+  norad_id: 9862
+  period: 1439.2
+- international_code: 1991-079A
+  longitude: -1.9
+  name: COSMOS 2172
+  norad_id: 21789
+  period: 1435.8
+- international_code: 1978-071A
+  longitude: -1.8
+  name: GEOS 2
+  norad_id: 10981
+  period: 1449.0
+- international_code: 2009-007B
+  longitude: -1.3
+  name: EXPRESS MD1
+  norad_id: 33596
+  period: 1452.9
+- international_code: 1984-113C
+  longitude: -1.1
+  name: LEASAT 1
+  norad_id: 15384
+  period: 1461.3
+- international_code: 1999-017A
+  longitude: -1.0
+  name: USA 142
+  norad_id: 25669
+  period: 618.2
+- international_code: 2004-022A
+  longitude: -1.0
+  name: INTELSAT 1002
+  norad_id: 28358
+  period: 1436.1
+- international_code: 2009-058B
+  longitude: -0.8
+  name: THOR 6
+  norad_id: 36033
+  period: 1436.1
+- international_code: 1999-009B
+  longitude: -0.8
+  name: SKYNET 4E
+  norad_id: 25639
+  period: 1436.1
+- international_code: 2008-006A
+  longitude: -0.7
+  name: THOR 5
+  norad_id: 32487
+  period: 1436.1
+- international_code: 2015-022A
+  longitude: -0.7
+  name: THOR 7
+  norad_id: 40613
+  period: 1436.1
+- international_code: 1998-070A
+  longitude: -0.5
+  name: SATMEX 5
+  norad_id: 25558
+  period: 1458.6
+- international_code: 1985-015B
+  longitude: -0.1
+  name: BRAZILSAT 1
+  norad_id: 15561
+  period: 1446.5
+- international_code: 2017-086A
+  longitude: 0.2
+  name: ANGOSAT 1
+  norad_id: 43087
+  period: 1448.9
+- international_code: 2015-034A
+  longitude: 0.9
+  name: MSG 4
+  norad_id: 40732
+  period: 1435.9
+- international_code: 1974-094A
+  longitude: 1.1
+  name: SKYNET 2B
+  norad_id: 7547
+  period: 1435.9
+- international_code: 1999-050A
+  longitude: 1.6
+  name: ECHOSTAR 5
+  norad_id: 25913
+  period: 1458.3
+- international_code: 2017-038A
+  longitude: 1.9
+  name: BULGARIASAT-1
+  norad_id: 42801
+  period: 1436.1
+- international_code: 1977-065A
+  longitude: 2.7
+  name: HIMAWARI 1 (GMS 1)
+  norad_id: 10143
+  period: 1450.9
+- international_code: 2010-037B
+  longitude: 2.9
+  name: RASCOM QAF 1R
+  norad_id: 36831
+  period: 1436.1
+- international_code: 2014-030A
+  longitude: 3.1
+  name: EUTE 3B
+  norad_id: 39773
+  period: 1436.1
+- international_code: 1998-052A
+  longitude: 3.2
+  name: INTELSAT 7 (PAS 7)
+  norad_id: 25473
+  period: 1466.2
+- international_code: 1986-038A
+  longitude: 3.2
+  name: EKRAN 15
+  norad_id: 16729
+  period: 1491.5
+- international_code: 2005-049B
+  longitude: 3.4
+  name: METEOSAT 9 (MSG 2)
+  norad_id: 28912
+  period: 1436.1
+- international_code: 2010-039A
+  longitude: 3.9
+  name: AEHF 1 (USA 214)
+  norad_id: 36868
+  period: 1436.1
+- international_code: 2007-057A
+  longitude: 4.8
+  name: ASTRA 4A (SIRIUS 4)
+  norad_id: 32299
+  period: 1436.1
+- international_code: 2012-036A
+  longitude: 5.0
+  name: SES 5
+  norad_id: 38652
+  period: 1436.1
+- international_code: 2007-046A
+  longitude: 6.0
+  name: WGS F1 (USA 195)
+  norad_id: 32258
+  period: 1436.1
+- international_code: 1986-096A
+  longitude: 6.9
+  name: FLTSATCOM 7 (USA 20)
+  norad_id: 17181
+  period: 1455.6
+- international_code: 2019-034B
+  longitude: 7.0
+  name: EUTELSAT 7C
+  norad_id: 44334
+  period: 1436.1
+- international_code: 2013-022A
+  longitude: 7.0
+  name: EUTE 3D
+  norad_id: 39163
+  period: 1436.1
+- international_code: 1984-114B
+  longitude: 7.1
+  name: MARECS B2
+  norad_id: 15386
+  period: 1501.1
+- international_code: 1994-013A
+  longitude: 7.2
+  name: GALAXY 1R
+  norad_id: 23016
+  period: 1451.3
+- international_code: 2020-005B
+  longitude: 7.2
+  name: EUTELSAT KONNECT
+  norad_id: 45027
+  period: 1436.1
+- international_code: 2003-024A
+  longitude: 7.6
+  name: AMC-9 (GE-12)
+  norad_id: 27820
+  period: 1454.1
+- international_code: 1972-090A
+  longitude: 8.2
+  name: ANIK A1 (TELESAT 1)
+  norad_id: 6278
+  period: 1457.1
+- international_code: 1975-117A
+  longitude: 8.7
+  name: SATCOM 1
+  norad_id: 8476
+  period: 1445.7
+- international_code: 2010-069A
+  longitude: 9.0
+  name: EUTE KA SAT 9A (KA SAT)
+  norad_id: 37258
+  period: 1436.1
+- international_code: 2016-005A
+  longitude: 9.0
+  name: EUTELSAT 9B
+  norad_id: 41310
+  period: 1436.1
+- international_code: 2012-035B
+  longitude: 9.2
+  name: METEOSAT 10 (MSG 3)
+  norad_id: 38552
+  period: 1436.1
+- international_code: 1989-020A
+  longitude: 9.8
+  name: JCSAT 1
+  norad_id: 19874
+  period: 1446.7
+- international_code: 2009-016A
+  longitude: 10.0
+  name: EUTE 10A (EUTE W2A)
+  norad_id: 34710
+  period: 1436.1
+- international_code: 1996-015A
+  longitude: 10.1
+  name: INTELSAT 707
+  norad_id: 23816
+  period: 1462.2
+- international_code: 2017-032A
+  longitude: 10.2
+  name: ECHOSTAR 21
+  norad_id: 42749
+  period: 1436.1
+- international_code: 2019-080B
+  longitude: 11.0
+  name: INMARSAT GX5
+  norad_id: 44801
+  period: 1436.1
+- international_code: 2011-001A
+  longitude: 11.6
+  name: ELEKTRO-L
+  norad_id: 37344
+  period: 1435.4
+- international_code: 2005-015A
+  longitude: 12.4
+  name: SPACEWAY 1
+  norad_id: 28644
+  period: 1462.1
+- international_code: 2008-065A
+  longitude: 13.0
+  name: EUTE HOT BIRD 13C (HB 9)
+  norad_id: 33459
+  period: 1436.1
+- international_code: 2006-007B
+  longitude: 13.0
+  name: EUTE 9A (HB 7A)
+  norad_id: 28946
+  period: 1436.1
+- international_code: 2006-032A
+  longitude: 13.0
+  name: EUTE HOT BIRD 13B (HB 8)
+  norad_id: 29270
+  period: 1436.1
+- international_code: 2010-021B
+  longitude: 13.2
+  name: COMSATBW-2
+  norad_id: 36582
+  period: 1436.1
+- international_code: 1987-070A
+  longitude: 14.3
+  name: KIKU 5 (ETS 5)
+  norad_id: 18316
+  period: 1449.7
+- international_code: 2001-037A
+  longitude: 14.3
+  name: COSMOS 2379
+  norad_id: 26892
+  period: 1436.4
+- international_code: 2006-056A
+  longitude: 14.3
+  name: MEASAT 3
+  norad_id: 29648
+  period: 1443.6
+- international_code: 1972-010A
+  longitude: 15.4
+  name: OPS 1570
+  norad_id: 5851
+  period: 1443.2
+- international_code: 1988-018A
+  longitude: 15.4
+  name: SPACENET 3R
+  norad_id: 18951
+  period: 1444.9
+- international_code: 1996-039A
+  longitude: 16.0
+  name: APSTAR 1A
+  norad_id: 23943
+  period: 1451.7
+- international_code: 2011-057A
+  longitude: 16.0
+  name: EUTE 16A (EUTE W3C)
+  norad_id: 37836
+  period: 1436.1
+- international_code: 1984-035A
+  longitude: 16.2
+  name: STTW-T2
+  norad_id: 14899
+  period: 1435.6
+- international_code: 1993-073B
+  longitude: 17.0
+  name: METEOSAT 6
+  norad_id: 22912
+  period: 1454.8
+- international_code: 2019-050A
+  longitude: 17.0
+  name: AMOS 17
+  norad_id: 44479
+  period: 1436.1
+- international_code: 2009-020A
+  longitude: 18.0
+  name: SICRAL 1B
+  norad_id: 34810
+  period: 1436.1
+- international_code: 1996-002B
+  longitude: 18.0
+  name: AFRICASAT 1 (MEASAT 1)
+  norad_id: 23765
+  period: 1453.6
+- international_code: 2002-001A
+  longitude: 19.1
+  name: USA 164
+  norad_id: 27168
+  period: 1436.0
+- international_code: 2008-057A
+  longitude: 19.2
+  name: ASTRA 1M
+  norad_id: 33436
+  period: 1436.1
+- international_code: 2011-041A
+  longitude: 19.2
+  name: ASTRA 1N
+  norad_id: 37775
+  period: 1436.1
+- international_code: 2007-016A
+  longitude: 19.2
+  name: ASTRA 1L
+  norad_id: 31306
+  period: 1436.1
+- international_code: 2006-012A
+  longitude: 19.2
+  name: ASTRA 1KR
+  norad_id: 29055
+  period: 1436.1
+- international_code: 2008-011A
+  longitude: 19.3
+  name: AMC-14
+  norad_id: 32708
+  period: 1436.1
+- international_code: 1997-076A
+  longitude: 19.5
+  name: ASTRA 1G
+  norad_id: 25071
+  period: 1436.1
+- international_code: 2011-074A
+  longitude: 19.6
+  name: AMOS 5
+  norad_id: 37950
+  period: 1435.7
+- international_code: 2011-049B
+  longitude: 20.0
+  name: ARABSAT 5C
+  norad_id: 37810
+  period: 1436.1
+- international_code: 2012-040A
+  longitude: 20.3
+  name: TIANLIAN 1-03
+  norad_id: 38730
+  period: 1436.1
+- international_code: 2013-011A
+  longitude: 20.7
+  name: SBIRS GEO 2 (USA 241)
+  norad_id: 39120
+  period: 1436.1
+- international_code: 1994-065B
+  longitude: 21.4
+  name: THAICOM 2
+  norad_id: 23314
+  period: 1445.9
+- international_code: 2012-062B
+  longitude: 21.6
+  name: EUTE 21B
+  norad_id: 38992
+  period: 1436.1
+- international_code: 2005-023A
+  longitude: 23.1
+  name: EXPRESS AM-3
+  norad_id: 28707
+  period: 1436.1
+- international_code: 2014-055A
+  longitude: 23.3
+  name: USA 257 (CLIO)
+  norad_id: 40208
+  period: 1436.0
+- international_code: 2010-021A
+  longitude: 23.5
+  name: ASTRA 3B
+  norad_id: 36581
+  period: 1436.0
+- international_code: 1993-013A
+  longitude: 24.0
+  name: RADUGA 29
+  norad_id: 22557
+  period: 1436.9
+- international_code: 1972-101A
+  longitude: 24.4
+  name: OPS 9390
+  norad_id: 6317
+  period: 1436.5
+- international_code: 1991-084B
+  longitude: 24.5
+  name: INMARSAT 2-F3
+  norad_id: 21814
+  period: 1499.0
+- international_code: 1982-014A
+  longitude: 24.7
+  name: WESTAR 4
+  norad_id: 13069
+  period: 1443.3
+- international_code: 2013-038A
+  longitude: 24.8
+  name: ALPHASAT (INMARSAT 4A-F4)
+  norad_id: 39215
+  period: 1436.1
+- international_code: 1987-097A
+  longitude: 25.1
+  name: USA 28
+  norad_id: 18583
+  period: 1463.6
+- international_code: 2007-056B
+  longitude: 25.1
+  name: SKYNET 5B
+  norad_id: 32294
+  period: 1436.0
+- international_code: 2013-044A
+  longitude: 25.5
+  name: EUTELSAT 25B (ES'HAIL 1)
+  norad_id: 39233
+  period: 1436.1
+- international_code: 1996-006A
+  longitude: 25.8
+  name: PAKSAT 1 (ANATOLIA 1)
+  norad_id: 23779
+  period: 1445.9
+- international_code: 2018-090A
+  longitude: 25.8
+  name: ES'HAIL 2 (QO-100)
+  norad_id: 43700
+  period: 1436.1
+- international_code: 2010-025A
+  longitude: 26.0
+  name: BADR-5 (ARABSAT 5B)
+  norad_id: 36592
+  period: 1436.1
+- international_code: 2008-034B
+  longitude: 26.0
+  name: BADR 6
+  norad_id: 33154
+  period: 1436.1
+- international_code: 2015-065B
+  longitude: 26.0
+  name: BADR 7 (ARABSAT-6B)
+  norad_id: 41029
+  period: 1436.1
+- international_code: 2006-051A
+  longitude: 26.0
+  name: ARABSAT 4B
+  norad_id: 29526
+  period: 1436.1
+- international_code: 1995-055A
+  longitude: 27.2
+  name: ASTRA 1E
+  norad_id: 23686
+  period: 1457.6
+- international_code: 1998-035A
+  longitude: 27.4
+  name: THOR 3
+  norad_id: 25358
+  period: 1457.1
+- international_code: 1995-023A
+  longitude: 27.7
+  name: INTELSAT 706
+  norad_id: 23571
+  period: 1453.8
+- international_code: 1998-050A
+  longitude: 28.0
+  name: ASTRA 2A
+  norad_id: 25462
+  period: 1436.1
+- international_code: 1995-001A
+  longitude: 28.0
+  name: INTELSAT 704
+  norad_id: 23461
+  period: 1451.9
+- international_code: 2014-089A
+  longitude: 28.2
+  name: ASTRA 2G
+  norad_id: 40364
+  period: 1436.1
+- international_code: 2012-051A
+  longitude: 28.2
+  name: ASTRA 2F
+  norad_id: 38778
+  period: 1436.1
+- international_code: 2013-056A
+  longitude: 28.5
+  name: ASTRA 2E
+  norad_id: 39285
+  period: 1436.1
+- international_code: 2005-005A
+  longitude: 29.0
+  name: XTAR-EUR
+  norad_id: 28542
+  period: 1436.1
+- international_code: 2014-085A
+  longitude: 29.0
+  name: DUMMY SAT 2/BREEZE-M
+  norad_id: 40355
+  period: 1530.9
+- international_code: 2010-032B
+  longitude: 30.5
+  name: ARABSAT 5A
+  norad_id: 36745
+  period: 1436.0
+- international_code: 2019-021A
+  longitude: 30.5
+  name: ARABSAT 6A
+  norad_id: 44186
+  period: 1436.1
+- international_code: 2021-001A
+  longitude: 30.9
+  name: TURKSAT 5A
+  norad_id: 47306
+  period: 1436.1
+- international_code: 2012-043B
+  longitude: 31.0
+  name: HYLAS 2
+  norad_id: 38741
+  period: 1436.1
+- international_code: 2019-049A
+  longitude: 31.2
+  name: EDRS-C
+  norad_id: 44475
+  period: 1436.1
+- international_code: 1983-089B
+  longitude: 31.4
+  name: INSAT 1B
+  norad_id: 14318
+  period: 1435.2
+- international_code: 2000-002A
+  longitude: 31.4
+  name: GALAXY 10R
+  norad_id: 26056
+  period: 1445.2
+- international_code: 2014-011B
+  longitude: 31.5
+  name: ASTRA 5B
+  norad_id: 39617
+  period: 1436.1
+- international_code: 2000-081A
+  longitude: 31.6
+  name: ASTRA 2D
+  norad_id: 26638
+  period: 1438.5
+- international_code: 1998-033A
+  longitude: 32.1
+  name: CHINASAT 5A (CHINASTAR1)
+  norad_id: 25354
+  period: 1454.7
+- international_code: 1997-021A
+  longitude: 32.4
+  name: DFH-3 2
+  norad_id: 24798
+  period: 1436.9
+- international_code: 2016-015A
+  longitude: 32.4
+  name: IRNSS 1F
+  norad_id: 41384
+  period: 1436.1
+- international_code: 2011-016A
+  longitude: 32.8
+  name: INTELSAT NEW DAWN
+  norad_id: 37392
+  period: 1436.1
+- international_code: 2005-030A
+  longitude: 32.9
+  name: GALAXY 14
+  norad_id: 28790
+  period: 1436.1
+- international_code: 2009-008B
+  longitude: 33.0
+  name: EUTE 3C (HB 10)
+  norad_id: 33750
+  period: 1436.1
+- international_code: 1990-079A
+  longitude: 33.1
+  name: SKYNET 4C
+  norad_id: 20776
+  period: 1436.0
+- international_code: 2001-005A
+  longitude: 33.3
+  name: SICRAL 1
+  norad_id: 26694
+  period: 1436.1
+- international_code: 1999-046A
+  longitude: 33.4
+  name: ABS-7 (KOREASAT 3)
+  norad_id: 25894
+  period: 1436.1
+- international_code: 2013-062A
+  longitude: 35.0
+  name: RADUGA-1M 3
+  norad_id: 39375
+  period: 1436.1
+- international_code: 1996-063A
+  longitude: 35.5
+  name: ARABSAT 2B
+  norad_id: 24652
+  period: 1448.5
+- international_code: 1994-080A
+  longitude: 35.5
+  name: DFH-3 1
+  norad_id: 23415
+  period: 1426.3
+- international_code: 2019-080A
+  longitude: 35.5
+  name: TIBA-1
+  norad_id: 44800
+  period: 1436.1
+- international_code: 1987-073A
+  longitude: 35.7
+  name: EKRAN 16
+  norad_id: 18328
+  period: 1492.5
+- international_code: 2009-065A
+  longitude: 35.9
+  name: EUTE 36B (EUTE W7)
+  norad_id: 36101
+  period: 1436.1
+- international_code: 2015-082A
+  longitude: 36.1
+  name: EXPRESS-AMU1
+  norad_id: 41191
+  period: 1436.0
+- international_code: 2015-022B
+  longitude: 37.1
+  name: SICRAL 2
+  norad_id: 40614
+  period: 1436.1
+- international_code: 1983-030A
+  longitude: 37.7
+  name: SATCOM 1R
+  norad_id: 13984
+  period: 1442.2
+- international_code: 2014-006B
+  longitude: 37.8
+  name: ATHENA-FIDUS
+  norad_id: 39509
+  period: 1436.1
+- international_code: 1998-002A
+  longitude: 37.8
+  name: SKYNET 4D
+  norad_id: 25134
+  period: 1452.3
+- international_code: 2003-033A
+  longitude: 37.9
+  name: ECHOSTAR 12 (RAINBOW 1)
+  norad_id: 27852
+  period: 1456.3
+- international_code: 2011-042A
+  longitude: 38.0
+  name: PAKSAT 1R
+  norad_id: 37779
+  period: 1436.1
+- international_code: 2003-014A
+  longitude: 38.2
+  name: ASIASAT 4
+  norad_id: 27718
+  period: 1436.1
+- international_code: 2006-020B
+  longitude: 38.8
+  name: THAICOM 5
+  norad_id: 29163
+  period: 1451.6
+- international_code: 2017-040A
+  longitude: 39.0
+  name: HELLAS-SAT 3
+  norad_id: 42814
+  period: 1436.1
+- international_code: 1986-016A
+  longitude: 39.4
+  name: BS-2B (YURI 2B)
+  norad_id: 16597
+  period: 1450.3
+- international_code: 2000-032A
+  longitude: 39.8
+  name: FENGYUN 2B
+  norad_id: 26382
+  period: 1438.9
+- international_code: 2015-012A
+  longitude: 40.0
+  name: EXPRESS AM7
+  norad_id: 40505
+  period: 1436.1
+- international_code: 1992-088A
+  longitude: 40.3
+  name: COSMOS 2224
+  norad_id: 22269
+  period: 1434.7
+- international_code: 2004-024A
+  longitude: 40.8
+  name: APSTAR 5 (TELSTAR 18)
+  norad_id: 28364
+  period: 1454.4
+- international_code: 2002-040B
+  longitude: 41.7
+  name: METEOSAT 8 (MSG 1)
+  norad_id: 27509
+  period: 1436.0
+- international_code: 2008-030B
+  longitude: 41.9
+  name: TURKSAT 3A
+  norad_id: 33056
+  period: 1436.1
+- international_code: 2014-007A
+  longitude: 42.0
+  name: TURKSAT 4A
+  norad_id: 39522
+  period: 1436.0
+- international_code: 1976-029A
+  longitude: 42.2
+  name: SATCOM 2
+  norad_id: 8774
+  period: 1460.1
+- international_code: 2011-077A
+  longitude: 42.5
+  name: NIGCOMSAT 1R
+  norad_id: 38014
+  period: 1436.1
+- international_code: 2002-029A
+  longitude: 43.8
+  name: EXPRESS 4A
+  norad_id: 27441
+  period: 1451.6
+- international_code: 2003-026A
+  longitude: 43.9
+  name: THURAYA 2
+  norad_id: 27825
+  period: 1436.1
+- international_code: 2002-062A
+  longitude: 44.3
+  name: NIMIQ 2
+  norad_id: 27632
+  period: 1439.9
+- international_code: 1997-026A
+  longitude: 44.6
+  name: GALAXY 25 (TELSTAR 5)
+  norad_id: 24812
+  period: 1434.3
+- international_code: 2017-046A
+  longitude: 45.0
+  name: BLAGOVEST 11L (COSMOS 2520)
+  norad_id: 42907
+  period: 1436.1
+- international_code: 2018-074A
+  longitude: 45.1
+  name: AZERSPACE 2/INTELSAT 38
+  norad_id: 43632
+  period: 1436.1
+- international_code: 1988-111A
+  longitude: 45.1
+  name: STTW-3
+  norad_id: 19710
+  period: 1436.8
+- international_code: 1988-051A
+  longitude: 46.0
+  name: METEOSAT 3
+  norad_id: 19215
+  period: 1485.4
+- international_code: 2013-006B
+  longitude: 46.0
+  name: AZERSPACE 1
+  norad_id: 39079
+  period: 1436.1
+- international_code: 2006-048A
+  longitude: 46.7
+  name: SINOSAT 2
+  norad_id: 29516
+  period: 1550.4
+- international_code: 2001-014A
+  longitude: 46.7
+  name: EKRAN 21
+  norad_id: 26736
+  period: 1446.0
+- international_code: 2003-018A
+  longitude: 46.8
+  name: GSAT 2
+  norad_id: 27807
+  period: 1442.3
+- international_code: 2005-041B
+  longitude: 47.0
+  name: SYRACUSE 3A
+  norad_id: 28885
+  period: 1436.1
+- international_code: 2012-016A
+  longitude: 47.6
+  name: YAHSAT 1B
+  norad_id: 38245
+  period: 1436.0
+- international_code: 2017-031A
+  longitude: 47.8
+  name: GSAT 19
+  norad_id: 42747
+  period: 1436.1
+- international_code: 2011-034A
+  longitude: 47.9
+  name: GSAT 12
+  norad_id: 37746
+  period: 1436.1
+- international_code: 2001-045A
+  longitude: 49.1
+  name: RADUGA 1-6
+  norad_id: 26936
+  period: 1473.2
+- international_code: 2015-60A
+  longitude: 50.0
+  name: TURKSAT 4B
+  norad_id: 40984
+  period: 1436.1
+- international_code: 1992-074A
+  longitude: 50.1
+  name: EKRAN 20
+  norad_id: 22210
+  period: 1436.3
+- international_code: 1997-053A
+  longitude: 50.5
+  name: NSS 5 (INTELSAT 803)
+  norad_id: 24957
+  period: 1436.1
+- international_code: 2016-001A
+  longitude: 51.5
+  name: BELINTERSAT 1
+  norad_id: 41238
+  period: 1436.1
+- international_code: 2015-023A
+  longitude: 52.0
+  name: TURKMENALEM52E/MONACOSAT
+  norad_id: 40617
+  period: 1436.1
+- international_code: 2011-016B
+  longitude: 52.5
+  name: YAHSAT 1A
+  norad_id: 37393
+  period: 1436.1
+- international_code: 2012-075A
+  longitude: 52.7
+  name: SKYNET 5D
+  norad_id: 39034
+  period: 1436.1
+- international_code: 2014-064A
+  longitude: 53.0
+  name: EXPRESS AM-6
+  norad_id: 40277
+  period: 1436.1
+- international_code: 2009-018A
+  longitude: 54.7
+  name: BEIDOU G2
+  norad_id: 34779
+  period: 1434.8
+- international_code: 1993-015A
+  longitude: 54.8
+  name: UFO 1 (USA 98)
+  norad_id: 22563
+  period: 1450.9
+- international_code: 1990-001A
+  longitude: 54.8
+  name: SKYNET 4A
+  norad_id: 20401
+  period: 1454.6
+- international_code: 2012-070A
+  longitude: 54.9
+  name: YAMAL 402
+  norad_id: 39022
+  period: 1436.1
+- international_code: 2014-078A
+  longitude: 55.0
+  name: GSAT 16
+  norad_id: 40332
+  period: 1436.1
+- international_code: 2018-089A
+  longitude: 55.1
+  name: GSAT 29
+  norad_id: 43698
+  period: 1436.1
+- international_code: 2011-022A
+  longitude: 55.1
+  name: GSAT 8
+  norad_id: 37605
+  period: 1436.1
+- international_code: 1997-071B
+  longitude: 55.2
+  name: INDOSTAR 1
+  norad_id: 25050
+  period: 1435.0
+- international_code: 2014-010A
+  longitude: 56.0
+  name: EXPRESS AT-1
+  norad_id: 39612
+  period: 1436.1
+- international_code: 1979-015A
+  longitude: 56.2
+  name: EKRAN 3
+  norad_id: 11273
+  period: 1435.6
+- international_code: 1992-043A
+  longitude: 56.4
+  name: GORIZONT 26
+  norad_id: 22041
+  period: 1451.0
+- international_code: 2017-025A
+  longitude: 56.5
+  name: INMARSAT 5-F4
+  norad_id: 42698
+  period: 1436.1
+- international_code: 2014-058A
+  longitude: 56.9
+  name: LUCH (OLYMP)
+  norad_id: 40258
+  period: 1436.1
+- international_code: 2004-048A
+  longitude: 57.0
+  name: AMC-16
+  norad_id: 28472
+  period: 1453.1
+- international_code: 2009-058A
+  longitude: 57.0
+  name: NSS 12
+  norad_id: 36032
+  period: 1436.1
+- international_code: 1985-102A
+  longitude: 57.4
+  name: COSMOS 1700
+  norad_id: 16199
+  period: 1435.8
+- international_code: 2009-017A
+  longitude: 57.5
+  name: WGS F2 (USA 204)
+  norad_id: 34713
+  period: 1436.1
+- international_code: 2003-053B
+  longitude: 57.6
+  name: YAMAL 201
+  norad_id: 28094
+  period: 1436.0
+- international_code: 1989-020B
+  longitude: 58.1
+  name: METEOSAT 4 (MOP 1)
+  norad_id: 19876
+  period: 1482.9
+- international_code: 2014-017A
+  longitude: 58.5
+  name: IRNSS 1B
+  norad_id: 39635
+  period: 1436.1
+- international_code: 2014-023B
+  longitude: 58.5
+  name: KAZSAT 3
+  norad_id: 39728
+  period: 1436.1
+- international_code: 1988-018B
+  longitude: 58.7
+  name: TELECOM 1C
+  norad_id: 18952
+  period: 1470.1
+- international_code: 2013-034A
+  longitude: 59.5
+  name: IRNSS-1A
+  norad_id: 39199
+  period: 1436.0
+- international_code: 1983-059B
+  longitude: 59.9
+  name: NAHUEL I2 (ANIK C2)
+  norad_id: 14133
+  period: 1452.8
+- international_code: 2016-053B
+  longitude: 60.0
+  name: INTELSAT 33E
+  norad_id: 41748
+  period: 1436.1
+- international_code: 2019-014A
+  longitude: 60.3
+  name: WGS 10 (USA 291)
+  norad_id: 44071
+  period: 1436.1
+- international_code: 2000-016B
+  longitude: 60.4
+  name: INSAT 3B
+  norad_id: 26108
+  period: 1445.0
+- international_code: 1988-014A
+  longitude: 60.9
+  name: STTW-2
+  norad_id: 18922
+  period: 1436.0
+- international_code: 2004-007A
+  longitude: 61.0
+  name: MBSAT
+  norad_id: 28184
+  period: 1436.1
+- international_code: 1987-096A
+  longitude: 61.1
+  name: COSMOS 1897
+  norad_id: 18575
+  period: 1435.5
+- international_code: 2004-042A
+  longitude: 61.4
+  name: FENGYUN 2C
+  norad_id: 28451
+  period: 1468.2
+- international_code: 2006-018A
+  longitude: 61.6
+  name: GOES 13
+  norad_id: 29155
+  period: 1436.1
+- international_code: 2004-010A
+  longitude: 61.7
+  name: RADUGA 1-7
+  norad_id: 28194
+  period: 1434.6
+- international_code: 1979-038A
+  longitude: 61.7
+  name: OPS 6392 (FLTSATCOM 2)
+  norad_id: 11353
+  period: 1461.3
+- international_code: 2019-049B
+  longitude: 61.9
+  name: INTELSAT 39
+  norad_id: 44476
+  period: 1436.1
+- international_code: 1978-039A
+  longitude: 62.2
+  name: YURI (BSE)
+  norad_id: 10792
+  period: 1437.1
+- international_code: 2013-073A
+  longitude: 62.6
+  name: INMARSAT 5-F1
+  norad_id: 39476
+  period: 1436.2
+- international_code: 1979-072A
+  longitude: 62.6
+  name: WESTAR 3
+  norad_id: 11484
+  period: 1440.9
+- international_code: 1990-077A
+  longitude: 62.9
+  name: BS-3A (YURI 3A)
+  norad_id: 20771
+  period: 1457.4
+- international_code: 2009-054B
+  longitude: 63.0
+  name: COMSATBW-1
+  norad_id: 35943
+  period: 1436.1
+- international_code: 1992-072A
+  longitude: 63.1
+  name: GALAXY 7
+  norad_id: 22205
+  period: 1444.4
+- international_code: 1996-040A
+  longitude: 63.2
+  name: ARABSAT 2A
+  norad_id: 23948
+  period: 1451.2
+- international_code: 1980-104A
+  longitude: 63.8
+  name: EKRAN 6
+  norad_id: 12120
+  period: 1436.7
+- international_code: 2005-044A
+  longitude: 63.8
+  name: INMARSAT 4-F2
+  norad_id: 28899
+  period: 1436.1
+- international_code: 2002-041A
+  longitude: 64.1
+  name: INTELSAT 906
+  norad_id: 27513
+  period: 1436.1
+- international_code: 2000-068A
+  longitude: 64.3
+  name: INTELSAT 12 (PAS 12)
+  norad_id: 26590
+  period: 1436.1
+- international_code: 1982-110B
+  longitude: 64.3
+  name: SBS 3
+  norad_id: 13651
+  period: 1441.2
+- international_code: 2013-045A
+  longitude: 65.0
+  name: AMOS-4
+  norad_id: 39237
+  period: 1436.1
+- international_code: 2002-042B
+  longitude: 65.2
+  name: DRTS
+  norad_id: 27516
+  period: 1450.6
+- international_code: 1997-007A
+  longitude: 65.8
+  name: INTELSAT 26 (JCSAT 4)
+  norad_id: 24732
+  period: 1436.1
+- international_code: 2010-065B
+  longitude: 66.0
+  name: INTELSAT 17
+  norad_id: 37238
+  period: 1436.1
+- international_code: 1970-046A
+  longitude: 66.1
+  name: OPS 5346
+  norad_id: 4418
+  period: 1436.2
+- international_code: 2011-019A
+  longitude: 66.2
+  name: SBIRS GEO 1 (USA 230)
+  norad_id: 37481
+  period: 1436.1
+- international_code: 1997-049B
+  longitude: 66.4
+  name: METEOSAT 7
+  norad_id: 24932
+  period: 1464.8
+- international_code: 2017-001A
+  longitude: 66.4
+  name: TJS-2
+  norad_id: 41911
+  period: 1436.1
+- international_code: 1994-069A
+  longitude: 67.9
+  name: ELEKTRO (GOMS)
+  norad_id: 23327
+  period: 1436.0
+- international_code: 1994-002A
+  longitude: 68.0
+  name: GALS 1
+  norad_id: 22963
+  period: 1434.9
+- international_code: 1989-087A
+  longitude: 68.1
+  name: INTELSAT 602
+  norad_id: 20315
+  period: 1454.5
+- international_code: 1998-025A
+  longitude: 68.3
+  name: COSMOS 2350
+  norad_id: 25315
+  period: 1436.1
+- international_code: 2012-043A
+  longitude: 68.5
+  name: INTELSAT 20
+  norad_id: 38740
+  period: 1436.1
+- international_code: 2016-053A
+  longitude: 68.5
+  name: INTELSAT 36
+  norad_id: 41747
+  period: 1436.1
+- international_code: 1978-058A
+  longitude: 68.7
+  name: OPS 9454
+  norad_id: 10941
+  period: 1438.5
+- international_code: 1991-084A
+  longitude: 69.1
+  name: TELECOM 2A
+  norad_id: 21813
+  period: 1455.3
+- international_code: 1984-080A
+  longitude: 69.4
+  name: HIMAWARI 3 (GMS 3)
+  norad_id: 15152
+  period: 1442.5
+- international_code: 1982-044A
+  longitude: 69.6
+  name: COSMOS 1366
+  norad_id: 13177
+  period: 1436.0
+- international_code: 1984-022A
+  longitude: 70.2
+  name: COSMOS 1540
+  norad_id: 14783
+  period: 1436.1
+- international_code: 1992-010B
+  longitude: 70.2
+  name: INSAT 2R (ARABSAT 1C)
+  norad_id: 21894
+  period: 1459.2
+- international_code: 2012-069A
+  longitude: 70.5
+  name: EUTE 70B
+  norad_id: 39020
+  period: 1436.1
+- international_code: 1989-077A
+  longitude: 71.4
+  name: FLTSATCOM 8 (USA 46)
+  norad_id: 20253
+  period: 1436.1
+- international_code: 2012-011A
+  longitude: 72.1
+  name: INTELSAT 22
+  norad_id: 38098
+  period: 1436.1
+- international_code: 2001-018A
+  longitude: 72.4
+  name: XM-1
+  norad_id: 26761
+  period: 1454.5
+- international_code: 2002-051A
+  longitude: 72.5
+  name: EUTE 25C (EUTE W5)
+  norad_id: 27554
+  period: 1434.6
+- international_code: 1991-015B
+  longitude: 72.6
+  name: METEOSAT 5 (MOP 2)
+  norad_id: 21140
+  period: 1462.7
+- international_code: 1990-051A
+  longitude: 73.4
+  name: INSAT 1D
+  norad_id: 20643
+  period: 1435.9
+- international_code: 1996-003A
+  longitude: 73.5
+  name: ABS-1A (KOREASAT 2)
+  norad_id: 23768
+  period: 1443.1
+- international_code: 1973-013A
+  longitude: 73.9
+  name: OPS 6063
+  norad_id: 6380
+  period: 1436.1
+- international_code: 2018-100B
+  longitude: 73.9
+  name: GSAT 11
+  norad_id: 43824
+  period: 1436.1
+- international_code: 2014-001A
+  longitude: 74.0
+  name: GSAT-14
+  norad_id: 39498
+  period: 1436.1
+- international_code: 2013-044B
+  longitude: 74.0
+  name: GSAT-7 (INSAT 4F)
+  norad_id: 39234
+  period: 1436.1
+- international_code: 2016-060A
+  longitude: 74.0
+  name: GSAT 18
+  norad_id: 41793
+  period: 1436.1
+- international_code: 2016-054A
+  longitude: 74.0
+  name: INSAT 3DR
+  norad_id: 41752
+  period: 1436.1
+- international_code: 1994-055A
+  longitude: 74.1
+  name: OPTUS B3
+  norad_id: 23227
+  period: 1459.1
+- international_code: 2016-038A
+  longitude: 74.7
+  name: ABS 2A
+  norad_id: 41588
+  period: 1436.1
+- international_code: 2008-033A
+  longitude: 74.8
+  name: COSMOS 2440
+  norad_id: 33108
+  period: 1435.9
+- international_code: 2014-006A
+  longitude: 74.9
+  name: ABS 2
+  norad_id: 39508
+  period: 1436.1
+- international_code: 1990-063B
+  longitude: 75.0
+  name: DFS 2
+  norad_id: 20706
+  period: 1446.6
+- international_code: 1994-087A
+  longitude: 75.0
+  name: RADUGA 32
+  norad_id: 23448
+  period: 1435.9
+- international_code: 1992-021A
+  longitude: 75.3
+  name: TELECOM 2B
+  norad_id: 21939
+  period: 1447.0
+- international_code: 2015-044A
+  longitude: 75.6
+  name: MUOS 4
+  norad_id: 40887
+  period: 1436.1
+- international_code: 1985-076B
+  longitude: 75.8
+  name: OPTUS A1 (AUSSAT 1)
+  norad_id: 15993
+  period: 1443.5
+- international_code: 2005-046A
+  longitude: 75.9
+  name: TELKOM 2
+  norad_id: 28902
+  period: 1452.4
+- international_code: 1991-010A
+  longitude: 76.0
+  name: COSMOS 2133
+  norad_id: 21111
+  period: 1435.9
+- international_code: 1993-062A
+  longitude: 76.0
+  name: RADUGA 30
+  norad_id: 22836
+  period: 1435.9
+- international_code: 1987-029A
+  longitude: 76.0
+  name: AGILA 1 (PALAPA B2P)
+  norad_id: 17706
+  period: 1441.4
+- international_code: 2000-036A
+  longitude: 76.1
+  name: COSMOS 2371
+  norad_id: 26394
+  period: 1436.2
+- international_code: 1977-080A
+  longitude: 76.1
+  name: SIRIO
+  norad_id: 10294
+  period: 1436.1
+- international_code: 2012-013A
+  longitude: 76.5
+  name: APSTAR 7
+  norad_id: 38107
+  period: 1436.1
+- international_code: 1988-066A
+  longitude: 76.5
+  name: COSMOS 1961
+  norad_id: 19344
+  period: 1435.9
+- international_code: 1996-058A
+  longitude: 76.7
+  name: EXPRESS 2
+  norad_id: 24435
+  period: 1435.2
+- international_code: 1974-033A
+  longitude: 76.7
+  name: SMS 1
+  norad_id: 7298
+  period: 1460.3
+- international_code: 1995-054A
+  longitude: 76.8
+  name: LUCH 1
+  norad_id: 23680
+  period: 1436.1
+- international_code: 1963-031A
+  longitude: 77.0
+  name: SYNCOM 2 (A 26)
+  norad_id: 634
+  period: 1436.4
+- international_code: 1991-015A
+  longitude: 77.2
+  name: ASTRA 1B
+  norad_id: 21139
+  period: 1461.8
+- international_code: 1993-039A
+  longitude: 77.7
+  name: HGS 4 (GALAXY 4)
+  norad_id: 22694
+  period: 1436.1
+- international_code: 1990-011A
+  longitude: 77.8
+  name: STTW-4
+  norad_id: 20473
+  period: 1435.3
+- international_code: 1981-018A
+  longitude: 77.8
+  name: ESIAFI 1 (COMSTAR 4)
+  norad_id: 12309
+  period: 1436.3
+- international_code: 2016-021A
+  longitude: 78.0
+  name: BEIDOU IGSO 6
+  norad_id: 41434
+  period: 1435.8
+- international_code: 1983-016A
+  longitude: 78.3
+  name: EKRAN 10
+  norad_id: 13878
+  period: 1515.3
+- international_code: 2014-002A
+  longitude: 78.5
+  name: THAICOM 6
+  norad_id: 39500
+  period: 1436.1
+- international_code: 2016-031A
+  longitude: 78.5
+  name: THAICOM 8
+  norad_id: 41552
+  period: 1436.1
+- international_code: 1990-061A
+  longitude: 78.7
+  name: COSMOS 2085
+  norad_id: 20693
+  period: 1436.2
+- international_code: 2000-069A
+  longitude: 78.9
+  name: BEIDOU 1
+  norad_id: 26599
+  period: 1455.9
+- international_code: 2018-050A
+  longitude: 78.9
+  name: FENGYUN 2H
+  norad_id: 43491
+  period: 1436.2
+- international_code: 2003-052A
+  longitude: 79.3
+  name: CHINASAT 20
+  norad_id: 28082
+  period: 1453.0
+- international_code: 1994-040B
+  longitude: 79.3
+  name: BS-3N
+  norad_id: 23176
+  period: 1452.4
+- international_code: 1985-015A
+  longitude: 79.4
+  name: ARABSAT 1A
+  norad_id: 15560
+  period: 1433.5
+- international_code: 2010-024A
+  longitude: 79.6
+  name: BEIDOU G3
+  norad_id: 36590
+  period: 1436.1
+- international_code: 2019-017A
+  longitude: 79.7
+  name: TIANLIAN 2-01
+  norad_id: 44076
+  period: 1436.1
+- international_code: 2008-055A
+  longitude: 79.7
+  name: VENESAT-1
+  norad_id: 33414
+  period: 1450.6
+- international_code: 2020-017A
+  longitude: 80.0
+  name: BEIDOU 3 G2
+  norad_id: 45344
+  period: 1436.1
+- international_code: 2015-075A
+  longitude: 80.2
+  name: COSMOS 2513
+  norad_id: 41121
+  period: 1436.1
+- international_code: 2008-019A
+  longitude: 80.3
+  name: CTDRS
+  norad_id: 32779
+  period: 1436.1
+- international_code: 1979-087A
+  longitude: 81.5
+  name: EKRAN 4
+  norad_id: 11561
+  period: 1435.4
+- international_code: 2014-020A
+  longitude: 81.8
+  name: USA 250 (NROL-67)
+  norad_id: 39652
+  period: 1436.1
+- international_code: 2013-038B
+  longitude: 82.1
+  name: INSAT 3D
+  norad_id: 39216
+  period: 1436.1
+- international_code: 2015-041A
+  longitude: 82.5
+  name: GSAT 6
+  norad_id: 40880
+  period: 1436.1
+- international_code: 1976-042A
+  longitude: 82.6
+  name: COMSTAR 1
+  norad_id: 8838
+  period: 1442.7
+- international_code: 2014-061A
+  longitude: 82.8
+  name: IRNSS 1C
+  norad_id: 40269
+  period: 1436.1
+- international_code: 2020-005A
+  longitude: 83.0
+  name: GSAT 30
+  norad_id: 45026
+  period: 1436.1
+- international_code: 2012-051B
+  longitude: 83.0
+  name: GSAT 10
+  norad_id: 38779
+  period: 1436.1
+- international_code: 2020-099A
+  longitude: 83.0
+  name: CMS-01
+  norad_id: 47256
+  period: 1436.1
+- international_code: 1997-070A
+  longitude: 83.4
+  name: KUPON
+  norad_id: 25045
+  period: 1435.6
+- international_code: 1989-067A
+  longitude: 83.8
+  name: SIRIUS W (MARCOPOLO 1)
+  norad_id: 20193
+  period: 1451.9
+- international_code: 2012-059A
+  longitude: 84.0
+  name: BEIDOU G6
+  norad_id: 38953
+  period: 1436.2
+- international_code: 1983-058A
+  longitude: 84.3
+  name: EUTELSAT 1-F1 (ECS 1)
+  norad_id: 14128
+  period: 1456.5
+- international_code: 1996-040B
+  longitude: 84.6
+  name: TURKSAT 1C
+  norad_id: 23949
+  period: 1437.6
+- international_code: 1995-035B
+  longitude: 84.8
+  name: TDRS 7
+  norad_id: 23613
+  period: 1436.1
+- international_code: 2007-063B
+  longitude: 84.8
+  name: HORIZONS 2
+  norad_id: 32388
+  period: 1436.1
+- international_code: 1996-021A
+  longitude: 84.9
+  name: ASTRA 1F
+  norad_id: 23842
+  period: 1452.8
+- international_code: 2009-067A
+  longitude: 85.1
+  name: INTELSAT 15
+  norad_id: 36106
+  period: 1436.1
+- international_code: 2007-007A
+  longitude: 85.5
+  name: INSAT 4B
+  norad_id: 30793
+  period: 1436.1
+- international_code: 1982-110C
+  longitude: 86.2
+  name: ANIK C3 (TELESAT-5)
+  norad_id: 13652
+  period: 1441.5
+- international_code: 1985-109D
+  longitude: 86.3
+  name: SATCOM K2
+  norad_id: 16276
+  period: 1445.7
+- international_code: 2011-035B
+  longitude: 86.5
+  name: KAZSAT 2
+  norad_id: 37749
+  period: 1436.1
+- international_code: 2000-013A
+  longitude: 87.0
+  name: EXPRESS 2A
+  norad_id: 26098
+  period: 1465.6
+- international_code: 2011-013A
+  longitude: 87.1
+  name: BEIDOU IGSO 3
+  norad_id: 37384
+  period: 1436.0
+- international_code: 2019-097A
+  longitude: 87.4
+  name: SJ-20
+  norad_id: 44910
+  period: 1436.2
+- international_code: 2012-067A
+  longitude: 87.5
+  name: CHINASAT 15A
+  norad_id: 39017
+  period: 1436.1
+- international_code: 1999-042A
+  longitude: 87.8
+  name: TELKOM 1
+  norad_id: 25880
+  period: 1436.0
+- international_code: 1974-017A
+  longitude: 88.0
+  name: COSMOS 637
+  norad_id: 7229
+  period: 1428.7
+- international_code: 2011-022B
+  longitude: 88.0
+  name: ST 2
+  norad_id: 37606
+  period: 1436.1
+- international_code: 1973-023A
+  longitude: 88.3
+  name: ANIK A2 (TELESAT 2)
+  norad_id: 6437
+  period: 1443.0
+- international_code: 1996-063B
+  longitude: 88.4
+  name: MEASAT 2
+  norad_id: 24653
+  period: 1445.0
+- international_code: 2012-003A
+  longitude: 88.4
+  name: WGS F4 (USA 233)
+  norad_id: 38070
+  period: 1436.1
+- international_code: 1983-065A
+  longitude: 88.7
+  name: GALAXY 1
+  norad_id: 14158
+  period: 1438.5
+- international_code: 1988-108A
+  longitude: 88.9
+  name: EKRAN 19
+  norad_id: 19683
+  period: 1489.9
+- international_code: 2000-034A
+  longitude: 89.1
+  name: TDRS 8
+  norad_id: 26388
+  period: 1436.1
+- international_code: 1984-028A
+  longitude: 89.4
+  name: EKRAN 12
+  norad_id: 14821
+  period: 1499.0
+- international_code: 1991-037A
+  longitude: 89.9
+  name: AURORA 2
+  norad_id: 21392
+  period: 1454.3
+- international_code: 1983-100A
+  longitude: 89.9
+  name: EKRAN 11
+  norad_id: 14377
+  period: 1435.4
+- international_code: 2014-082A
+  longitude: 89.9
+  name: YAMAL 401
+  norad_id: 40345
+  period: 1436.1
+- international_code: 1986-003B
+  longitude: 91.4
+  name: SATCOM K1
+  norad_id: 16482
+  period: 1446.5
+- international_code: 2009-032A
+  longitude: 91.5
+  name: MEASAT 3A
+  norad_id: 35362
+  period: 1436.1
+- international_code: 2014-054B
+  longitude: 91.5
+  name: MEASAT 3B
+  norad_id: 40147
+  period: 1436.1
+- international_code: 1999-010A
+  longitude: 91.8
+  name: RADUGA 1-4
+  norad_id: 25642
+  period: 1437.1
+- international_code: 2008-028A
+  longitude: 92.2
+  name: CHINASAT 9
+  norad_id: 33051
+  period: 1436.1
+- international_code: 2015-065A
+  longitude: 93.5
+  name: GSAT 15
+  norad_id: 41028
+  period: 1436.1
+- international_code: 2017-040B
+  longitude: 93.5
+  name: GSAT 17
+  norad_id: 42815
+  period: 1436.1
+- international_code: 1995-040A
+  longitude: 93.8
+  name: INTELSAT 4 (PAS 4)
+  norad_id: 23636
+  period: 1482.6
+- international_code: 1988-063A
+  longitude: 94.5
+  name: INSAT 1C
+  norad_id: 19330
+  period: 1436.2
+- international_code: 1982-058A
+  longitude: 94.5
+  name: WESTAR 5
+  norad_id: 13269
+  period: 1451.4
+- international_code: 2014-023A
+  longitude: 94.7
+  name: LUCH 5V
+  norad_id: 39727
+  period: 1436.1
+- international_code: 2018-049A
+  longitude: 95.0
+  name: SES 12
+  norad_id: 43488
+  period: 1436.1
+- international_code: 2013-071A
+  longitude: 95.0
+  name: SES-8
+  norad_id: 39460
+  period: 1436.1
+- international_code: 1976-066A
+  longitude: 95.1
+  name: PALAPA 1
+  norad_id: 9009
+  period: 1438.9
+- international_code: 2007-007B
+  longitude: 95.2
+  name: SKYNET 5A
+  norad_id: 30794
+  period: 1436.1
+- international_code: 2011-038A
+  longitude: 95.4
+  name: BEIDOU IGSO 4
+  norad_id: 37763
+  period: 1435.8
+- international_code: 1977-092A
+  longitude: 95.4
+  name: EKRAN 2
+  norad_id: 10365
+  period: 1435.6
+- international_code: 1977-038A
+  longitude: 95.8
+  name: OPS 9751
+  norad_id: 10016
+  period: 1435.8
+- international_code: 2007-018A
+  longitude: 97.1
+  name: NIGCOMSAT 1
+  norad_id: 31395
+  period: 1436.8
+- international_code: 2017-024A
+  longitude: 97.3
+  name: GSAT 9
+  norad_id: 42695
+  period: 1436.1
+- international_code: 1997-011A
+  longitude: 97.8
+  name: DIRECTV 6 (TEMPO 2)
+  norad_id: 24748
+  period: 1454.1
+- international_code: 1976-107A
+  longitude: 97.9
+  name: EKRAN 1
+  norad_id: 9503
+  period: 1436.1
+- international_code: 2013-020A
+  longitude: 97.9
+  name: CHINASAT 11
+  norad_id: 39157
+  period: 1436.1
+- international_code: 2021-071A
+  longitude: 98.0
+  name: CHINASAT 2E
+  norad_id: 49062
+  period: 1436.1
+- international_code: 2004-043A
+  longitude: 98.1
+  name: EXPRESS AM-1
+  norad_id: 28463
+  period: 1451.7
+- international_code: 1997-031A
+  longitude: 98.1
+  name: INTELSAT 802
+  norad_id: 24846
+  period: 1467.7
+- international_code: 2012-028A
+  longitude: 98.3
+  name: CHINASAT 2A
+  norad_id: 38352
+  period: 1436.1
+- international_code: 2008-001A
+  longitude: 98.4
+  name: THURAYA 3
+  norad_id: 32404
+  period: 1436.1
+- international_code: 1994-056A
+  longitude: 98.7
+  name: ETS 6
+  norad_id: 23230
+  period: 861.8
+- international_code: 1981-061A
+  longitude: 99.2
+  name: EKRAN 7
+  norad_id: 12564
+  period: 1435.8
+- international_code: 1997-029A
+  longitude: 99.9
+  name: FENGYUN 2A
+  norad_id: 24834
+  period: 1499.2
+- international_code: 2000-049A
+  longitude: 100.0
+  name: RADUGA 1-5
+  norad_id: 26477
+  period: 1436.6
+- international_code: 1978-016A
+  longitude: 100.4
+  name: OPS 6391 (FLTSATCOM 1)
+  norad_id: 10669
+  period: 1454.5
+- international_code: 2009-042A
+  longitude: 100.5
+  name: ASIASAT 5
+  norad_id: 35696
+  period: 1436.1
+- international_code: 1996-053A
+  longitude: 101.5
+  name: INMARSAT 3-F2
+  norad_id: 24307
+  period: 1440.2
+- international_code: 1986-010A
+  longitude: 101.8
+  name: STTW-1
+  norad_id: 16526
+  period: 1436.4
+- international_code: 1987-078B
+  longitude: 102.9
+  name: EUTELSAT 1-F4 (ECS 4)
+  norad_id: 18351
+  period: 1459.1
+- international_code: 2015-063A
+  longitude: 103.4
+  name: CHINASAT 2C (ZX 2C)
+  norad_id: 41021
+  period: 1436.1
+- international_code: 2001-031A
+  longitude: 104.4
+  name: GOES 12
+  norad_id: 26871
+  period: 1452.5
+- international_code: 2016-077A
+  longitude: 104.6
+  name: FENGYUN 4A
+  norad_id: 41882
+  period: 1436.0
+- international_code: 2000-016A
+  longitude: 104.9
+  name: ASIASTAR
+  norad_id: 26107
+  period: 1436.1
+- international_code: 1982-093A
+  longitude: 105.0
+  name: EKRAN 9
+  norad_id: 13554
+  period: 1436.2
+- international_code: 2011-069A
+  longitude: 105.5
+  name: ASIASAT 7
+  norad_id: 37933
+  period: 1436.1
+- international_code: 2015-083A
+  longitude: 105.7
+  name: GAOFEN 4
+  norad_id: 41194
+  period: 1436.1
+- international_code: 2016-036A
+  longitude: 105.9
+  name: USA 268
+  norad_id: 41584
+  period: 1436.1
+- international_code: 2018-064A
+  longitude: 108.0
+  name: TELKOM-4
+  norad_id: 43587
+  period: 1436.1
+- international_code: 2009-027A
+  longitude: 108.3
+  name: SES 7 (PROTOSTAR 2)
+  norad_id: 34941
+  period: 1436.1
+- international_code: 2016-013A
+  longitude: 108.3
+  name: SES-9
+  norad_id: 41380
+  period: 1436.1
+- international_code: 1974-101A
+  longitude: 109.2
+  name: SYMPHONIE 1
+  norad_id: 7578
+  period: 1440.7
+- international_code: 1987-109A
+  longitude: 109.8
+  name: EKRAN 17
+  norad_id: 18715
+  period: 1501.8
+- international_code: 2007-036B
+  longitude: 109.8
+  name: BSAT-3A
+  norad_id: 32019
+  period: 1436.1
+- international_code: 2017-059B
+  longitude: 109.8
+  name: BSAT-4A
+  norad_id: 42951
+  period: 1436.1
+- international_code: 2010-056B
+  longitude: 109.9
+  name: BSAT-3B
+  norad_id: 37207
+  period: 1436.1
+- international_code: 2011-041B
+  longitude: 110.0
+  name: BSAT-3C
+  norad_id: 37776
+  period: 1436.1
+- international_code: 2016-082A
+  longitude: 110.1
+  name: JCSAT 15
+  norad_id: 41903
+  period: 1436.1
+- international_code: 2017-018A
+  longitude: 110.4
+  name: CHINASAT 16
+  norad_id: 42662
+  period: 1436.1
+- international_code: 2011-026A
+  longitude: 110.5
+  name: CHINASAT 10
+  norad_id: 37677
+  period: 1436.1
+- international_code: 2010-068A
+  longitude: 110.6
+  name: BEIDOU IGSO 2
+  norad_id: 37256
+  period: 1435.6
+- international_code: 2001-015A
+  longitude: 110.9
+  name: GSAT 1
+  norad_id: 26745
+  period: 1387.0
+- international_code: 1990-095A
+  longitude: 111.2
+  name: USA 65
+  norad_id: 20929
+  period: 1463.4
+- international_code: 2012-002A
+  longitude: 111.7
+  name: FENGYUN 2F
+  norad_id: 38049
+  period: 1436.2
+- international_code: 2006-034A
+  longitude: 113.0
+  name: KOREASAT 5
+  norad_id: 29349
+  period: 1436.1
+- international_code: 2017-067A
+  longitude: 113.1
+  name: KOREASAT-5A
+  norad_id: 42984
+  period: 1436.1
+- international_code: 1994-064A
+  longitude: 113.5
+  name: NSS 703 (INTELSAT 703)
+  norad_id: 23305
+  period: 1450.1
+- international_code: 2007-021A
+  longitude: 113.7
+  name: EUTE 3A (SINOSAT 3)
+  norad_id: 31577
+  period: 1464.4
+- international_code: 1994-079A
+  longitude: 113.7
+  name: TELSTAR 11 (ORION 1)
+  norad_id: 23413
+  period: 1460.7
+- international_code: 2007-031A
+  longitude: 115.5
+  name: CHINASAT 6B
+  norad_id: 31800
+  period: 1436.1
+- international_code: 2017-023A
+  longitude: 115.9
+  name: KOREASAT 7
+  norad_id: 42691
+  period: 1436.1
+- international_code: 2010-070B
+  longitude: 116.0
+  name: KOREASAT 6
+  norad_id: 37265
+  period: 1436.1
+- international_code: 2016-065A
+  longitude: 117.6
+  name: SJ-17 (SHIJIAN-17)
+  norad_id: 41838
+  period: 1436.1
+- international_code: 1968-063A
+  longitude: 117.7
+  name: OPS 2222
+  norad_id: 3334
+  period: 1450.9
+- international_code: 2017-007A
+  longitude: 118.0
+  name: TELKOM 3S
+  norad_id: 41944
+  period: 1436.1
+- international_code: 1988-109B
+  longitude: 118.4
+  name: ASTRA 1A
+  norad_id: 19688
+  period: 1464.3
+- international_code: 1994-049B
+  longitude: 118.6
+  name: TURKSAT 1B
+  norad_id: 23200
+  period: 1453.8
+- international_code: 2005-028A
+  longitude: 119.5
+  name: IPSTAR 1
+  norad_id: 28786
+  period: 1436.1
+- international_code: 1993-048A
+  longitude: 119.7
+  name: HISPASAT 1B
+  norad_id: 22723
+  period: 1444.0
+- international_code: 2014-052A
+  longitude: 119.9
+  name: ASIASAT 6
+  norad_id: 40141
+  period: 1436.1
+- international_code: 1981-114A
+  longitude: 119.9
+  name: SATCOM 3R
+  norad_id: 12967
+  period: 1438.3
+- international_code: 1982-031A
+  longitude: 120.1
+  name: INSAT 1A
+  norad_id: 13129
+  period: 1436.3
+- international_code: 1990-002B
+  longitude: 120.5
+  name: LEASAT 5
+  norad_id: 20410
+  period: 1445.8
+- international_code: 2006-022A
+  longitude: 121.0
+  name: KAZSAT 1
+  norad_id: 29230
+  period: 1451.1
+- international_code: 1992-060B
+  longitude: 121.1
+  name: SATCOM C3
+  norad_id: 22117
+  period: 1484.3
+- international_code: 1994-043A
+  longitude: 121.2
+  name: APSTAR 1
+  norad_id: 23185
+  period: 1449.0
+- international_code: 2002-040A
+  longitude: 121.3
+  name: EUTE 12 WEST A (AB 1)
+  norad_id: 27508
+  period: 1465.0
+- international_code: 2000-012A
+  longitude: 121.5
+  name: SUPERBIRD 4
+  norad_id: 26095
+  period: 1456.7
+- international_code: 2017-057A
+  longitude: 122.1
+  name: ASIASAT 9
+  norad_id: 42942
+  period: 1436.1
+- international_code: 2003-021A
+  longitude: 122.1
+  name: BEIDOU 1C
+  norad_id: 27813
+  period: 1443.2
+- international_code: 1977-108A
+  longitude: 122.8
+  name: METEOSAT 1
+  norad_id: 10489
+  period: 1436.9
+- international_code: 1992-066A
+  longitude: 123.7
+  name: HELLAS SAT 1 (DFS 3)
+  norad_id: 22175
+  period: 1443.8
+- international_code: 2012-023A
+  longitude: 124.0
+  name: JCSAT 13
+  norad_id: 38331
+  period: 1436.1
+- international_code: 2010-042A
+  longitude: 125.0
+  name: CHINASAT 6A
+  norad_id: 37150
+  period: 1436.1
+- international_code: 2010-064A
+  longitude: 126.3
+  name: CHINASAT 20A
+  norad_id: 37234
+  period: 1436.2
+- international_code: 1981-076A
+  longitude: 126.5
+  name: HIMAWARI 2 (GMS 2)
+  norad_id: 12677
+  period: 1446.4
+- international_code: 2000-003A
+  longitude: 126.8
+  name: CHINASAT 22
+  norad_id: 26058
+  period: 1479.6
+- international_code: 2017-048A
+  longitude: 127.0
+  name: QZS-3 (MICHIBIKI-3)
+  norad_id: 42917
+  period: 1436.1
+- international_code: 2006-033A
+  longitude: 128.0
+  name: JCSAT 10
+  norad_id: 29272
+  period: 1436.1
+- international_code: 2010-032A
+  longitude: 128.2
+  name: COMS 1
+  norad_id: 36744
+  period: 1436.1
+- international_code: 2018-100A
+  longitude: 128.3
+  name: GEO-KOMPSAT-2A
+  norad_id: 43823
+  period: 1436.1
+- international_code: 2020-013B
+  longitude: 128.3
+  name: GEO-KOMPSAT-2B
+  norad_id: 45246
+  period: 1436.1
+- international_code: 2015-067A
+  longitude: 128.5
+  name: LAOSAT 1
+  norad_id: 41034
+  period: 1436.1
+- international_code: 1975-055A
+  longitude: 128.8
+  name: OPS 4966
+  norad_id: 7963
+  period: 1435.7
+- international_code: 2016-027A
+  longitude: 129.4
+  name: IRNSS 1G
+  norad_id: 41469
+  period: 1436.2
+- international_code: 1995-041A
+  longitude: 129.4
+  name: KOREASAT 1
+  norad_id: 23639
+  period: 1444.7
+- international_code: 2011-047A
+  longitude: 129.8
+  name: CHINASAT 1A
+  norad_id: 37804
+  period: 1436.1
+- international_code: 2019-012A
+  longitude: 130.0
+  name: CHINASAT 6C
+  norad_id: 44067
+  period: 1436.2
+- international_code: 1991-018A
+  longitude: 130.7
+  name: INMARSAT 2-F2
+  norad_id: 21149
+  period: 1458.6
+- international_code: 1980-091A
+  longitude: 131.3
+  name: SBS 1
+  norad_id: 12065
+  period: 1442.5
+- international_code: 2012-023B
+  longitude: 131.8
+  name: VINASAT 2
+  norad_id: 38332
+  period: 1436.1
+- international_code: 2008-018A
+  longitude: 131.9
+  name: VINASAT 1
+  norad_id: 32767
+  period: 1436.1
+- international_code: 2006-010A
+  longitude: 132.1
+  name: JCSAT 9
+  norad_id: 29045
+  period: 1436.1
+- international_code: 1984-090A
+  longitude: 133.3
+  name: EKRAN 13
+  norad_id: 15219
+  period: 1499.6
+- international_code: 1995-044A
+  longitude: 133.7
+  name: NSTAR A
+  norad_id: 23651
+  period: 1452.6
+- international_code: 2018-041A
+  longitude: 134.0
+  name: APSTAR 6C
+  norad_id: 43450
+  period: 1436.2
+- international_code: 1991-003B
+  longitude: 134.4
+  name: EUTELSAT 2-F2
+  norad_id: 21056
+  period: 1455.4
+- international_code: 1969-013A
+  longitude: 134.9
+  name: OPS 0757 (TACSAT)
+  norad_id: 3691
+  period: 1434.1
+- international_code: 1990-093A
+  longitude: 135.1
+  name: INMARSAT 2-F1
+  norad_id: 20918
+  period: 1456.3
+- international_code: 1999-006A
+  longitude: 135.8
+  name: JCSAT 6
+  norad_id: 25630
+  period: 1436.1
+- international_code: 2020-013A
+  longitude: 136.1
+  name: JCSAT 17
+  norad_id: 45245
+  period: 1436.1
+- international_code: 1984-115A
+  longitude: 137.0
+  name: NATO 3D
+  norad_id: 15391
+  period: 1516.5
+- international_code: 2002-015A
+  longitude: 137.2
+  name: JCSAT 8
+  norad_id: 27399
+  period: 1454.1
+- international_code: 2018-068C
+  longitude: 138.0
+  name: TELSTAR 18V
+  norad_id: 43611
+  period: 1436.1
+- international_code: 1978-106A
+  longitude: 138.6
+  name: NATO 3C
+  norad_id: 11115
+  period: 1462.1
+- international_code: 1986-026B
+  longitude: 139.0
+  name: BRAZILSAT 2
+  norad_id: 16650
+  period: 1445.1
+- international_code: 2014-010B
+  longitude: 139.8
+  name: EXPRESS AT-2
+  norad_id: 39613
+  period: 1436.1
+- international_code: 2013-077A
+  longitude: 140.0
+  name: EXPRESS-AM5
+  norad_id: 39487
+  period: 1436.1
+- international_code: 2015-054A
+  longitude: 140.2
+  name: SKY MUSTER
+  norad_id: 40940
+  period: 1436.1
+- international_code: 2010-001A
+  longitude: 140.5
+  name: BEIDOU G1
+  norad_id: 36287
+  period: 1436.1
+- international_code: 2014-060A
+  longitude: 140.6
+  name: HIMAWARI 8
+  norad_id: 40267
+  period: 1436.1
+- international_code: 2016-064A
+  longitude: 140.8
+  name: HIMAWARI 9
+  norad_id: 41836
+  period: 1436.1
+- international_code: 2015-059A
+  longitude: 142.0
+  name: APSTAR 9
+  norad_id: 40982
+  period: 1436.1
+- international_code: 2003-043A
+  longitude: 142.0
+  name: EUTE 33A (EB 3)
+  norad_id: 27948
+  period: 1456.2
+- international_code: 2005-009A
+  longitude: 143.5
+  name: INMARSAT 4-F1
+  norad_id: 28628
+  period: 1436.1
+- international_code: 2008-038A
+  longitude: 143.9
+  name: SUPERBIRD 7
+  norad_id: 33274
+  period: 1436.1
+- international_code: 2016-050A
+  longitude: 144.0
+  name: JCSAT 16
+  norad_id: 41729
+  period: 1436.1
+- international_code: 2016-060B
+  longitude: 144.8
+  name: SKY MUSTER II
+  norad_id: 41794
+  period: 1436.1
+- international_code: 2003-028A
+  longitude: 144.9
+  name: BSAT-2C
+  norad_id: 27830
+  period: 1451.5
+- international_code: 2010-056A
+  longitude: 145.9
+  name: EUTELSAT W3B
+  norad_id: 37206
+  period: 570.5
+- international_code: 1995-013A
+  longitude: 146.1
+  name: INTELSAT 705
+  norad_id: 23528
+  period: 1454.9
+- international_code: 2021-077A
+  longitude: 146.5
+  name: TJS-7
+  norad_id: 49115
+  period: 1436.1
+- international_code: 1999-024A
+  longitude: 147.1
+  name: ORION 3
+  norad_id: 25727
+  period: 138.6
+- international_code: 1999-013A
+  longitude: 147.8
+  name: ASIASAT 3S
+  norad_id: 25657
+  period: 1436.1
+- international_code: 2016-039A
+  longitude: 150.5
+  name: BRISAT
+  norad_id: 41591
+  period: 1436.1
+- international_code: 1974-022A
+  longitude: 151.7
+  name: WESTAR 1
+  norad_id: 7250
+  period: 1441.3
+- international_code: 2007-044A
+  longitude: 152.0
+  name: OPTUS D2
+  norad_id: 32252
+  period: 1436.1
+- international_code: 2003-012A
+  longitude: 152.4
+  name: USA 169
+  norad_id: 27711
+  period: 1436.1
+- international_code: 2003-015A
+  longitude: 153.2
+  name: COSMOS 2397
+  norad_id: 27775
+  period: 1433.5
+- international_code: 2016-028A
+  longitude: 154.0
+  name: JCSAT-14
+  norad_id: 41471
+  period: 1436.1
+- international_code: 1990-074A
+  longitude: 154.8
+  name: THOR 1 (MARCOPOLO 2)
+  norad_id: 20762
+  period: 1451.4
+- international_code: 2015-046A
+  longitude: 155.0
+  name: TJS-1
+  norad_id: 40892
+  period: 1436.1
+- international_code: 1985-055A
+  longitude: 155.2
+  name: INTELSAT 511
+  norad_id: 15873
+  period: 1438.3
+- international_code: 1979-101A
+  longitude: 155.3
+  name: SATCOM 3
+  norad_id: 11635
+  period: 788.9
+- international_code: 2003-028B
+  longitude: 155.7
+  name: OPTUS C1
+  norad_id: 27831
+  period: 1436.1
+- international_code: 2009-044B
+  longitude: 156.0
+  name: OPTUS D3
+  norad_id: 35756
+  period: 1436.1
+- international_code: 2014-054A
+  longitude: 156.0
+  name: OPTUS 10
+  norad_id: 40146
+  period: 1436.1
+- international_code: 1983-094A
+  longitude: 157.1
+  name: SATCOM 2R
+  norad_id: 14328
+  period: 1448.5
+- international_code: 2000-072A
+  longitude: 157.1
+  name: INTELSAT 1R (PAS 1R)
+  norad_id: 26608
+  period: 1436.1
+- international_code: 1994-049A
+  longitude: 157.1
+  name: BRAZILSAT B1
+  norad_id: 23199
+  period: 1450.8
+- international_code: 1997-016B
+  longitude: 157.2
+  name: BSAT-1A
+  norad_id: 24769
+  period: 1452.7
+- international_code: 1999-033A
+  longitude: 157.2
+  name: ASTRA 1H
+  norad_id: 25785
+  period: 1455.3
+- international_code: 1999-053A
+  longitude: 159.0
+  name: ABS 1 (LMI 1)
+  norad_id: 25924
+  period: 1436.1
+- international_code: 1984-113B
+  longitude: 159.7
+  name: ARABSAT 1D (ANIK D2)
+  norad_id: 15383
+  period: 1455.9
+- international_code: 2010-057A
+  longitude: 159.9
+  name: BEIDOU G4
+  norad_id: 37210
+  period: 1436.1
+- international_code: 2006-043B
+  longitude: 160.0
+  name: OPTUS D1
+  norad_id: 29495
+  period: 1436.1
+- international_code: 1976-053A
+  longitude: 160.5
+  name: MARISAT 3
+  norad_id: 8882
+  period: 1501.6
+- international_code: 1990-021A
+  longitude: 161.5
+  name: INTELSAT 603
+  norad_id: 20523
+  period: 1447.4
+- international_code: 1991-083A
+  longitude: 161.6
+  name: EUTELSAT 2-F3
+  norad_id: 21803
+  period: 1450.1
+- international_code: 1979-086A
+  longitude: 161.7
+  name: OPS 1948
+  norad_id: 11558
+  period: 1436.7
+- international_code: 1992-054A
+  longitude: 162.0
+  name: OPTUS B1 (AUSSAT B1)
+  norad_id: 22087
+  period: 1451.5
+- international_code: 1991-075A
+  longitude: 162.2
+  name: INTELSAT 601
+  norad_id: 21765
+  period: 1445.8
+- international_code: 1990-030A
+  longitude: 162.6
+  name: ASIASAT 1
+  norad_id: 20558
+  period: 1450.9
+- international_code: 2003-053A
+  longitude: 163.5
+  name: YAMAL 202
+  norad_id: 28089
+  period: 1436.1
+- international_code: 1994-040A
+  longitude: 165.4
+  name: INTELSAT 2 (PAS 2)
+  norad_id: 23175
+  period: 1451.7
+- international_code: 1993-072A
+  longitude: 165.5
+  name: GORIZONT 29
+  norad_id: 22907
+  period: 1437.6
+- international_code: 1998-024A
+  longitude: 165.6
+  name: NILESAT
+  norad_id: 25311
+  period: 1478.5
+- international_code: 2012-030A
+  longitude: 166.0
+  name: INTELSAT 19
+  norad_id: 38356
+  period: 1436.1
+- international_code: 1984-049A
+  longitude: 166.3
+  name: CHINASAT 5 (SPACENET 1)
+  norad_id: 14985
+  period: 1440.0
+- international_code: 2009-044A
+  longitude: 166.4
+  name: JCSAT 12
+  norad_id: 35755
+  period: 1435.9
+- international_code: 2011-074B
+  longitude: 167.0
+  name: LUCH 5A
+  norad_id: 37951
+  period: 1436.1
+- international_code: 1997-002A
+  longitude: 167.2
+  name: AMC-2 (GE-2)
+  norad_id: 24713
+  period: 1447.6
+- international_code: 1984-114A
+  longitude: 169.1
+  name: SPACENET 2
+  norad_id: 15385
+  period: 1443.4
+- international_code: 1981-057A
+  longitude: 170.1
+  name: METEOSAT 2
+  norad_id: 12544
+  period: 1458.6
+- international_code: 2002-016A
+  longitude: 170.2
+  name: INTELSAT 903
+  norad_id: 27403
+  period: 1454.2
+- international_code: 1991-088A
+  longitude: 170.2
+  name: STTW-5
+  norad_id: 21833
+  period: 632.6
+- international_code: 1982-004A
+  longitude: 171.0
+  name: SATCOM 4
+  norad_id: 13035
+  period: 1445.8
+- international_code: 2011-032A
+  longitude: 171.0
+  name: TIANLIAN 1-02
+  norad_id: 37737
+  period: 1436.1
+- international_code: 1992-082A
+  longitude: 171.4
+  name: GORIZONT 27
+  norad_id: 22245
+  period: 1436.8
+- international_code: 2017-029B
+  longitude: 172.0
+  name: EUTELSAT 172B
+  norad_id: 42741
+  period: 1436.1
+- international_code: 1984-093D
+  longitude: 172.7
+  name: TELSTAR 302
+  norad_id: 15237
+  period: 1443.1
+- international_code: 1992-017A
+  longitude: 173.1
+  name: GORIZONT 25
+  norad_id: 21922
+  period: 1442.0
+- international_code: 1996-007A
+  longitude: 173.3
+  name: NSTAR B
+  norad_id: 23781
+  period: 1450.7
+- international_code: 1985-076D
+  longitude: 174.0
+  name: LEASAT 4
+  norad_id: 15995
+  period: 1472.4
+- international_code: 2005-052A
+  longitude: 174.0
+  name: GE-23
+  norad_id: 28924
+  period: 1436.1
+- international_code: 2012-044B
+  longitude: 174.0
+  name: EXPRESS MD2
+  norad_id: 38745
+  period: 129.5
+- international_code: 2001-029A
+  longitude: 174.1
+  name: ARTEMIS
+  norad_id: 26863
+  period: 1450.2
+- international_code: 1976-017A
+  longitude: 174.6
+  name: MARISAT 1
+  norad_id: 8697
+  period: 1451.5
+- international_code: 2000-059A
+  longitude: 176.0
+  name: NSS 11 (AAP-1)
+  norad_id: 26554
+  period: 1436.1
+- international_code: 2006-059A
+  longitude: 176.2
+  name: ETS 8
+  norad_id: 29656
+  period: 1454.4
+- international_code: 2016-072A
+  longitude: 177.1
+  name: TIANLIAN 1-04
+  norad_id: 41869
+  period: 1436.1
+- international_code: 1997-040A
+  longitude: 177.4
+  name: PAS 6
+  norad_id: 24891
+  period: 1536.8
+- international_code: 1975-077A
+  longitude: 177.6
+  name: SYMPHONIE 2
+  norad_id: 8132
+  period: 1440.3
+- international_code: 2001-019A
+  longitude: 177.8
+  name: INTELSAT 10 (PAS 10)
+  norad_id: 26766
+  period: 1436.1
+- international_code: 2015-042A
+  longitude: 179.6
+  name: INMARSAT 5-F3
+  norad_id: 40882
+  period: 1436.1
