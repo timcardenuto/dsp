@@ -272,6 +272,34 @@ def get_satellite_longitude(sat_name):
     
 
 
+def PLANGA(IRLE, ILNK, XE, YE, ZE, IPS, PAS, XS, YS, ZS, XA, ya, za, ipse, pase, xse, yse, zse, xae, yae, zae, parw, dpaa):
+    """
+    Args
+        IRLE - index for the reference line, relative to which the polarization angle of the radio wave is measured at the earth point
+             = 1 for a line parallel to the equatorial plane
+             = 2 for a line parallel to the local horizontal plane (default)
+        ILNK - index for uplink or downlink case
+             = 1 for uplink
+             = 2 for downlink
+        XE, YE, ZE - earth center coordinates of the earth point
+        IPS - index of the polarization type of the antenna of the satellite in question
+            = 0 for circular
+            = 1 for linear when the angle is specified relative to a line parallel to the equatorial plane at the aim point
+            = 2 for linear when the angle is specified relative to a line parallel to the local horizontal plane at the aim point
+        PAS - polarization angle (degrees) of the antenna of the satellite in question specified at its aim point (must be +45 or -45 when IPS = 0)
+        XS, YS, ZS - earth center coordinates of the satellite in question
+        XA, YA, ZA - earth center coordinate of the aim point (on surface of the earth) of the atenna of the satellite in question
+        IPSE - index of the polarization type of the antenna of the satellite that servers the earth point
+             = 0 for circular
+             = 1 for linear when the angle is specified relative to a line parallel to the equatorial plane at the aim point
+             = 2 for linear when the angle is specified relative to a line parallel to the local horizontal plane at the aim point
+         PASE - polarization angle (degrees) of the antenna of the satellite that serves the earth point specified at its aim point (must be +45 or -45 when IPSE = 0
+         XSE, YSE, ZSE - earth center coordinates of the satellite that serves the earth point
+         XAE, YAE, 
+         
+         ...
+    """
+
 	
 if __name__ == "__main__":   
     parser = argparse.ArgumentParser(description='Calculate look angle from Earth to Satellite')
