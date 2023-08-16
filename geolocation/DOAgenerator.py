@@ -21,7 +21,7 @@ np.random.seed(12345)
 # determine sigma (standard deviation)
 e = np.zeros((100000,1))
 for i in range(100000):
-    e[0]= -err + (err+err)*np.random.rand(1)
+    e[0] = -err + (err+err)*np.random.rand(1)
 sigma = np.std(e)
 print("sigma: ",sigma)
 
@@ -30,7 +30,7 @@ targets = np.zeros((num_targets,2))
 for num in range(num_targets):
     # x = (-area + (area+area)*np.random.rand(1))  # not sure what shape I was going for here
     # y = (-area + (area+area)*np.random.rand(1))
-    x = np.random.uniform(-area,area)  # box
+    x = np.random.uniform(-area,area)  # using a box instead
     y = np.random.uniform(-area,area)
     targets[num,:] = np.hstack([x,y])
     print("Target",num,": ",x,",",y)
@@ -40,7 +40,7 @@ for num in range(num_targets):
 # generate measurement locations on flight path
 radius = area * np.sqrt(2)
 theta = np.linspace(0,path,num_mlocs)   # measurement spacing
-mlocs = np.vstack([radius*np.cos(theta), radius*np.sin(theta)]).conj().transpose()
+mlocs = np.vstack([radius*np.cos(theta), radius*np.sin(theta)]).conj().transpose() # measurement locations x,y (mlocs)
 plt.plot(mlocs[:,0], mlocs[:,1],'ob')
 
 # note - mlocs should really be a 3D matrix of [[x,y] x path x sensor]
@@ -83,7 +83,7 @@ for mloc in range(num_mlocs):
             doa[index] = theta
 
             # Draw the measured DOA (with error) from measurement location to target, using the distance as the magnitude
-            plt.plot([mlocs[mloc,0], (distance*np.cos(doa[index])+mlocs[mloc,0])],[mlocs[mloc,1], (distance*np.sin(doa[index])+mlocs[mloc,1])], 'k')
+            #plt.plot([mlocs[mloc,0], (distance*np.cos(doa[index])+mlocs[mloc,0])],[mlocs[mloc,1], (distance*np.sin(doa[index])+mlocs[mloc,1])], 'k')
 
 
 # print("doa: ",doa)
