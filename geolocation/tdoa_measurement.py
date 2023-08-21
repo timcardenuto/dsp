@@ -79,23 +79,26 @@ if __name__ == "__main__":
     d3e = np.sqrt(np.power(s3[0]-e1[0],2)+np.power(s3[1]-e1[1],2))
     # TODO what is a realistic error prob distribution? Using the following
     # NOTE assume all sensors have same variance for timing error (1 us), not necessarily same actual error value
+    sigma_time = 0.000001
     t1 = 0              # TOA at sensor 1 is our reference point
     te = t1 - d1e/c     # emission time will be negative since we're using TOA at sensor 1 for the zero reference point
-    t2 = te + d2e/c + rand.normalvariate(mu=0.0, sigma=0.000001)
-    t3 = te + d3e/c + rand.normalvariate(mu=0.0, sigma=0.000001)
-    t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=0.000001)    # realistic t1 has to include error, but couldn't add it to the other terms above
+    t2 = te + d2e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
+    t3 = te + d3e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
+    t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)    # realistic t1 has to include error, but couldn't add it to the other terms above
 
     length = 10  # how long the line should be, in terms of the # of tE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
-    tdoa12,hyperbola12 = get_tdoa_hyperbola(s1, t1, s2, t2, length)
-    tdoa13,hyperbola13 = get_tdoa_hyperbola(s1, t1, s3, t3, length)
+    tdoa21,hyperbola21 = get_tdoa_hyperbola(s1, t1, s2, t2, length)
+    tdoa31,hyperbola31 = get_tdoa_hyperbola(s1, t1, s3, t3, length)
+    tdoa32,hyperbola32 = get_tdoa_hyperbola(s2, t2, s3, t3, length)
 
     # plot stuff
     plt.plot(e1[0], e1[1], '*r', label='True Emitter')
     plt.plot(s1[0], s1[1], '^b', label='Sensor 1')
     plt.plot(s2[0], s2[1], '^k', label='Sensor 2')
     plt.plot(s3[0], s3[1], '^g', label='Sensor 3')
-    plt.plot(hyperbola12[:,0], hyperbola12[:,1], '-k', label='S1>S2 TDOA {}'.format(tdoa12))
-    plt.plot(hyperbola13[:,0], hyperbola13[:,1], '-k', label='S1>S3 TDOA {}'.format(tdoa13))
+    plt.plot(hyperbola21[:,0], hyperbola21[:,1], '-k', label='S1>S2 TDOA {}'.format(tdoa21))
+    plt.plot(hyperbola31[:,0], hyperbola31[:,1], '-k', label='S1>S3 TDOA {}'.format(tdoa31))
+    plt.plot(hyperbola32[:,0], hyperbola32[:,1], '-k', label='S1>S3 TDOA {}'.format(tdoa32))
     plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', shadow=True, fontsize='small')
     plt.tight_layout()
     plt.draw()
@@ -104,6 +107,85 @@ if __name__ == "__main__":
     input("Press Enter to continue...")
 
 
+    #### Geolocation ####
+    print("\n##############################")
+    print("Geolocation")
+    print("##############################\n")
+
+    # TDOA measurements, in terms of "range differences"
+    # r1 - r2 = c*(ta1-ta2)
+    # r1 - r3 = c*(ta1-ta3)
+    z = np.array([(c*np.abs(tdoa21)),(c*np.abs(tdoa31))])
+    # z = np.array([(c*tdoa21),(c*tdoa31)])
+
+    # TDOA measurement error (std deviation), in terms of distance (m/s * s) = m
+    sigma_dist = c*sigma_time
+    R = (sigma_dist*sigma_dist)*np.identity(2)
+
+    xhat = np.array([0,0])          # initial guess at location of target, in real life would need to be smarter about it
+    a1 = s1 
+    a2 = s2
+    a3 = s3
+    print("sigma: "+str(sigma_dist))
+    print("z: "+str(z))
+    print("a1:"+str(a1))
+    print("a2:"+str(a2))
+    print("a3:"+str(a3))
+    print("\n")
+
+    count = 1
+    maxcount = 10
+    error = [100,100]
+    maxerror = .1
+    while (count < maxcount and (error[0]+error[1]/2) > maxerror):
+
+        h = np.array([np.power(np.transpose(xhat-a1).dot(xhat-a1),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5), np.power(np.transpose(xhat-a3).dot(xhat-a3),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5)])
+
+        H = np.array([(1/np.power(np.transpose(xhat-a1).dot(xhat-a1),0.5))*np.transpose(xhat-a1) - (1/np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5))*np.transpose(xhat-a2), (1/np.power(np.transpose(xhat-a3).dot(xhat-a3),0.5))*np.transpose(xhat-a3) - (1/np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5))*np.transpose(xhat-a2)])
+
+        P = np.linalg.inv(np.transpose(H).dot(np.linalg.inv(R)).dot(H))
+
+        xhatnew = xhat + P.dot(np.transpose(H)).dot(np.linalg.inv(R)).dot(z-h)
+        error = abs(xhatnew - xhat)
+        xhat = xhatnew
+    
+        print("count = ",count) 
+        print("Covariance = ",P)
+        print("xhat = ",xhat)
+        print("error = ",error)
+        print("")
+        count = count+1
+
+    # Create and scale ellipse
+    w,v = np.linalg.eig(P)
+    print("Eigenvalues = ",w)
+    k = 5.9915; # 95% EEP
+    semimajor = np.sqrt(k*max(w))
+    semiminor = np.sqrt(k*min(w))
+    theta = np.linspace(0,2*np.pi)
+    ellipse = np.transpose(np.vstack([semimajor*np.cos(theta), semiminor*np.sin(theta)]))
+
+    # Rotate ellipse
+    eigenvector = v[:,1]
+    print("Eigenvector = ",eigenvector)
+    angle = np.arctan2(eigenvector[1], eigenvector[0])
+    if(angle < 0):
+        angle = angle + 2*np.pi
+    R = np.vstack([[np.cos(angle),np.sin(angle)],[-np.sin(angle),np.cos(angle)]])
+    ellipse = ellipse.dot(R)
+
+    # Shift ellipse and plot 
+    plt.plot(xhat[0], xhat[1], '*g', label='Estimated location')
+    plt.plot((ellipse[:,0]+xhat[0]),(ellipse[:,1]+xhat[1]),'-', label='Error Ellipse')
+    plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', shadow=True, fontsize='small')
+    plt.tight_layout()
+    plt.draw()
+
+    input("Press Enter to continue...")
+
+
+
+    #### Iterative TDOA hyperbola calc ####
     # comment out to see the iterative version overlayed (only for 1 hyperbola)
     sys.exit()
 

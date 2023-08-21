@@ -22,12 +22,18 @@ z = np.array([13000,-5600])
 a1 = np.array([-10*1852, 20*1852])
 a2 = np.array([0, 20*1852])
 a3 = np.array([10*1852, 20*1852])
+
+print("sigma: "+str(sigma))
+print("z: "+str(z))
+print("a1:"+str(a1))
+print("a2:"+str(a2))
+print("a3:"+str(a3))
+print("\n")
+
 count = 1
 maxcount = 10
 error = [100,100]
 maxerror = .1
-
-
 while (count < maxcount and (error[0]+error[1]/2) > maxerror):
 
     h = np.array([np.power(np.transpose(xhat-a1).dot(xhat-a1),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5), np.power(np.transpose(xhat-a3).dot(xhat-a3),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5)])
