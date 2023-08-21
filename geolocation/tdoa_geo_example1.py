@@ -2,8 +2,17 @@
 # TDOA h(x) = r1 - r2 = ((x-a1)'*(x-a1))^.5 - ((x-a2)'*(x-a2))^.5
 # H = (1/r1)*(x-a1)' - (1/r2)*(x-a2)'
 
+# NOTE: a range *difference* (r1 - r2) to a target from two sensors is equivalent to the time difference of arrival between the two sensors
+#       let r1 be the notation for the distance from a1 to x (target)
+#       this is equivalent to r1 = c*(ta1 - tx), where c is speed of light (propogation) and ta1-tx is the time an RF wave emitting from the target took to get to sensor a1
+#       then, r2 = c*(ta2 - tx)
+#       and, r1-r2 = c*(ta1 - tx) - c*(ta2 - tx)
+#                  = c*(ta1-ta2)
+#       No knowlege of the time of emission (tx) is necessary for the 'range difference'. 
+
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 sigma = 50
 R = (sigma*sigma)*np.identity(2)
