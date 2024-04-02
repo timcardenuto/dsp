@@ -18,6 +18,7 @@ sigma = 50
 R = (sigma*sigma)*np.identity(2)
 xhat = np.array([0,0])
 z = np.array([13000,-5600])
+
 # 1 nautical mile = 1852 meters
 a1 = np.array([-10*1852, 20*1852])
 a2 = np.array([0, 20*1852])

@@ -5,7 +5,9 @@ def cpu_fsk():
     import numpy as np
 
     N = 8
-    bit_stream = np.array([0, 0, 1, 1, 0, 1, 1, 0])
+    bit_stream = np.array([0, 0, 1, 0, 1, 1, 1, 0])
+    bit_stream = np.tile(bit_stream,100)
+    print(len(bit_stream))
 
     f1 = 5
     f2 = 10
@@ -56,8 +58,15 @@ def cpu_fsk():
         #print(time)
         #sys.exit(0)
 
-    plt.plot(time, digital_signal)
-    plt.plot(time, fsk_signal)
+    # plt.plot(time, digital_signal)
+    # plt.plot(time, fsk_signal)
+    from scipy import signal
+    f, t, Sxx = signal.spectrogram(fsk_signal, fs)
+    plt.subplot(1,1,1)
+    plt.pcolormesh(t, f, Sxx, shading='gouraud')
+    plt.ylabel('Frequency [Hz]')
+    plt.xlabel('Time [sec]')
+
     plt.show()
 
 
@@ -116,21 +125,12 @@ def gpu_fsk():
         #print(time)
         #sys.exit(0)
 
-    plt.plot(time, digital_signal)
-    plt.plot(time, fsk_signal)
+    plt.plot(cp.asnumpy(time), cp.asnumpy(digital_signal))
+    plt.plot(cp.asnumpy(time), cp.asnumpy(fsk_signal))
     plt.show()
-
+    
 
 
 if __name__=="__main__":
-    #cpu_fsk()
-    gpu_fsk()
-
-
-
-
-
-
-
-
-
+    cpu_fsk()
+    # gpu_fsk()

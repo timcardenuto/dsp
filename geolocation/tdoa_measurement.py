@@ -115,8 +115,11 @@ if __name__ == "__main__":
     # TDOA measurements, in terms of "range differences"
     # r1 - r2 = c*(ta1-ta2)
     # r1 - r3 = c*(ta1-ta3)
-    z = np.array([(c*np.abs(tdoa21)),(c*np.abs(tdoa31))])
+    # z = np.array([(c*np.abs(tdoa21)),(c*np.abs(tdoa31))])
+    # z = np.array([7298.46419703, 5368.64643455])
+    z = np.array([8000, -50])
     # z = np.array([(c*tdoa21),(c*tdoa31)])
+    # z = np.array([13000,-5600])
 
     # TDOA measurement error (std deviation), in terms of distance (m/s * s) = m
     sigma_dist = c*sigma_time
