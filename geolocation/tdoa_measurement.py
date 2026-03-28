@@ -112,6 +112,8 @@ if __name__ == "__main__":
     print("Geolocation")
     print("##############################\n")
 
+    # TODO There's a bug somewhere here.... it's almost like 180 degrees off?
+
     # TDOA measurements, in terms of "range differences"
     # r1 - r2 = c*(ta1-ta2)
     # r1 - r3 = c*(ta1-ta3)
