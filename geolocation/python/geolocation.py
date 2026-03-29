@@ -153,7 +153,10 @@ def calculateEllipse(xhat, P, alpha):
 
 def geolocate(loc_array, theta_array, sigma_array, containment):
     """
-    containment = float between 0 and 100 exclusive
+    loc_array = array of sensor locations [x,y]
+    theta_array = array of sensor measurements. They can include different measurement types (DOA, TDOA, range)
+    sigma_array = array of sensor measurement standard deviations 
+    containment = float between 0 and 100 exclusive, scales the ellipse to ensure this value is the probability that the target is within the ellipse 
     """
     # print("  |--loc_array:    "+str(loc_array))
     # print("  |--theta_array:  "+str(theta_array))

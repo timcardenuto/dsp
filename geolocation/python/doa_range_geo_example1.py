@@ -13,22 +13,22 @@ plt.title('Geolocation Estimation Using Iterated Least Squares')
 def calculateEllipse(xhat, P, alpha):
     """ Computes an Elliptical Error Probable (EEP), i.e. an error ellipse
         The center of the ellipse is at the measured or estimated location (xhat)
-        The shape (how elliptical or circular), orientation (angular rotation), and size (distance of semimajor/semiminor axis) is based on the estimated covariance matrix (P) and the desired containment (alpha). 
-        The covariance matrix (P) incorporates the errors of the original measurements used to estimate the center point. If there was zero error in the original measurements then the ellipse would be zero size (a point). 
-        The desired containment (alpha) is interpreted as meaning the ellipse should be scaled big enough to provide an alpha probability of the target residing within the ellipse. The higher you want this to be, the bigger the ellipse will be. Common examples of alpha are 0.50 or 0.95. 
+        The shape (how elliptical or circular), orientation (angular rotation), and size (distance of semimajor/semiminor axis) is based on the estimated covariance matrix (P) and the desired containment (alpha).
+        The covariance matrix (P) incorporates the errors of the original measurements used to estimate the center point. If there was zero error in the original measurements then the ellipse would be zero size (a point).
+        The desired containment (alpha) is interpreted as meaning the ellipse should be scaled big enough to provide an alpha probability of the target residing within the ellipse. The higher you want this to be, the bigger the ellipse will be. Common examples of alpha are 0.50 or 0.95.
     """
     # Calculate containment critical value k from alpha
-    k = -2 * np.log(1-alpha)    # for 95% EEP, k = 5.9915 
-    
+    k = -2 * np.log(1-alpha)    # for 95% EEP, k = 5.9915
+
     # Calculate ellipse shape/size
     eigenvalues,eigenvectors = np.linalg.eig(P)
     semimajor = np.sqrt(k*max(eigenvalues))
     semiminor = np.sqrt(k*min(eigenvalues))
 
-    # Create ellipse 
+    # Create ellipse
     theta = np.linspace(0,2*np.pi)
     ellipse = np.transpose(np.vstack([semimajor*np.cos(theta), semiminor*np.sin(theta)]))
-    
+
     # Rotate ellipse
     eigenvector = eigenvectors[:,1]
     angle = np.arctan2(eigenvector[1], eigenvector[0])
@@ -39,10 +39,10 @@ def calculateEllipse(xhat, P, alpha):
         [-np.sin(angle), np.cos(angle)]
         ])
     ellipse = ellipse @ R
-    
+
     # Shift ellipse to center point
     ellipse = np.hstack([
-        np.vstack(ellipse[:,0]+xhat[0]), 
+        np.vstack(ellipse[:,0]+xhat[0]),
         np.vstack(ellipse[:,1]+xhat[1])
         ])
         
@@ -60,11 +60,11 @@ def calculateEllipse(xhat, P, alpha):
 plt.plot(0,0,'or', label='True Target Location')
 
 # Sensor 1 - DOA measurement
-a1 = np.vstack([[(np.sin(60/180*np.pi)*15*1852)], [(np.cos(60/180*np.pi)*15*1852)]]) # Sensor location x,y (meters)
-theta1 = -(90+60)/180*np.pi                                                         # DOA angle measurement (radians)
-sigma1 = 2/180*np.pi                                                                # DOA angle error, i.e. standard deviation (radians)
-u1 = np.vstack([[np.cos(theta1)], [np.sin(theta1)]])                                 # unit vector along DOA
-M1 = np.identity(2) - u1@(u1.conj().transpose())                                    # Moore-Penrose matrix
+a1 = np.vstack([[(np.sin(60/180*np.pi)*15*1852)], [(np.cos(60/180*np.pi)*15*1852)]])    # Sensor location x,y (meters)
+theta1 = -(90+60)/180*np.pi                                                             # DOA angle measurement (radians)
+sigma1 = 2/180*np.pi                                                                    # DOA angle error, i.e. standard deviation (radians)
+u1 = np.vstack([[np.cos(theta1)], [np.sin(theta1)]])                                    # unit vector along DOA
+M1 = np.identity(2) - u1@(u1.conj().transpose())                                        # Moore-Penrose matrix
 plt.plot(a1[0]/1852, a1[1]/1852, 'ok', label="Sensor 1")
 plt.plot([a1[0][0]/1852, (100*np.cos(theta1)/1852)],[a1[1][0]/1852, (100*np.sin(theta1)/1852)], 'k')
 

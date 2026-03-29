@@ -15,9 +15,16 @@ plt.ylabel('x (meters)')
 plt.title("TDOA Hyperbolas")
 
 
-def get_tdoa_hyperbola(A, tA, B, tB, length):
-
-    TDOA = tB - tA
+def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
+    """
+    locA = sensor A position [x y]
+    toaA = time of arrival (TOA) of the signal at sensor A
+    locB = sensor B position [x y]
+    toaB = time of arrival (TOA) of the signal at sensor B
+    hyperbola_length = length of the hyperbola to draw (for visual representation only, does not affect the measurement)
+    """
+    
+    TDOA = toaB - toaA
     print("TDOA: "+str(TDOA))
     print("Range difference: "+str(c*TDOA))
 
@@ -26,41 +33,41 @@ def get_tdoa_hyperbola(A, tA, B, tB, length):
     # We do know that *1* of the possible positions of E lies between A and B, specifically at the point where the wave could reach point A prior to point B with a time difference given by the TDOA measurement
     # Since the wave from E must reach either A or B first, there is always a valid solution that lies between them providing the time difference (in the extreme case, E is directly on the far side of A or B on a line connecting all 3 points, but what this would look like from a Time of Arrival (TOA) perspective is that the wave arrives a A (or B in reverse) first and then B a the speed of light time afterwards which would make it look like E is *at* A). 
     # Therefore *1* solution of dAE is: 
-    dAB = np.sqrt(np.power(B[0]-A[0],2)+np.power(B[1]-A[1],2))
+    dAB = np.sqrt(np.power(locB[0]-locA[0],2)+np.power(locB[1]-locA[1],2))
     dAE = (dAB - c*(TDOA))/2
     print("Initial Guess dAE: "+str(dAE))
 
     # from this distance dAE, and the given points A, B and distance dAB, we can calculate *1* possible emitter point E
-    E = A + dAE*(B-A)/dAB 
-    print("Initial Guess E(x,y): "+str(E[0])+","+str(E[1]))
+    locE = locA + dAE*(locB-locA)/dAB 
+    print("Initial Guess E(x,y): "+str(locE[0])+","+str(locE[1]))
 
     # now we can find the time that the emitter transmitted, if it was at this point E, such that the TDOA is correct
     # this is only *1* of the (technically infinite) solutions
-    # using a definition of the distance dAE = c(tA - tE):
-    tE_guess = tA - dAE/c
-    print("Initial Guess tE: "+str(tE_guess))
+    # using a definition of the distance dAE = c(toaA - toaE):
+    toaE_guess = toaA - dAE/c
+    print("Initial Guess toaE: "+str(toaE_guess))
 
     # Batch processor
     # explanation for math steps given in the iterative version of this below (same math just w/o matrices)
-    resolution = 100*length      # determines how many points along the line to use, this is just for drawing purposes. 10x seems to be reasonable
-    tE = np.vstack(np.linspace(tE_guess, (tE_guess*length), resolution))
-    dAE = c*(tA-tE)
-    dBE = c*(tB-tE)
+    resolution = 100*hyperbola_length      # determines how many points along the line to use, this is just for drawing purposes. 10x seems to be reasonable
+    toaE = np.vstack(np.linspace(toaE_guess, (toaE_guess*hyperbola_length), resolution))
+    dAE = c*(toaA-toaE)
+    dBE = c*(toaB-toaE)
     dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)   
     dCE = np.sqrt((dAE*dAE) - (dAC*dAC))
-    C = A + dAC*(B-A)/dAB
+    locC = locA + dAC*(locB-locA)/dAB
 
     # Ep(x,y) possible emitter location positive side
-    Exp = np.vstack(C[:,0]) - dCE*(B[1]-A[1])/dAB
-    Eyp = np.vstack(C[:,1]) + dCE*(B[0]-A[0])/dAB
+    Exp = np.vstack(locC[:,0]) - dCE*(locB[1]-locA[1])/dAB
+    Eyp = np.vstack(locC[:,1]) + dCE*(locB[0]-locA[0])/dAB
     # En(x,y) possible emitter location negative side
-    Exn = np.vstack(C[:,0]) + dCE*(B[1]-A[1])/dAB
-    Eyn = np.vstack(C[:,1]) - dCE*(B[0]-A[0])/dAB
+    Exn = np.vstack(locC[:,0]) + dCE*(locB[1]-locA[1])/dAB
+    Eyn = np.vstack(locC[:,1]) - dCE*(locB[0]-locA[0])/dAB
 
-    E = np.hstack([np.vstack([np.flip(Exp), Exn]), np.vstack([np.flip(Eyp), Eyn])])
-    print(E)
+    locE = np.hstack([np.vstack([np.flip(Exp), Exn]), np.vstack([np.flip(Eyp), Eyn])])
+    print(locE)
     print("")
-    return TDOA,E
+    return TDOA,locE
 
 
 
@@ -87,7 +94,7 @@ if __name__ == "__main__":
     t3 = te + d3e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
     t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)    # realistic t1 has to include error, but couldn't add it to the other terms above
 
-    length = 10  # how long the line should be, in terms of the # of tE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
+    length = 10  # how long the line should be, in terms of the # of toaE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
     tdoa21,hyperbola21 = get_tdoa_hyperbola(s1, t1, s2, t2, length)
     tdoa31,hyperbola31 = get_tdoa_hyperbola(s1, t1, s3, t3, length)
     tdoa32,hyperbola32 = get_tdoa_hyperbola(s2, t2, s3, t3, length)
@@ -195,67 +202,67 @@ if __name__ == "__main__":
     # comment out to see the iterative version overlayed (only for 1 hyperbola)
     sys.exit()
 
-    A = s1
-    B = s2
-    tA = t1
-    tB = t2
+    locA = s1
+    locB = s2
+    toaA = t1
+    toaB = t2
 
-    # # TEST ONLY - make up a tB and tA for the scenario - in real life these would be input measurements from a prior stage in the receivers
+    # # TEST ONLY - make up a toaB and toaA for the scenario - in real life these would be input measurements from a prior stage in the receivers
     # # this won't work for more than 2 points
-    # # set tA = 0 as the reference point
-    # # set tB such that tA < tB < dAB/c+tA  (physical constraint)
+    # # set toaA = 0 as the reference point
+    # # set toaB such that toaA < toaB < dAB/c+toaA  (physical constraint)
     # # SHIFT = variable you use in this script to shift how close the emitter will be to point A or B, affects the hyperbola (also called isochrone). A value of 0 would result in a perfect line, perpendicular to the line between A and B. A value of -1 or 1 will put the emitter on top of either point A or B respectively (no line no hyperbola). So this value should be -1 < SHIFT < 1. 
-    # dAB = np.sqrt(np.power(B[0]-A[0],2)+np.power(B[1]-A[1],2))
+    # dAB = np.sqrt(np.power(locB[0]-locA[0],2)+np.power(locB[1]-locA[1],2))
     # SHIFT = 0.75
-    # tA = 0
-    # tB = (dAB/c+tA)*SHIFT
+    # toaA = 0
+    # toaB = (dAB/c+toaA)*SHIFT
 
-    TDOA = tB - tA
+    TDOA = toaB - toaA
     print("TDOA: "+str(TDOA))
     print("Range difference: "+str(c*TDOA))
 
-    dAB = np.sqrt(np.power(B[0]-A[0],2)+np.power(B[1]-A[1],2))
+    dAB = np.sqrt(np.power(locB[0]-locA[0],2)+np.power(locB[1]-locA[1],2))
     dAE = (dAB - c*(TDOA))/2
     print("Initial Guess dAE: "+str(dAE))
 
     # from this distance dAE, and the given points A, B and distance dAB, we can calculate *1* possible emitter point E
-    E = A + dAE*(B-A)/dAB 
-    print("Initial Guess E(x,y): "+str(E[0])+","+str(E[1]))
+    locE = locA + dAE*(locB-locA)/dAB 
+    print("Initial Guess E(x,y): "+str(locE[0])+","+str(locE[1]))
 
     # now we can find the time that the emitter transmitted, if it was at this point E, such that the TDOA is correct
     # this is only *1* of the (technically infinite) solutions
-    # using a definition of the distance dAE = c(tA - tE):
-    tE_guess = tA - dAE/c
-    print("Initial Guess tE: "+str(tE_guess))
+    # using a definition of the distance dAE = c(toaA - toaE):
+    toaE_guess = toaA - dAE/c
+    print("Initial Guess toaE: "+str(toaE_guess))
 
     # This would be a interative way to estimate, instead of batched (matrix)
     # as you step through the iteration you can see the red estimated points sit on the same line as the batched process above. 
     for i in range(4):
         print("")
         print("Iteration: "+str(i))
-        tE_guess = tE_guess + tE_guess
-        dAE = c*(tA-tE_guess)
-        dBE = c*(tB-tE_guess)
-        print("tE_guess: "+str(tE_guess))
+        toaE_guess = toaE_guess + toaE_guess
+        dAE = c*(toaA-toaE_guess)
+        dBE = c*(toaB-toaE_guess)
+        print("toaE_guess: "+str(toaE_guess))
         print("dAE: "+str(dAE))
         print("dBE: "+str(dBE))
 
-        # This is for testing, in real world E is unknown and dAE/dBE are calculated by measuring tA and tB, and then estimating tE iteratively from the basic case (on the line A->B)
-        # E = np.array([32,41])
-        # plt.plot(E[0], E[1], '^k')
-        # dAE = np.sqrt(np.power(E[0]-A[0],2)+np.power(E[1]-A[1],2))  
-        # dBE = np.sqrt(np.power(E[0]-B[0],2)+np.power(E[1]-B[1],2))
+        # This is for testing, in real world E is unknown and dAE/dBE are calculated by measuring toaA and toaB, and then estimating toaE iteratively from the basic case (on the line A->B)
+        # locE = np.array([32,41])
+        # plt.plot(locE[0], locE[1], '^k')
+        # dAE = np.sqrt(np.power(locE[0]-locA[0],2)+np.power(locE[1]-locA[1],2))  
+        # dBE = np.sqrt(np.power(locE[0]-locB[0],2)+np.power(locE[1]-locB[1],2))
 
         # plot real triangle between sensors and emitter
-        # pts = np.array([A, B, E])
+        # pts = np.array([locA, locB, locE])
         # p = Polygon(pts, closed=False)
         # ax = plt.gca()
         # ax.add_patch(p)
 
         # # My attempt to solve using the assumption that Y axis = zero. This is a common math problem but not the generic case for all possible x,y coordinates. Doing it this way would require some kind of rotation from original x,y coordinates to a y=0 and then back.
         # # TODO rotate AB line to have y=0, can't just zero it without rotation first
-        # xE = ((dAE*dAE) - (dBE*dBE) + (B[0]*B[0])) / (2*(B[0]-A[0]))
-        # yE = np.sqrt((dBE*dBE) - np.power(xE-B[0],2)) + B[1]
+        # xE = ((dAE*dAE) - (dBE*dBE) + (locB[0]*locB[0])) / (2*(locB[0]-locA[0]))
+        # yE = np.sqrt((dBE*dBE) - np.power(xE-locB[0],2)) + locB[1]
         # # TODO rotate back to get 'real' xE,yE
         # print("xE: "+str(xE))
         # print("yE: "+str(yE))
@@ -263,25 +270,25 @@ if __name__ == "__main__":
 
         # cheating based on equations found online
         
-        # Find distance from point A to an intermediate point (C) on line between points A and B that lies perpendicular to point E
+        # Find distance from point A to an intermediate point (C) on line between points A and locB that lies perpendicular to point E
         dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)   
         
         # Find distance from intermediate point C to point E (creates right triangle, this variable typically called 'h' for height)
         dCE = np.sqrt((dAE*dAE) - (dAC*dAC))
         
         # Now find the coordinates for point C
-        C = A + dAC*(B-A)/dAB  
-        # print(C)
-        # plt.plot(C[0], C[1], 'or')
+        locC = locA + dAC*(locB-locA)/dAB  
+        # print(locC)
+        # plt.plot(locC[0], locC[1], 'or')
 
-        # Finally find the coordinates of the emitter for this tE - this is only *1* possible location! 
-        # Oh and actually for each possible tE there's actually *2* symmetrical possible locations E
+        # Finally find the coordinates of the emitter for this toaE - this is only *1* possible location! 
+        # Oh and actually for each possible toaE there's actually *2* symmetrical possible locations E
         # TODO tried to use matrices but .... needed the  values flipped and didn't work?
-        # E = C + dCE*(np.flip(B)-np.flip(A))/dAB
-        Exp = C[0] - dCE*(B[1]-A[1])/dAB
-        Eyp = C[1] + dCE*(B[0]-A[0])/dAB
-        Exn = C[0] + dCE*(B[1]-A[1])/dAB
-        Eyn = C[1] - dCE*(B[0]-A[0])/dAB
+        # locE = locC + dCE*(np.flip(locB)-np.flip(locA))/dAB
+        Exp = locC[0] - dCE*(locB[1]-locA[1])/dAB
+        Eyp = locC[1] + dCE*(locB[0]-locA[0])/dAB
+        Exn = locC[0] + dCE*(locB[1]-locA[1])/dAB
+        Eyn = locC[1] - dCE*(locB[0]-locA[0])/dAB
 
         print("E(x,y) positive: "+str(Exp)+","+str(Eyp))
         print("E(x,y) negative: "+str(Exn)+","+str(Eyn))

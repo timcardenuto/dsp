@@ -5,6 +5,8 @@ from dash import Input, Output, State, ALL, ctx, dcc, html
 import dash_bootstrap_components as dbc
 from plotly.subplots import make_subplots
 import plotly.graph_objects as go
+import random as rand
+import itertools
 
 import coloredlogs, logging
 logger = logging.getLogger()#__name__)
@@ -152,6 +154,63 @@ def make_table(points, point_type, ellipses=None):
     )
 
 
+
+def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
+    """
+    locA = sensor A position [x y]
+    toaA = time of arrival (TOA) of the signal at sensor A
+    locB = sensor B position [x y]
+    toaB = time of arrival (TOA) of the signal at sensor B
+    hyperbola_length = length of the hyperbola to draw (for visual representation only, does not affect the measurement)
+    """
+    c = 299792458   # speed of RF wave through vacuum (close enough)
+
+    TDOA = toaB - toaA
+    print("TDOA: "+str(TDOA))
+    print("Range difference: "+str(c*TDOA))
+
+    # Initial guess at emitter location and time
+    # We don't know what point the emitter is at (x,y), and we don't have range measurements to the emitter (dAE or dBE)
+    # We do know that *1* of the possible positions of E lies between A and B, specifically at the point where the wave could reach point A prior to point B with a time difference given by the TDOA measurement
+    # Since the wave from E must reach either A or B first, there is always a valid solution that lies between them providing the time difference (in the extreme case, E is directly on the far side of A or B on a line connecting all 3 points, but what this would look like from a Time of Arrival (TOA) perspective is that the wave arrives a A (or B in reverse) first and then B a the speed of light time afterwards which would make it look like E is *at* A). 
+    # Therefore *1* solution of dAE is: 
+    dAB = np.sqrt(np.power(locB[0]-locA[0],2)+np.power(locB[1]-locA[1],2))
+    dAE = (dAB - c*(TDOA))/2
+    print("Initial Guess dAE: "+str(dAE))
+
+    # from this distance dAE, and the given points A, B and distance dAB, we can calculate *1* possible emitter point E
+    locE = locA + dAE*(locB-locA)/dAB 
+    print("Initial Guess E(x,y): "+str(locE[0])+","+str(locE[1]))
+
+    # now we can find the time that the emitter transmitted, if it was at this point E, such that the TDOA is correct
+    # this is only *1* of the (technically infinite) solutions
+    # using a definition of the distance dAE = c(toaA - toaE):
+    toaE_guess = toaA - dAE/c
+    print("Initial Guess toaE: "+str(toaE_guess))
+
+    # Batch processor
+    # explanation for math steps given in the iterative version of this below (same math just w/o matrices)
+    resolution = 100*hyperbola_length      # determines how many points along the line to use, this is just for drawing purposes. 10x seems to be reasonable
+    toaE = np.vstack(np.linspace(toaE_guess, (toaE_guess*hyperbola_length), resolution))
+    dAE = c*(toaA-toaE)
+    dBE = c*(toaB-toaE)
+    dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)   
+    dCE = np.sqrt((dAE*dAE) - (dAC*dAC))
+    locC = locA + dAC*(locB-locA)/dAB
+
+    # Ep(x,y) possible emitter location positive side
+    Exp = np.vstack(locC[:,0]) - dCE*(locB[1]-locA[1])/dAB
+    Eyp = np.vstack(locC[:,1]) + dCE*(locB[0]-locA[0])/dAB
+    # En(x,y) possible emitter location negative side
+    Exn = np.vstack(locC[:,0]) + dCE*(locB[1]-locA[1])/dAB
+    Eyn = np.vstack(locC[:,1]) - dCE*(locB[0]-locA[0])/dAB
+
+    locE = np.hstack([np.vstack([np.flip(Exp), Exn]), np.vstack([np.flip(Eyp), Eyn])])
+    print(locE)
+    print("")
+    return TDOA,locE
+
+
 def calculate_geolocation(sensors, targets, containment=0.95):
     """Stub: estimate target location from sensor positions.
 
@@ -171,26 +230,77 @@ def calculate_geolocation(sensors, targets, containment=0.95):
         loc_array = []
         sigma_array = []
         doa_array = []
-        for sensor in sensors:
-            loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
+        if False:
+            for sensor in sensors:
+                loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
 
-            ###################################
-            # Simulation for DOA measurements
-            # Convert sigma from degrees to radians
-            sigma_array.append(sensor['sigma']*np.pi/180 )
-            # Calculate relative angle between target and measurement location (zero angle is when target is due East from sensor, negative is clockwise and positive is counter-clockwise)
-            theta = np.arctan2(target['y']-sensor['y'], target['x']-sensor['x'])
+                ###################################
+                # Simulation for DOA measurements
+                # Convert sigma from degrees to radians
+                sigma_array.append(sensor['sigma']*np.pi/180 )
+                # Calculate relative angle between target and measurement location (zero angle is when target is due East from sensor, negative is clockwise and positive is counter-clockwise)
+                theta = np.arctan2(target['y']-sensor['y'], target['x']-sensor['x'])
 
-            # Add measurement error based on sensor sigma
-            # TODO: check the logic here....
-            err = 1             # max measurement error in degrees, +-
-            error = -err + (err+err)*np.random.rand(1)
-            doa = theta + error * np.pi/180
-            doa_array.append(doa)
+                # Add measurement error based on sensor sigma
+                # TODO: check the logic here....
+                err = 1             # max measurement error in degrees, +-
+                error = -err + (err+err)*np.random.rand(1)
+                doa = theta + error * np.pi/180
+                doa_array.append(doa)
 
-            logger.debug("    |-Sensor: "+str(sensor))
-            logger.debug("    |--DOA:   "+str(doa))
-            ###################################
+                logger.debug("    |-Sensor: "+str(sensor))
+                logger.debug("    |--DOA:   "+str(doa))
+                ###################################
+
+        if True:
+            # TDOA version
+            # for every 2 sensor pairs.... but you have to decide how many sensors you want to be part of the final calculation, I think they all might need to be referenced to a common time=zero sensor
+                # sensor and target have to be in np.array([x,y])
+
+            # TO DRAW IT
+            c = 299792458   # speed of RF wave through vacuum (close enough)
+            sigma_time = 0.000001
+            length = 10  # how long the line should be, in terms of the # of toaE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
+            
+            d1e = np.sqrt(np.power(sensors[0]['x']-target['x'],2)+np.power(sensors[0]['y']-target['y'],2))
+            t1 = 0              # TOA at sensor 1 is our reference point
+            te = t1 - d1e/c     # emission time will be negative since we're using TOA at sensor 1 for the zero reference point
+            t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
+            tns = [t1]
+
+            loc_array.append(np.vstack([[sensors[0]['x']],[sensors[0]['y']]]))
+            sigma_array.append(sigma_time)
+            for sensor in sensors[1:]:
+                loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
+                sigma_array.append(sigma_time)
+
+                dne = np.sqrt(np.power(sensor['x']-target['x'],2)+np.power(sensor['y']-target['y'],2))
+                tn = te + dne/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
+                tns.append(tn)
+
+            # Get TDOA calculation and hyperbola for every combination of sensors
+            tdoas = np.array([])
+            indices_combinations = itertools.combinations(range(len(sensors)), 2)
+            for indices_tuple in indices_combinations:
+                items_tuple = (sensors[i] for i in indices_tuple)
+                items = tuple(items_tuple)
+                print(f"Indices: {indices_tuple}, Items: {items}")
+
+            # for s1, s2 in itertools.combinations(sensors, 2):
+                print("s1: "+str(items[0])+", t1: "+str(tns[indices_tuple[0]]))
+                print("s1: "+str(items[1])+", t1: "+str(tns[indices_tuple[1]]))
+                loc1 = np.array([items[0]['x'], items[0]['y']])
+                loc2 = np.array([items[1]['x'], items[1]['y']])
+                tdoa,hyperbola = get_tdoa_hyperbola(loc1, tns[indices_tuple[0]], loc2, tns[indices_tuple[1]], length)
+                print("tdoa: "+str(tdoa))
+                tdoas = np.append(tdoas,tdoa)
+            print("tdoas: "+str(tdoas))
+
+            # z = theta basically but for non-DOA 
+            # z = np.array([(c*np.abs(tdoa21)), (c*np.abs(tdoa31)), (c*np.abs(tdoa32))])
+            doa_array = c*np.abs(tdoas)
+            print("doa_array: "+str(doa_array))
+
 
         # Calculate geolocation for the full set of sensors and this specific target
         ellipse = geolocate(loc_array, doa_array, sigma_array, containment)
