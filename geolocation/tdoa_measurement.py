@@ -22,9 +22,10 @@ def get_tdoa_hyperbola(A, tA, B, tB, length):
     print("Range difference: "+str(c*TDOA))
 
     # Initial guess at emitter location and time
-    # we don't know what point the emitter is at (x,y), and we don't have range measurements to the emitter (dAE or dBE)
-    # we do know that 1 of the possible positions of E lies on the line between A and B, specifically at the point where the wave could reach point A prior to point B with a time difference given by the TDOA measurement
-    # therefore *1* solution of dAE is: 
+    # We don't know what point the emitter is at (x,y), and we don't have range measurements to the emitter (dAE or dBE)
+    # We do know that *1* of the possible positions of E lies between A and B, specifically at the point where the wave could reach point A prior to point B with a time difference given by the TDOA measurement
+    # Since the wave from E must reach either A or B first, there is always a valid solution that lies between them providing the time difference (in the extreme case, E is directly on the far side of A or B on a line connecting all 3 points, but what this would look like from a Time of Arrival (TOA) perspective is that the wave arrives a A (or B in reverse) first and then B a the speed of light time afterwards which would make it look like E is *at* A). 
+    # Therefore *1* solution of dAE is: 
     dAB = np.sqrt(np.power(B[0]-A[0],2)+np.power(B[1]-A[1],2))
     dAE = (dAB - c*(TDOA))/2
     print("Initial Guess dAE: "+str(dAE))
@@ -41,7 +42,7 @@ def get_tdoa_hyperbola(A, tA, B, tB, length):
 
     # Batch processor
     # explanation for math steps given in the iterative version of this below (same math just w/o matrices)
-    resolution = 100*length      # determines how many points along the line to use, 10x seems to be reasonable
+    resolution = 100*length      # determines how many points along the line to use, this is just for drawing purposes. 10x seems to be reasonable
     tE = np.vstack(np.linspace(tE_guess, (tE_guess*length), resolution))
     dAE = c*(tA-tE)
     dBE = c*(tB-tE)

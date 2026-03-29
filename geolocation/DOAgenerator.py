@@ -52,38 +52,43 @@ plt.plot(mlocs[:,0], mlocs[:,1],'ob')
 doa = np.zeros((num_mlocs*num_targets,1))
 
 # time step, update target/platform locations
-for mloc in range(num_mlocs):
+for timestep in range(num_mlocs):
     # generate doa per sensor at current mloc
     for sensor in range(num_sensors):
 
         for target in range(num_targets):
-            #print("mloc: ",mloc)
+            #print("timestep: ",timestep)
             #print("sensor: ", sensor)
             #print("target: ", target)   
 
             # Calculate relative angle between target and measurement location 
-            theta = np.arctan2(mlocs[mloc,1]-targets[target,1], mlocs[mloc,0]-targets[target,0])
+            theta = np.arctan2(mlocs[timestep,1]-targets[target,1], mlocs[timestep,0]-targets[target,0])
             
-            # Calculcate true angle to target, from measurement location relative to due East
+            # Calculate true angle to target, from measurement location relative to due East
             theta = -(np.pi - theta)
 
             # Add measurement error based on sensor sigma
             error = -err + (err+err)*np.random.rand(1)
             theta = theta + error * np.pi/180
+            # print("error: ",error)
+            # print("theta: ",theta)
 
             # plot true line to target
-            #plot([targets(target,1) mlocs(mloc,1)],[targets(target,2) mlocs(mloc,2)], 'r')
+            # plt.plot([targets[target,0], mlocs[timestep,0]],[targets[target,1], mlocs[timestep,1]], 'r')
 
             # Get distance to target just for plotting to make sure we can see crossover. This would not be known in real life. Increase the length by 1.5 so it's more realistic.
-            distance = 1.5 * np.sqrt(np.power(targets[target,0]-mlocs[mloc,0],2) + np.power(targets[target,1]-mlocs[mloc,1],2))
-            
+            distance = 1.5 * np.sqrt(np.power(targets[target,0]-mlocs[timestep,0],2) + np.power(targets[target,1]-mlocs[timestep,1],2))
+            # print(distance)
+
             # Save the measurement to the doa array 
             # TODO why use flat array and not 2 dimensions? seems like that would be more straightforward
-            index = (mloc-1)*len(targets[:,0]) + target
+            index = (timestep-1)*len(targets[:,0]) + target
             doa[index] = theta
+            # print(index)
+            # print(doa[index])
 
             # Draw the measured DOA (with error) from measurement location to target, using the distance as the magnitude
-            #plt.plot([mlocs[mloc,0], (distance*np.cos(doa[index])+mlocs[mloc,0])],[mlocs[mloc,1], (distance*np.sin(doa[index])+mlocs[mloc,1])], 'k')
+            plt.plot([mlocs[timestep,0], (distance*np.cos(doa[index][0])+mlocs[timestep,0])],[mlocs[timestep,1], (distance*np.sin(doa[index][0])+mlocs[timestep,1])], 'k')
 
 
 # print("doa: ",doa)

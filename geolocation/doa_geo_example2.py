@@ -166,15 +166,17 @@ def estimateGeolocation(loc_array, theta_array, sigma_array):
 loc1 = np.vstack([[0],[0]])                                 # Sensor location x,y (meters)
 theta1 = 50/180*np.pi                                       # DOA angle measurement (radians)
 sigma1 = 3*np.pi/180                                        # DOA angle error, i.e. standard deviation (radians)
-axs.plot(loc1[0], loc1[1], 'ok', label='Sensor 1')
-axs.plot([loc1[0], 100*np.cos(theta1)+loc1[0]],[loc1[1], 100*np.sin(theta1)+loc1[1]], 'k')
+axs.plot(loc1[0], loc1[1], 'ok', label='Sensor 1')          # Plot sensor location
+axs.plot([loc1[0], 100*np.cos(theta1+sigma1)+loc1[0]],[loc1[1], 100*np.sin(theta1+sigma1)+loc1[1]], '--k') # Plot DOA line from sensor toward target +/- sigma
+axs.plot([loc1[0], 100*np.cos(theta1-sigma1)+loc1[0]],[loc1[1], 100*np.sin(theta1-sigma1)+loc1[1]], '--k')
 
 # Sensor 2
 loc2 = np.vstack([[20],[0]])
 theta2 = 70/180*np.pi
 sigma2 = 2*np.pi/180
 axs.plot(loc2[0], loc2[1], 'ok', label='Sensor 2')
-axs.plot([loc2[0], 100*np.cos(theta2)+loc2[0]],[loc2[1], 100*np.sin(theta2)+loc2[1]], 'k')
+axs.plot([loc2[0], 100*np.cos(theta2+sigma2)+loc2[0]],[loc2[1], 100*np.sin(theta2+sigma2)+loc2[1]], '--k')
+axs.plot([loc2[0], 100*np.cos(theta2-sigma2)+loc2[0]],[loc2[1], 100*np.sin(theta2-sigma2)+loc2[1]], '--k')
 
 # # Sensor 3
 # loc3 = np.vstack([[60],[0]])
