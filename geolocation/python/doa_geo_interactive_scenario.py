@@ -163,8 +163,17 @@ def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
     toaB = time of arrival (TOA) of the signal at sensor B
     hyperbola_length = length of the hyperbola to draw (for visual representation only, does not affect the measurement)
     """
-    c = 299792458   # speed of RF wave through vacuum (close enough)
+    print("")
+    print("######################################")
+    print(">> get_tdoa_hyperbola")
+    print("######################################")
+    print("locA: "+str(locA))
+    print("toaA: "+str(toaA))
+    print("locB: "+str(locB))
+    print("toaB: "+str(toaB))
+    print("hyperbola_length: "+str(hyperbola_length))
 
+    c = 299792458   # speed of RF wave through vacuum (close enough)
     TDOA = toaB - toaA
     print("TDOA: "+str(TDOA))
     print("Range difference: "+str(c*TDOA))
@@ -194,8 +203,15 @@ def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
     toaE = np.vstack(np.linspace(toaE_guess, (toaE_guess*hyperbola_length), resolution))
     dAE = c*(toaA-toaE)
     dBE = c*(toaB-toaE)
-    dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)   
+    dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)
     dCE = np.sqrt((dAE*dAE) - (dAC*dAC))
+
+    print("toaE: "+str(toaE[0]))
+    print("dAE: "+str(dAE[0]))
+    print("dBE: "+str(dBE[0]))
+    print("dAC: "+str(dAC[0]))
+    print("dCE: "+str(dCE[0]))
+
     locC = locA + dAC*(locB-locA)/dAB
 
     # Ep(x,y) possible emitter location positive side
@@ -206,7 +222,7 @@ def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
     Eyn = np.vstack(locC[:,1]) - dCE*(locB[0]-locA[0])/dAB
 
     locE = np.hstack([np.vstack([np.flip(Exp), Exn]), np.vstack([np.flip(Eyp), Eyn])])
-    print(locE)
+    print("locE: "+str(locE[0]))
     print("")
     return TDOA,locE
 
