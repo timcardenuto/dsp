@@ -334,7 +334,7 @@ def estimateGeolocationDOA(mtype, z, sigma, s1loc):
 
         P = np.linalg.pinv(H.conj().transpose()@np.linalg.pinv(R)@H)
 
-        xhatnew = xhat + P@H.conj().transpose()@np.linalg.pinv(R)@(theta-thetahat)
+        xhatnew = xhat + (P@H.conj().transpose()@np.linalg.pinv(R)@(theta-thetahat)).flatten()
         error = abs(xhatnew - xhat)
         xhat = xhatnew
         print("count = ",count) 
@@ -451,8 +451,6 @@ def geolocate(measurements, containment):
     # Use Moore-Penrose and Iterated Least Squares (ILS) to estimate the geolocation and covariance matrix
     if 'tdoa_range' not in mtype:
         xhat,P = estimateGeolocationDOA(mtype, z, sigma, s1loc)
-        # TODO: Why is this function output an extra [[]] around the measurement?
-        xhat = [xhat[0][0], xhat[1][0]]
     elif 'doa_angle' not in mtype:
         xhat,P = estimateGeolocationTDOA(mtype, z, sigma, s1loc, s2loc)
     else:

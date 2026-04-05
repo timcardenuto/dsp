@@ -49,12 +49,18 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola
     if sensors:
         fig.add_trace(go.Scatter(
             x=[s['x'] for s in sensors], y=[s['y'] for s in sensors],
-            mode='markers', marker=dict(color='rgba(0,0,0,1)', size=10, symbol='circle'),
+            mode='markers+text', marker=dict(color='rgba(0,0,0,1)', size=10, symbol='circle'),
+            text=[f'S{i+1}' for i in range(len(sensors))],
+            textposition='top center',
+            textfont=dict(color='rgba(0,0,0,1)', size=11),
             name='Sensors'))
     if targets:
         fig.add_trace(go.Scatter(
             x=[t['x'] for t in targets], y=[t['y'] for t in targets],
-            mode='markers', marker=dict(color='rgba(152,0,0,0.8)', size=10, symbol='star'),
+            mode='markers+text', marker=dict(color='rgba(152,0,0,0.8)', size=10, symbol='star'),
+            text=[f'T{i+1}' for i in range(len(targets))],
+            textposition='top center',
+            textfont=dict(color='rgba(152,0,0,0.8)', size=11),
             name='Targets'))
     if doa_data and sensors:
         main_xs, main_ys = [], []
@@ -148,6 +154,19 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola
                     legendgroup=f'tdoa_t{t_idx}',
                     showlegend=first,
                 ))
+                # Sensor pair label at midpoint of the hyperbola
+                label_text = hyp.get('label', '')
+                if label_text:
+                    mid_idx = len(pts_c) // 2
+                    fig.add_trace(go.Scatter(
+                        x=[pts_c[mid_idx, 0]], y=[pts_c[mid_idx, 1]],
+                        mode='text',
+                        text=[label_text],
+                        textposition='top center',
+                        textfont=dict(color=col_solid, size=11),
+                        legendgroup=f'tdoa_t{t_idx}',
+                        showlegend=False,
+                    ))
     if ellipses:
         t = np.linspace(0, 2 * np.pi, 200)
         for e in ellipses:
@@ -498,6 +517,7 @@ def calculate_measurements(sensors, targets):
                     'center': hyp_center.tolist(),
                     'upper':  hyp_upper.tolist(),
                     'lower':  hyp_lower.tolist(),
+                    'label':  f'S{i+1}-S{j+1}',
                 })
                 mtype_array.append('tdoa_range')
                 loc_array.append(loc1)
