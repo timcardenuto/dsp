@@ -186,6 +186,11 @@ if __name__ == "__main__":
         Msum = M if len(Msum) == 0 else Msum + M
         MTasum = M@a if len(MTasum) == 0 else MTasum + M@a
     xhat = np.linalg.pinv(Msum)@MTasum
+
+    # TODO apparently Moore-Penrose doesn't work for ranges so this is supposed to but it doesn't here, need to debug...
+    # uniquelocs = np.concatenate((s1, s2, s3))
+    # xhat = np.mean(uniquelocs, axis=0)
+
     print("xhat: "+str(xhat))
     print("")
 

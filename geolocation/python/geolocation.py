@@ -34,19 +34,11 @@ def estimateGeolocationTDOA(mtype, z, sigma, sref, srel):
     R = (sigma*sigma)*np.identity(len(sigma))    # covariance matrix (measurement errors)
     print("Covariance Matrix (R):    "+str(R))
 
-    # Initial estimate of target position (initial guess) given by Moore-Penrose algorithm
-    # NOTE: This initial guess is based on measurements which have random error, and depending on the result here there can be errors resolving the geo.
-    # TODO: Which or how many of the sensor locations should I use here? The measurements don't align 1-to-1 with sensor locations ... 
-    #       if I'm only use two range measurements but they are related to measurements where I used all 3 sensors???
-    #       This algorithm works regardless of whether you use s1,s2 or s1,s2,s3; and either way sometimes produces singular matrix errors later 
-    Msum = []
-    MTasum = []
-    for a,t in zip(uniquelocs,z):
-        u = np.vstack([[np.cos(t)], [np.sin(t)]])           # unit vector along ?
-        M = np.identity(2) - u@(u.conj().transpose())       # Moore-Penrose matrix
-        Msum = M if len(Msum) == 0 else Msum + M
-        MTasum = M@a if len(MTasum) == 0 else MTasum + M@a
-    xhat = np.linalg.pinv(Msum)@MTasum
+    # Initial estimate: centroid of all unique sensor locations.
+    # The Moore-Penrose formula requires DOA angles, but z here are signed TDOA range
+    # differences (meters), so that approach produces nonsense for TDOA. The centroid
+    # is a neutral starting point for the ILS to converge from.
+    xhat = np.mean(uniquelocs, axis=0)
     print("xhat: "+str(xhat))
     print("")
 
@@ -80,6 +72,52 @@ def estimateGeolocationTDOA(mtype, z, sigma, sref, srel):
     return xhat,P
 
 
+def _intersect_doa_tdoa(doa_loc, theta, sref_tdoa, srel_tdoa, z_tdoa, t_max):
+    """Find the point along the DOA ray that lies on a TDOA hyperbola.
+
+    Parametrises the DOA ray as P(t) = doa_loc + t*[cos θ, sin θ] and solves
+    the TDOA equation dist(P, sref_tdoa) - dist(P, srel_tdoa) = z_tdoa for t.
+
+    This turns two 2-D constraints into one 1-D root-finding problem, giving an
+    exact (noise-free) initial estimate for the ILS when there is exactly one DOA
+    and at least one TDOA measurement.
+
+    Uses a scan-then-bisect approach (no scipy required).
+
+    Returns the [x, y] intersection point, or None if no root found in [1, t_max].
+    """
+    cx, cy   = float(doa_loc[0]), float(doa_loc[1])
+    cos_t    = np.cos(theta)
+    sin_t    = np.sin(theta)
+    sx1, sy1 = float(sref_tdoa[0]), float(sref_tdoa[1])
+    sx2, sy2 = float(srel_tdoa[0]), float(srel_tdoa[1])
+
+    def residual(t):
+        x  = cx + t * cos_t
+        y  = cy + t * sin_t
+        d1 = np.sqrt((x - sx1)**2 + (y - sy1)**2)
+        d2 = np.sqrt((x - sx2)**2 + (y - sy2)**2)
+        return (d1 - d2) - z_tdoa
+
+    # Scan the positive ray direction for a sign change, then bisect
+    t_vals = np.linspace(1.0, t_max, 600)
+    f_prev = residual(t_vals[0])
+    for k in range(1, len(t_vals)):
+        f_curr = residual(t_vals[k])
+        if f_prev * f_curr < 0:
+            a, b = t_vals[k - 1], t_vals[k]
+            for _ in range(60):            # 60 bisection steps → ~1e-18 relative error
+                mid = (a + b) / 2
+                if residual(mid) * residual(a) < 0:
+                    b = mid
+                else:
+                    a = mid
+            t_root = (a + b) / 2
+            return np.array([cx + t_root * cos_t, cy + t_root * sin_t])
+        f_prev = f_curr
+    return None
+
+
 def estimateGeolocationMulti(mtype, z, sigma, sref, srel):
     """ Function to allow geolocation when multiple different measurement types are combined
 
@@ -92,25 +130,61 @@ def estimateGeolocationMulti(mtype, z, sigma, sref, srel):
     print("Measurement Stds (sigma): "+str(sigma))
 
     a = np.unique(sref, axis=0)
-    b = np.unique(srel, axis=0)
-    uniquelocs = np.concatenate((a, b))
+    # srel has [None, None] placeholder entries for DOA measurements; filter those out
+    srel_valid = np.array([s for s in srel if s[0] is not None], dtype=float)
+    uniquelocs = np.unique(np.concatenate((a, srel_valid)), axis=0) if len(srel_valid) else a
     print("Sensor Locations [x,y]:   "+str(uniquelocs))
 
     R = (sigma*sigma)*np.identity(len(sigma))    # covariance matrix (measurement errors)
     print("Covariance Matrix (R):    "+str(R))
 
-    # Initial estimate of target position (initial guess) given by Moore-Penrose algorithm
-    # TODO: I'm ignoring the sensorRel list... not sure if that will mess things up. 
-    #       I added [None, None] above to keep things equal length for indexing later and don't want those as part of the union, 
-    #       otherwise I would have used zip(np.union1d(sref, srel),z)
-    Msum = []
-    MTasum = []
-    for a,t in zip(uniquelocs,z):
-        u = np.vstack([[np.cos(t)], [np.sin(t)]])           # unit vector along ?
-        M = np.identity(2) - u@(u.conj().transpose())       # Moore-Penrose matrix
-        Msum = M if len(Msum) == 0 else Msum + M
-        MTasum = M@a if len(MTasum) == 0 else MTasum + M@a
-    xhat = np.linalg.pinv(Msum)@MTasum
+    doa_idxs  = [i for i, mt in enumerate(mtype) if mt == 'doa_angle']
+    tdoa_idxs = [i for i, mt in enumerate(mtype) if mt == 'tdoa_range']
+
+    if len(doa_idxs) >= 2:
+        # Moore-Penrose on ≥2 DOA measurements gives a good triangulated initial guess.
+        # (Requires ≥2 rays; a single ray gives a degenerate projection, not a point.)
+        Msum = []
+        MTasum = []
+        for i in doa_idxs:
+            a_loc = sref[i]
+            t = z[i]
+            u = np.vstack([[np.cos(t)], [np.sin(t)]])
+            M = np.identity(2) - u@(u.conj().transpose())
+            Msum = M if len(Msum) == 0 else Msum + M
+            MTasum = M@a_loc if len(MTasum) == 0 else MTasum + M@a_loc
+        xhat = np.linalg.pinv(Msum)@MTasum
+
+    elif len(doa_idxs) == 1 and len(tdoa_idxs) >= 1:
+        # Exactly 1 DOA + ≥1 TDOA: substitute the ray P(t) = doa_loc + t*[cos θ, sin θ]
+        # into the TDOA equation to get a 1-D root-finding problem.  This gives the
+        # exact intersection of the DOA ray with the TDOA hyperbola, which is an ideal
+        # starting point for the ILS.
+        max_sep = max(
+            (np.linalg.norm(uniquelocs[i] - uniquelocs[j])
+             for i in range(len(uniquelocs)) for j in range(i + 1, len(uniquelocs))),
+            default=1e4
+        )
+        t_max = max(max_sep * 50, 1e5)   # generous range: 50× sensor baseline or 100 km
+
+        xhat = None
+        for tdoa_idx in tdoa_idxs:
+            candidate = _intersect_doa_tdoa(
+                sref[doa_idxs[0]], z[doa_idxs[0]],
+                sref[tdoa_idx], srel[tdoa_idx],
+                z[tdoa_idx], t_max
+            )
+            if candidate is not None:
+                xhat = candidate
+                break
+        if xhat is None:
+            print("  WARNING: DOA/TDOA ray-hyperbola intersection not found, falling back to centroid")
+            xhat = np.mean(uniquelocs, axis=0)
+
+    else:
+        # No DOA measurements (pure TDOA) or no TDOA to pair with: use sensor centroid.
+        xhat = np.mean(uniquelocs, axis=0)
+
     print("xhat: "+str(xhat))
     print("")
 
@@ -181,7 +255,6 @@ def estimateGeolocationDOA(mtype, z, sigma, s1loc):
     # u3 = np.vstack([[np.cos(theta3)], [np.sin(theta3)]])
     # M3 = np.identity(2) - u3@(u3.conj().transpose())
     # xhat = np.linalg.inv(M1+M2+M3)@(M1@loc1+M2@loc2+M3@loc3)
-    # TODO: I don't think range measurements (when they are part of theta_array work here...
     Msum = []
     MTasum = []
     for a,t in zip(s1loc,z):
