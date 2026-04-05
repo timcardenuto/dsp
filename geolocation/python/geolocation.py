@@ -328,6 +328,10 @@ def estimateGeolocationDOA(mtype, z, sigma, s1loc):
         for a,th in zip(s1loc[1:],thetahat[1:]):
             H = np.vstack([H, (1/np.power((xhat-a).conj().transpose()@(xhat-a),0.5))*np.hstack([-np.sin(th), np.cos(th)])])
 
+        print("h: "+str(thetahat))
+        print("H: "+str(H))
+        print("")
+
         P = np.linalg.pinv(H.conj().transpose()@np.linalg.pinv(R)@H)
 
         xhatnew = xhat + P@H.conj().transpose()@np.linalg.pinv(R)@(theta-thetahat)

@@ -15,22 +15,21 @@ coloredlogs.install(level="DEBUG", fmt='%(asctime)s %(name)s %(levelname)s %(mes
 from geolocation import *
 
 GS = 100                        # snap grid resolution (points per axis)
-GRID_MIN, GRID_MAX = 0, 100     # km — default / initial view range
+GRID_MIN, GRID_MAX = 0, 100_000  # m — default / initial view range (100 km)
 
 # Ray length for DOA lines: 1.5× the initial grid diagonal guarantees overshoot
 # within the default view; Plotly clips lines that extend past the axis range.
 DOA_LINE_LENGTH = (GRID_MAX - GRID_MIN) * 1.5
 
 # NOTE: hint that red values in the UI mean that they are outside the bounds set in this code
-#   e.g. if you try to set y=101 it will show as red and probably will revert to whatever it was before.
+#   e.g. if you try to set y=100001 it will show as red and probably will revert to whatever it was before.
 # NOTE: It's also very finicky the way it works...
-#   e.g. min=0, max=99, step=1 means you can only have integers between 0 and 99 inclusive. 100 won't work. 43.5 won't work.
-#   e.g. min=0, max=99, step=0.1 means you can now have fractions but only one decimal place, 43.5 works but 43.55 does not.
-#   e.g. min=0, max=99, step=0.01 means you can now have fractions with two decimal place, 43.55 works but 43.555 does not.
+#   e.g. min=0, max=99999, step=1 means you can only have integers between 0 and 99999 inclusive.
+#   e.g. min=0, max=99999, step=0.1 means you can now have fractions with one decimal place.
 # NOTE: Also when x,y locations are first populated in the table they may start out red b/c the resolution of the table grid is higher than the
-#       restrictions in the table... so you get a weird situation where you can place a point at x=35.1234 but you couldn't edit it to be 35.1235
+#       restrictions in the table... so you get a weird situation where you can place a point at x=35123 but you couldn't edit it to be 35123.5
 
-def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, view_range=None):
+def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola_data=None, view_range=None):
     if view_range is None:
         view_range = {'x': [GRID_MIN, GRID_MAX], 'y': [GRID_MIN, GRID_MAX]}
     vx, vy = view_range['x'], view_range['y']
@@ -64,6 +63,8 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, view_rang
         ray_len = max(vx[1] - vx[0], vy[1] - vy[0]) * 1.5
         for t_idx, target_doas in enumerate(doa_data):
             for s_idx, doa_deg in enumerate(target_doas):
+                if doa_deg is None:
+                    continue
                 sx, sy = sensors[s_idx]['x'], sensors[s_idx]['y']
                 sigma_rad = np.radians(sensors[s_idx].get('sigma', 1.0))
                 angle_rad = np.radians(doa_deg)
@@ -97,6 +98,56 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, view_rang
             x=main_xs, y=main_ys,
             mode='lines', line=dict(color='rgba(255, 140, 0, 0.85)', width=1.5),
             name='DOA Lines', showlegend=True))
+    if hyperbola_data:
+        hyp_colors = [
+            ('rgba(0,150,255,0.75)',  'rgba(0,150,255,0.35)',  'rgba(0,150,255,0.10)'),
+            ('rgba(0,200,100,0.75)',  'rgba(0,200,100,0.35)',  'rgba(0,200,100,0.10)'),
+            ('rgba(200,0,200,0.75)',  'rgba(200,0,200,0.35)',  'rgba(200,0,200,0.10)'),
+            ('rgba(255,100,0,0.75)',  'rgba(255,100,0,0.35)',  'rgba(255,100,0,0.10)'),
+        ]
+        for t_idx, target_hyperbolas in enumerate(hyperbola_data):
+            col_solid, col_dash, col_fill = hyp_colors[t_idx % len(hyp_colors)]
+            for h_idx, hyp in enumerate(target_hyperbolas):
+                pts_c = np.array(hyp['center'])
+                pts_u = np.array(hyp['upper'])
+                pts_l = np.array(hyp['lower'])
+                first = (h_idx == 0)
+
+                # Fill between upper and lower bounds
+                if pts_u.shape[0] > 0 and pts_l.shape[0] > 0:
+                    fill_x = pts_u[:, 0].tolist() + pts_l[::-1, 0].tolist()
+                    fill_y = pts_u[:, 1].tolist() + pts_l[::-1, 1].tolist()
+                    fig.add_trace(go.Scatter(
+                        x=fill_x, y=fill_y,
+                        mode='lines', line=dict(width=0),
+                        fill='toself', fillcolor=col_fill,
+                        legendgroup=f'tdoa_t{t_idx}', showlegend=False,
+                    ))
+
+                # ±σ bound hyperbolas — dashed
+                for pts_b in (pts_u, pts_l):
+                    if pts_b.shape[0] == 0:
+                        continue
+                    fig.add_trace(go.Scatter(
+                        x=pts_b[:, 0].tolist(), y=pts_b[:, 1].tolist(),
+                        mode='lines',
+                        line=dict(color=col_dash, width=1, dash='dash'),
+                        name=f'TDOA ±σ Bounds (T{t_idx + 1})',
+                        legendgroup=f'tdoa_t{t_idx}',
+                        showlegend=False,
+                    ))
+
+                # Central hyperbola — solid
+                if pts_c.shape[0] == 0:
+                    continue
+                fig.add_trace(go.Scatter(
+                    x=pts_c[:, 0].tolist(), y=pts_c[:, 1].tolist(),
+                    mode='lines',
+                    line=dict(color=col_solid, width=1.5),
+                    name=f'TDOA Hyperbola (T{t_idx + 1})',
+                    legendgroup=f'tdoa_t{t_idx}',
+                    showlegend=first,
+                ))
     if ellipses:
         t = np.linspace(0, 2 * np.pi, 200)
         for e in ellipses:
@@ -119,8 +170,8 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, view_rang
                 name=f"Ellipse parametric ({label})",
                 showlegend=True))
     fig.update_layout(
-        xaxis_title="X (km)",
-        yaxis_title="Y (km)",
+        xaxis_title="X (m)",
+        yaxis_title="Y (m)",
         xaxis=dict(range=vx),
         yaxis=dict(range=vy, scaleanchor='x', scaleratio=1),
         uirevision='constant',
@@ -146,7 +197,7 @@ def make_table(points, point_type, ellipses=None):
 
     header_cells = [html.Th("#"), html.Th("X"), html.Th("Y")]
     if is_sensor:
-        header_cells.append(html.Th("σ"))
+        header_cells += [html.Th("σ"), html.Th("Mode")]
     if is_target:
         header_cells += [html.Th("Area (km²)"), html.Th("Containment"), html.Th("Inside?")]
     header_cells.append(html.Th(""))
@@ -158,28 +209,41 @@ def make_table(points, point_type, ellipses=None):
             html.Td(f"{point_type} {i + 1}"),
             html.Td(dcc.Input(
                 id={'type': f'x-{pt}', 'index': i},
-                type='number', value=round(p['x'], 4),
-                step=0.0001, debounce=True,
+                type='number', value=round(p['x']),
+                step=1, debounce=True,
                 style={'width': '80px'}
             )),
             html.Td(dcc.Input(
                 id={'type': f'y-{pt}', 'index': i},
-                type='number', value=round(p['y'], 4),
-                step=0.0001, debounce=True,
+                type='number', value=round(p['y']),
+                step=1, debounce=True,
                 style={'width': '80px'}
             )),
         ]
         if is_sensor:
-            cells.append(html.Td(dcc.Input(
-                id={'type': 'sigma-sensor', 'index': i},
-                type='number', value=p.get('sigma', 1.0),
-                min=0, max=99, step=0.001, debounce=True,
-                style={'width': '70px'}
+            sensor_mode = p.get('mode', 'doa')
+            sigma_unit  = 'µs' if sensor_mode == 'tdoa' else '°'
+            cells.append(html.Td([
+                dcc.Input(
+                    id={'type': 'sigma-sensor', 'index': i},
+                    type='number', value=p.get('sigma', 1.0),
+                    min=0, max=99, step=0.001, debounce=True,
+                    style={'width': '65px'}
+                ),
+                html.Small(sigma_unit, className='ms-1 text-muted'),
+            ]))
+            cells.append(html.Td(dcc.Dropdown(
+                id={'type': 'mode-sensor', 'index': i},
+                options=[{'label': 'DOA', 'value': 'doa'},
+                         {'label': 'TDOA', 'value': 'tdoa'}],
+                value=sensor_mode,
+                clearable=False,
+                style={'width': '90px', 'fontSize': '12px'},
             )))
         if is_target:
             e = ellipse_map.get(i)
             if e:
-                area = np.pi * e['semimajor'] * e['semiminor']
+                area = (np.pi * e['semimajor'] * e['semiminor']) / 1e+6
                 inside = point_in_ellipse(
                     p['x'], p['y'],
                     e['cx'], e['cy'],
@@ -212,187 +276,294 @@ def make_table(points, point_type, ellipses=None):
 
 def get_tdoa_hyperbola(locA, toaA, locB, toaB, hyperbola_length):
     """
-    locA = sensor A position [x y]
-    toaA = time of arrival (TOA) of the signal at sensor A
-    locB = sensor B position [x y]
-    toaB = time of arrival (TOA) of the signal at sensor B
-    hyperbola_length = length of the hyperbola to draw (for visual representation only, does not affect the measurement)
+    Compute the TDOA hyperbola curve for a pair of sensors A and B.
+
+    The locus of points where |dAE - dBE| = c|TDOA| is one branch of a hyperbola
+    with foci at A and B.  This function uses the standard cosh/sinh parametric
+    form, which is always valid regardless of sensor/target geometry.
+
+    locA            = sensor A position [x, y]
+    toaA            = time of arrival at sensor A (s)
+    locB            = sensor B position [x, y]
+    toaB            = time of arrival at sensor B (s)
+    hyperbola_length = controls how far along the curve to draw; the curve
+                       extends to cosh(t_max) = hyperbola_length multiples of
+                       the semi-transverse axis from the hyperbola vertex.
+
+    Returns (TDOA, locE) where locE is an Nx2 array of [x, y] points tracing
+    the relevant branch, or an empty (0x2) array if the geometry is degenerate.
     """
-    print("")
-    print("######################################")
-    print(">> get_tdoa_hyperbola")
-    print("######################################")
-    print("locA: "+str(locA))
-    print("toaA: "+str(toaA))
-    print("locB: "+str(locB))
-    print("toaB: "+str(toaB))
-    print("hyperbola_length: "+str(hyperbola_length))
+    c = 299792458   # speed of RF wave through vacuum
 
-    c = 299792458   # speed of RF wave through vacuum (close enough)
     TDOA = toaB - toaA
-    print("TDOA: "+str(TDOA))
-    print("Range difference: "+str(c*TDOA))
+    D    = c * TDOA         # signed range difference: dBE - dAE = D
 
-    # Initial guess at emitter location and time
-    # We don't know what point the emitter is at (x,y), and we don't have range measurements to the emitter (dAE or dBE)
-    # We do know that *1* of the possible positions of E lies between A and B, specifically at the point where the wave could reach point A prior to point B with a time difference given by the TDOA measurement
-    # Since the wave from E must reach either A or B first, there is always a valid solution that lies between them providing the time difference (in the extreme case, E is directly on the far side of A or B on a line connecting all 3 points, but what this would look like from a Time of Arrival (TOA) perspective is that the wave arrives a A (or B in reverse) first and then B a the speed of light time afterwards which would make it look like E is *at* A). 
-    # Therefore *1* solution of dAE is: 
-    dAB = np.sqrt(np.power(locB[0]-locA[0],2)+np.power(locB[1]-locA[1],2))
-    dAE = (dAB - c*(TDOA))/2
-    print("Initial Guess dAE: "+str(dAE))
+    # --- Baseline geometry ---
+    diff = locB - locA
+    dAB  = np.sqrt(diff[0]**2 + diff[1]**2)
 
-    # from this distance dAE, and the given points A, B and distance dAB, we can calculate *1* possible emitter point E
-    locE = locA + dAE*(locB-locA)/dAB 
-    print("Initial Guess E(x,y): "+str(locE[0])+","+str(locE[1]))
+    a = abs(D) / 2          # semi-transverse axis  (half the range difference)
+    f = dAB / 2             # focal half-distance
 
-    # now we can find the time that the emitter transmitted, if it was at this point E, such that the TDOA is correct
-    # this is only *1* of the (technically infinite) solutions
-    # using a definition of the distance dAE = c(toaA - toaE):
-    toaE_guess = toaA - dAE/c
-    print("Initial Guess toaE: "+str(toaE_guess))
+    logger.debug(f"\n>> get_tdoa_hyperbola  TDOA={TDOA:.3e}s  D={D:.3f}  dAB={dAB:.3f}  a={a:.3f}  f={f:.3f}")
 
-    # Batch processor
-    # explanation for math steps given in the iterative version of this below (same math just w/o matrices)
-    resolution = 100*hyperbola_length      # determines how many points along the line to use, this is just for drawing purposes. 10x seems to be reasonable
-    toaE = np.vstack(np.linspace(toaE_guess, (toaE_guess*hyperbola_length), resolution))
-    dAE = c*(toaA-toaE)
-    dBE = c*(toaB-toaE)
-    dAC = ((dAE*dAE) - (dBE*dBE) + (dAB*dAB))/(2*dAB)
-    dCE = np.sqrt((dAE*dAE) - (dAC*dAC))
+    # Degenerate: range difference ≥ baseline → emitter at or beyond a sensor on
+    # the line connecting them.  No valid hyperbola branch exists.
+    if a >= f:
+        logger.warning("  WARNING: |D| >= dAB — degenerate geometry, returning empty locE")
+        return TDOA, np.empty((0, 2))
 
-    print("toaE: "+str(toaE[0]))
-    print("dAE: "+str(dAE[0]))
-    print("dBE: "+str(dBE[0]))
-    print("dAC: "+str(dAC[0]))
-    print("dCE: "+str(dCE[0]))
+    b = np.sqrt(f**2 - a**2)   # semi-conjugate axis
 
-    locC = locA + dAC*(locB-locA)/dAB
+    # --- Coordinate frame centred on the midpoint of AB ---
+    M = (locA + locB) / 2
+    u = diff / dAB              # unit vector A → B
+    v = np.array([-u[1], u[0]]) # perpendicular unit vector
 
-    # Ep(x,y) possible emitter location positive side
-    Exp = np.vstack(locC[:,0]) - dCE*(locB[1]-locA[1])/dAB
-    Eyp = np.vstack(locC[:,1]) + dCE*(locB[0]-locA[0])/dAB
-    # En(x,y) possible emitter location negative side
-    Exn = np.vstack(locC[:,0]) + dCE*(locB[1]-locA[1])/dAB
-    Eyn = np.vstack(locC[:,1]) - dCE*(locB[0]-locA[0])/dAB
+    # --- Parametric sweep ---
+    # t_max chosen so the tip-to-end distance in the local x direction is
+    # a * cosh(t_max) = a * hyperbola_length, i.e. t_max = arccosh(length).
+    t_max = np.arccosh(max(float(hyperbola_length), 1.001))
+    N     = max(int(100 * hyperbola_length), 200)
+    t     = np.linspace(-t_max, t_max, N)
 
-    locE = np.hstack([np.vstack([np.flip(Exp), Exn]), np.vstack([np.flip(Eyp), Eyn])])
-    print("locE: "+str(locE[0]))
-    print("")
-    return TDOA,locE
+    # Branch selection: D > 0 → toaB > toaA → signal reached A first → E is
+    # on the A-side branch (negative local-x, i.e. x_local = -a·cosh(t)).
+    branch_sign = -np.sign(D) if D != 0 else 1.0
+    x_local = branch_sign * a * np.cosh(t)
+    y_local = b * np.sinh(t)
+
+    # Transform back to global coordinates
+    locE = M + np.outer(x_local, u) + np.outer(y_local, v)
+
+    logger.debug(f"  branch_sign={branch_sign}  a={a:.3f}  b={b:.3f}  t_max={t_max:.3f}  N={N}")
+    logger.debug(f"  locE[0]={locE[0]}  locE[-1]={locE[-1]}")
+    return TDOA, locE
 
 
-def calculate_geolocation(sensors, targets, containment=0.95):
-    """Stub: estimate target location from sensor positions.
+def sim_tdoa():
+    # TO DRAW IT
+    c = 299792458   # speed of RF wave through vacuum (close enough)
+    sigma_time = 0.000001
+    length = 10  # how long the line should be, in terms of the # of toaE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
 
-    Args:
-        sensors: list of {'x': float, 'y': float} sensor positions
-        targets: list of {'x': float, 'y': float} true/initial target positions
+    ########################################
+    loc1 = np.array([-18520, 37040])
+    loc2 = np.array([0, 37040])
+    e1 = np.array([ 5556, 74080])
+    sensors = [{'x': loc1[0], 'y': loc1[1], 'sigma': sigma_time}, {'x': loc2[0], 'y': loc2[1], 'sigma': sigma_time}]
+    targets = [{'x': e1[0], 'y': e1[1]}]
+
+    for target in targets:
+        loc_array = []
+        sigma_array = []
+        doa_array = []
+
+        d1e = np.sqrt(np.power(loc1[0]-e1[0],2)+np.power(loc1[1]-e1[1],2))
+        d2e = np.sqrt(np.power(loc2[0]-e1[0],2)+np.power(loc2[1]-e1[1],2))
+        ########################################
+
+        t1 = 0              # TOA at sensor 1 is our reference point
+        te = t1 - d1e/c     # emission time will be negative since we're using TOA at sensor 1 for the zero reference point
+        t1 = te + d1e/c# + rand.normalvariate(mu=0.0, sigma=sigma_time)
+
+        ########################################
+        t2 = te + d2e/c# + rand.normalvariate(mu=0.0, sigma=sigma_time)
+        tdoa,hyperbola = get_tdoa_hyperbola(loc1, t1, loc2, t2, length)
+        logger.debug("tdoa: "+str(tdoa))
+        logger.debug("")
+        ########################################
+
+        tns = [t1]
+        loc_array.append(np.vstack([[sensors[0]['x']],[sensors[0]['y']]]))
+        sigma_array.append(sigma_time)
+        for sensor in sensors[1:]:
+            loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
+            sigma_array.append(sigma_time)
+
+            dne = np.sqrt(np.power(sensor['x']-target['x'],2)+np.power(sensor['y']-target['y'],2))
+            tn = te + dne/c# + rand.normalvariate(mu=0.0, sigma=sigma_time)
+            tns.append(tn)
+
+        # Get TDOA calculation and hyperbola for every combination of sensors
+        tdoas = np.array([])
+        indices_combinations = itertools.combinations(range(len(sensors)), 2)
+        for indices_tuple in indices_combinations:
+            items_tuple = (sensors[i] for i in indices_tuple)
+            items = tuple(items_tuple)
+            logger.debug(f"Indices: {indices_tuple}, Items: {items}")
+
+        for s1, s2 in itertools.combinations(sensors, 2):
+            logger.debug("s1: "+str(items[0])+", t1: "+str(tns[indices_tuple[0]]))
+            logger.debug("s2: "+str(items[1])+", t2: "+str(tns[indices_tuple[1]]))
+            loc1 = np.array([items[0]['x'], items[0]['y']])
+            loc2 = np.array([items[1]['x'], items[1]['y']])
+            tdoa,hyperbola = get_tdoa_hyperbola(loc1, tns[indices_tuple[0]], loc2, tns[indices_tuple[1]], length)
+            logger.debug("TDOA: "+str(tdoa))
+            tdoas = np.append(tdoas,tdoa)
+        logger.debug("TDOAs: "+str(tdoas))
+
+        # z = theta basically but for non-DOA 
+        # z = np.array([(c*np.abs(tdoa21)), (c*np.abs(tdoa31)), (c*np.abs(tdoa32))])
+        doa_array = c*np.abs(tdoas)
+        logger.debug("Ranges: "+str(doa_array))
+
+
+def calculate_measurements(sensors, targets):
+    """Simulate measurements for all targets using per-sensor mode.
+
+    Each sensor carries a 'mode' field ('doa' or 'tdoa').  DOA sensors each
+    contribute one angle measurement.  TDOA sensors contribute one range-difference
+    measurement per pair of TDOA sensors.
 
     Returns:
-        tuple of (ellipses, doa_data) where doa_data[target_idx][sensor_idx]
-        is the DOA measurement in degrees.
+        measurements:    list (one per target) of dicts with keys
+                         'mtype_array', 'loc_array', 'doa_array', 'sigma_array',
+                         's2loc_array' — all JSON-serializable.
+        hyperbola_data:  hyperbola_data[target_idx][pair_idx] = {center, upper, lower}
+        doa_data:        doa_data[target_idx][sensor_idx] = DOA angle in degrees,
+                         or None for TDOA sensors (keeps index alignment with sensors list)
+    """
+    c = 299792458   # speed of RF wave through vacuum
+    length = 10     # hyperbola sweep length
+
+    logger.debug(">calculate_measurements (per-sensor mode)")
+
+    measurements = []
+    hyperbola_data = []
+    doa_data = []
+
+    for target in targets:
+        logger.debug("  |-Target: "+str(target))
+
+        mtype_array = []
+        loc_array   = []
+        sigma_array = []
+        doa_array   = []
+        s2loc_array = []
+        # One slot per sensor; None for TDOA sensors (so make_fig can index by sensor)
+        doa_per_sensor = [None] * len(sensors)
+        hyperbolas_this_target = []
+
+        ###################################################################
+        # DOA measurements — one per DOA sensor
+        ###################################################################
+        for s_idx, sensor in enumerate(sensors):
+            if sensor.get('mode', 'doa') != 'doa':
+                continue
+            # sigma in the sensor table is in degrees for DOA; convert to radians
+            sigma_rad = sensor['sigma'] * np.pi / 180
+            theta = np.arctan2(target['y'] - sensor['y'],
+                               target['x'] - sensor['x'])
+            error = np.random.normal(0, sensor['sigma'])
+            doa = theta + error * np.pi / 180
+            doa_per_sensor[s_idx] = float(np.degrees(doa))
+            mtype_array.append('doa_angle')
+            loc_array.append(np.array([sensor['x'], sensor['y']]))
+            sigma_array.append(sigma_rad)
+            doa_array.append(float(doa))
+            s2loc_array.append(None)
+            logger.debug("    |-Sensor (DOA): "+str(sensor))
+            logger.debug(f"    |--DOA:   {np.degrees(doa):.3f}°")
+
+        ###################################################################
+        # TDOA measurements — one per pair of TDOA sensors
+        ###################################################################
+        tdoa_indices = [i for i, s in enumerate(sensors) if s.get('mode', 'doa') == 'tdoa']
+        if len(tdoa_indices) >= 2:
+            # Compute true emission time using first TDOA sensor as reference
+            ref = sensors[tdoa_indices[0]]
+            d_ref = np.sqrt((ref['x'] - target['x'])**2 + (ref['y'] - target['y'])**2)
+            te = -d_ref / c
+            # Simulate noisy TOA for each TDOA sensor (sigma in µs)
+            tns = {}
+            for idx in tdoa_indices:
+                s = sensors[idx]
+                sigma_n = s['sigma'] * 1e-6
+                dne = np.sqrt((s['x'] - target['x'])**2 + (s['y'] - target['y'])**2)
+                tns[idx] = te + dne / c + np.random.normal(0, sigma_n)
+                logger.debug("    |-Sensor (TDOA): "+str(s))
+
+            for i, j in itertools.combinations(tdoa_indices, 2):
+                loc1 = np.array([sensors[i]['x'], sensors[i]['y']])
+                loc2 = np.array([sensors[j]['x'], sensors[j]['y']])
+                sigma_i = sensors[i]['sigma'] * 1e-6
+                sigma_j = sensors[j]['sigma'] * 1e-6
+                sigma_combined = np.sqrt(sigma_i**2 + sigma_j**2)
+                tdoa, hyp_center = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j], length)
+                _,    hyp_upper  = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j] + sigma_combined, length)
+                _,    hyp_lower  = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j] - sigma_combined, length)
+                logger.debug(f"    |--TDOA (s{i},s{j}): {tdoa:.3e}")
+                hyperbolas_this_target.append({
+                    'center': hyp_center.tolist(),
+                    'upper':  hyp_upper.tolist(),
+                    'lower':  hyp_lower.tolist(),
+                })
+                mtype_array.append('tdoa_range')
+                loc_array.append(loc1)
+                # z must be signed: h = dist(xhat,s1) - dist(xhat,s2) = dAE - dBE = -c*tdoa
+                doa_array.append(float(-c * tdoa))
+                # Convert sigma from time to distance domain
+                sigma_array.append(c * sigma_combined)
+                s2loc_array.append(loc2)
+
+        measurements.append({
+            'mtype_array': mtype_array,
+            'loc_array':   [a.tolist() for a in loc_array],
+            'doa_array':   doa_array,
+            'sigma_array': sigma_array,
+            's2loc_array': [a.tolist() if a is not None else None for a in s2loc_array],
+        })
+        hyperbola_data.append(hyperbolas_this_target)
+        doa_data.append(doa_per_sensor)
+
+    return measurements, hyperbola_data, doa_data
+
+
+def calculate_geolocation(measurements, targets, containment=0.95):
+    """Compute geolocation ellipses from stored measurements.
+
+    Args:
+        measurements: list of per-target dicts produced by calculate_measurements.
+        targets:      list of {'x', 'y'} dicts (used only to tag ellipses).
+        containment:  probability containment fraction (e.g. 0.95).
+
+    Returns:
+        list of ellipse dicts from geolocate(), one per target.
     """
     logger.debug(">calculate_geolocation")
 
     ellipses = []
-    doa_data = []   # doa_data[target_idx][sensor_idx] = DOA in degrees
-    for target in targets:
-        logger.debug("  |-Target: "+str(target))
-        loc_array = []
-        sigma_array = []
-        doa_array = []
-        doa_per_sensor = []
-        if False:
-            for sensor in sensors:
-                loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
+    for m, target in zip(measurements, targets):
+        loc_array   = [np.array(a) for a in m['loc_array']]
+        doa_array   = np.array(m['doa_array'])
+        sigma_array = m['sigma_array']
 
-                ###################################
-                # Simulation for DOA measurements
-                # Convert sigma from degrees to radians
-                sigma_array.append(sensor['sigma']*np.pi/180 )
-                # Calculate relative angle between target and measurement location (zero angle is when target is due East from sensor, negative is clockwise and positive is counter-clockwise)
-                theta = np.arctan2(target['y']-sensor['y'], target['x']-sensor['x'])
+        mtype_array = m['mtype_array']
+        s2loc_raw   = m.get('s2loc_array', [None] * len(loc_array))
+        data = []
+        for mtype, s1loc, s2loc_entry, value, sigma in zip(
+                mtype_array, loc_array, s2loc_raw, doa_array, sigma_array):
+            if mtype == 'tdoa_range':
+                data.append({'mtype': 'tdoa_range', 'value': value, 'sigma': sigma,
+                             's1loc': s1loc, 's2loc': np.array(s2loc_entry)})
+            else:
+                data.append({'mtype': 'doa_angle', 'value': value, 'sigma': sigma, 's1loc': s1loc})
 
-                # Add measurement error based on sensor sigma
-                # TODO: check the logic here....
-                err = 1             # max measurement error in degrees, +-
-                error = -err + (err+err)*np.random.rand(1)
-                doa = theta + error * np.pi/180
-                doa_array.append(doa)
-                doa_per_sensor.append(float(np.degrees(doa[0])))
-
-                logger.debug("    |-Sensor: "+str(sensor))
-                logger.debug("    |--DOA:   "+str(doa))
-                ###################################
-
-        if True:
-            # TDOA version
-            # for every 2 sensor pairs.... but you have to decide how many sensors you want to be part of the final calculation, I think they all might need to be referenced to a common time=zero sensor
-                # sensor and target have to be in np.array([x,y])
-
-            # TO DRAW IT
-            c = 299792458   # speed of RF wave through vacuum (close enough)
-            sigma_time = 0.000001
-            length = 10  # how long the line should be, in terms of the # of toaE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
-            
-            d1e = np.sqrt(np.power(sensors[0]['x']-target['x'],2)+np.power(sensors[0]['y']-target['y'],2))
-            t1 = 0              # TOA at sensor 1 is our reference point
-            te = t1 - d1e/c     # emission time will be negative since we're using TOA at sensor 1 for the zero reference point
-            t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
-            tns = [t1]
-
-            loc_array.append(np.vstack([[sensors[0]['x']],[sensors[0]['y']]]))
-            sigma_array.append(sigma_time)
-            for sensor in sensors[1:]:
-                loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
-                sigma_array.append(sigma_time)
-
-                dne = np.sqrt(np.power(sensor['x']-target['x'],2)+np.power(sensor['y']-target['y'],2))
-                tn = te + dne/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
-                tns.append(tn)
-
-            # Get TDOA calculation and hyperbola for every combination of sensors
-            tdoas = np.array([])
-            indices_combinations = itertools.combinations(range(len(sensors)), 2)
-            for indices_tuple in indices_combinations:
-                items_tuple = (sensors[i] for i in indices_tuple)
-                items = tuple(items_tuple)
-                print(f"Indices: {indices_tuple}, Items: {items}")
-
-            # for s1, s2 in itertools.combinations(sensors, 2):
-                print("s1: "+str(items[0])+", t1: "+str(tns[indices_tuple[0]]))
-                print("s1: "+str(items[1])+", t1: "+str(tns[indices_tuple[1]]))
-                loc1 = np.array([items[0]['x'], items[0]['y']])
-                loc2 = np.array([items[1]['x'], items[1]['y']])
-                tdoa,hyperbola = get_tdoa_hyperbola(loc1, tns[indices_tuple[0]], loc2, tns[indices_tuple[1]], length)
-                print("tdoa: "+str(tdoa))
-                tdoas = np.append(tdoas,tdoa)
-            print("tdoas: "+str(tdoas))
-
-            # z = theta basically but for non-DOA 
-            # z = np.array([(c*np.abs(tdoa21)), (c*np.abs(tdoa31)), (c*np.abs(tdoa32))])
-            doa_array = c*np.abs(tdoas)
-            print("doa_array: "+str(doa_array))
-
-
-        # Calculate geolocation for the full set of sensors and this specific target
-        ellipse = geolocate(loc_array, doa_array, sigma_array, containment)
-        logger.debug("  |-Geolocation: ")
-        logger.debug("    |-x,y:          "+str(ellipse['x'][0])+", "+str(ellipse['y'][0]))
-        logger.debug("    |-semimajor:    "+str(ellipse['semimajor']))
-        logger.debug("    |-semiminor:    "+str(ellipse['semiminor']))
-        logger.debug("    |-orientation:  "+str(ellipse['orientation']*180/np.pi))
+        ellipse = geolocate(data, containment)
+        logger.debug("  |-x,y:         "+str(ellipse['x'])+", "+str(ellipse['y']))
+        logger.debug("  |-semimajor:   "+str(ellipse['semimajor']))
+        logger.debug("  |-semiminor:   "+str(ellipse['semiminor']))
+        logger.debug("  |-orientation: "+str(ellipse['orientation']*180/np.pi))
         ellipse['target_id'] = target
         ellipses.append(ellipse)
-        doa_data.append(doa_per_sensor)
 
-    return ellipses, doa_data
+    return ellipses
 
 
 app = dash.Dash(__name__, title='Geo', external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-# Default x range is pre-widened to match a 3:2 aspect ratio (y stays 0–100,
+# Default x range is pre-widened to match a 3:2 aspect ratio (y stays 0–100 km,
 # x extends 25% on each side). relayoutData will correct this if the actual
 # rendered aspect ratio differs.
 _span = GRID_MAX - GRID_MIN
@@ -400,7 +571,7 @@ _default_view = {'x': [GRID_MIN - _span * 0.25, GRID_MAX + _span * 0.25],
                  'y': [GRID_MIN, GRID_MAX]}
 
 app.layout = html.Div([
-    dcc.Store(id='store', data={'sensors': [], 'targets': [], 'ellipses': [], 'doa_data': [], 'show_doa': False}),
+    dcc.Store(id='store', data={'sensors': [], 'targets': [], 'measurements': [], 'ellipses': [], 'doa_data': [], 'hyperbola_data': [], 'show_doa': False}),
     dcc.Store(id='mode-store', data='sensor'),
     dcc.Store(id='view-range', data=_default_view),
 
@@ -431,9 +602,21 @@ app.layout = html.Div([
                     dbc.InputGroupText("%"),
                 ], size='sm'),
             ], width='auto', className='align-self-center'),
+            dbc.Col([
+                html.Small("Default mode:", className='text-muted me-1'),
+                dbc.RadioItems(
+                    id='measure-mode',
+                    options=[{'label': 'DOA', 'value': 'doa'},
+                             {'label': 'TDOA', 'value': 'tdoa'}],
+                    value='doa',
+                    inline=True,
+                ),
+            ], width='auto', className='align-self-center d-flex align-items-center'),
+            dbc.Col(dbc.Button('Calculate Measurements', id='btn-measure', n_clicks=0,
+                               color='warning'), width='auto'),
             dbc.Col(dbc.Button('Calculate Geolocation', id='btn-calculate', n_clicks=0,
-                               color='primary'), width='auto'),
-            dbc.Col(dbc.Button('Show DOA Lines', id='btn-show-doa', n_clicks=0,
+                               color='primary', disabled=True), width='auto'),
+            dbc.Col(dbc.Button('Show Measurements', id='btn-show-doa', n_clicks=0,
                                color='info', disabled=True), width='auto'),
         ], className='mt-2 mb-3 g-2'),
 
@@ -473,11 +656,13 @@ def update_view_range(relayout_data, current_range):
     Output('geo-result', 'children'),
     Input('graph', 'clickData'),
     Input('btn-clear', 'n_clicks'),
+    Input('btn-measure', 'n_clicks'),
     Input('btn-calculate', 'n_clicks'),
     Input('btn-show-doa', 'n_clicks'),
     Input({'type': 'del-sensor', 'index': ALL}, 'n_clicks'),
     Input({'type': 'del-target', 'index': ALL}, 'n_clicks'),
     Input({'type': 'sigma-sensor', 'index': ALL}, 'value'),
+    Input({'type': 'mode-sensor', 'index': ALL}, 'value'),
     Input({'type': 'x-sensor', 'index': ALL}, 'value'),
     Input({'type': 'y-sensor', 'index': ALL}, 'value'),
     Input({'type': 'x-target', 'index': ALL}, 'value'),
@@ -486,15 +671,17 @@ def update_view_range(relayout_data, current_range):
     State('mode-store', 'data'),
     State('sigma-input', 'value'),
     State('containment-input', 'value'),
+    State('measure-mode', 'value'),
 )
-def update_store(click_data, _clear, _calc, _show_doa, _del_s, _del_t,
-                 sigma_sensor_vals, x_sensor_vals, y_sensor_vals, x_target_vals, y_target_vals,
-                 store, mode, sigma_val, containment_pct):
+def update_store(click_data, _clear, _measure, _calc, _show_doa, _del_s, _del_t,
+                 sigma_sensor_vals, mode_sensor_vals, x_sensor_vals, y_sensor_vals,
+                 x_target_vals, y_target_vals,
+                 store, mode, sigma_val, containment_pct, measure_mode):
     triggered = ctx.triggered_id
     no_alert = dash.no_update
 
     if triggered == 'btn-clear':
-        return {'sensors': [], 'targets': [], 'ellipses': [], 'doa_data': [], 'show_doa': False}, no_alert
+        return {'sensors': [], 'targets': [], 'measurements': [], 'ellipses': [], 'doa_data': [], 'hyperbola_data': [], 'show_doa': False}, no_alert
 
     if triggered == 'btn-show-doa':
         store['show_doa'] = not store.get('show_doa', False)
@@ -537,6 +724,13 @@ def update_store(click_data, _clear, _calc, _show_doa, _del_s, _del_t,
             store['sensors'][idx]['sigma'] = float(val)
         return store, no_alert
 
+    if isinstance(triggered, dict) and triggered['type'] == 'mode-sensor':
+        idx = triggered['index']
+        val = mode_sensor_vals[idx]
+        if val is not None:
+            store['sensors'][idx]['mode'] = val
+        return store, no_alert
+
     if isinstance(triggered, dict) and triggered['type'] == 'x-sensor':
         idx = triggered['index']
         val = x_sensor_vals[idx]
@@ -570,29 +764,46 @@ def update_store(click_data, _clear, _calc, _show_doa, _del_s, _del_t,
         entry = {'x': pt['x'], 'y': pt['y']}
         if mode == 'sensor':
             entry['sigma'] = float(sigma_val) if sigma_val and sigma_val > 0 else 1.0
+            entry['mode']  = measure_mode or 'doa'
             store['sensors'].append(entry)
         else:
             store['targets'].append(entry)
         return store, no_alert
 
-    if triggered == 'btn-calculate':
+    if triggered == 'btn-measure':
         sensors = store['sensors']
         targets = store['targets']
-        if len(sensors) < 2:
-            return store, dbc.Alert("Add at least two sensors before calculating.", color='warning')
+        n_doa  = sum(1 for s in sensors if s.get('mode', 'doa') == 'doa')
+        n_tdoa = sum(1 for s in sensors if s.get('mode', 'doa') == 'tdoa')
+        if n_doa < 2 and n_tdoa < 2:
+            return store, dbc.Alert(
+                "Need at least 2 DOA sensors or 2 TDOA sensors to calculate measurements.",
+                color='warning')
         if not targets:
-            return store, dbc.Alert("Add at least one target before calculating.", color='warning')
+            return store, dbc.Alert("Add at least one target before calculating measurements.", color='warning')
+        measurements, hyperbola_data, doa_data = calculate_measurements(sensors, targets)
+        store['measurements']    = measurements
+        store['hyperbola_data']  = hyperbola_data
+        store['doa_data']        = doa_data
+        store['ellipses']        = []   # clear stale ellipses when measurements are refreshed
+        alert = dbc.Alert(f"Calculated measurements for {len(measurements)} target(s).", color='info')
+        return store, alert
+
+    if triggered == 'btn-calculate':
+        measurements = store.get('measurements', [])
+        targets = store['targets']
+        if not measurements:
+            return store, dbc.Alert("Calculate measurements first.", color='warning')
         containment = (containment_pct or 95) / 100.0
-        results, doa_data = calculate_geolocation(sensors, targets, containment)
+        results = calculate_geolocation(measurements, targets, containment)
         ellipses = []
         for target_idx, ellipse in enumerate(results):
-            shape = np.rot90(ellipse['shape'])      # rotate 90 degress, original is [[x1 y1], [x2 y2], ...], result is [[y1 y2 ...], [x1 x2 ...]]
-            # shape = np.array(ellipse['shape'])    # expected 2xN array: row 0 = x, row 1 = y
+            shape = np.rot90(ellipse['shape'])      # rotate 90 degrees, original is [[x1 y1], [x2 y2], ...], result is [[y1 y2 ...], [x1 x2 ...]]
             ellipses.append({
                 'shape_x': shape[1].tolist(),
                 'shape_y': shape[0].tolist(),
-                'cx': float(ellipse['x'][0]),
-                'cy': float(ellipse['y'][0]),
+                'cx': float(ellipse['x']),
+                'cy': float(ellipse['y']),
                 'semimajor': float(ellipse['semimajor']),
                 'semiminor': float(ellipse['semiminor']),
                 'orientation': float(ellipse['orientation']),
@@ -600,7 +811,6 @@ def update_store(click_data, _clear, _calc, _show_doa, _del_s, _del_t,
                 'target_idx': target_idx,
             })
         store['ellipses'] = ellipses
-        store['doa_data'] = doa_data
         alert = dbc.Alert(f"Calculated {len(ellipses)} ellipse(s).", color='success')
         return store, alert
 
@@ -622,13 +832,22 @@ def update_view(store, view_range):
     ellipses = store.get('ellipses', [])
     show_doa = store.get('show_doa', False)
     doa_data = store.get('doa_data', []) if show_doa else None
-    btn_disabled = not bool(ellipses)
-    btn_label = 'Hide DOA Lines' if show_doa else 'Show DOA Lines'
-    return (make_fig(sensors, targets, ellipses, doa_data, view_range),
+    hyperbola_data = store.get('hyperbola_data', []) if show_doa else None
+    btn_disabled = not bool(store.get('measurements'))
+    btn_label = 'Hide Measurements' if show_doa else 'Show Measurements'
+    return (make_fig(sensors, targets, ellipses, doa_data, hyperbola_data, view_range),
             make_table(sensors, 'Sensor'),
             make_table(targets, 'Target', ellipses),
             btn_disabled,
             btn_label)
+
+
+@app.callback(
+    Output('btn-calculate', 'disabled'),
+    Input('store', 'data'),
+)
+def update_calculate_button(store):
+    return not bool(store.get('measurements'))
 
 
 @app.callback(
