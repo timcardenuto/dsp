@@ -39,11 +39,16 @@ axs.plot([loc2[0], 100*np.cos(theta2-sigma2)+loc2[0]],[loc2[1], 100*np.sin(theta
 # theta_array = [theta1, theta2, theta3]
 # sigma_array = [sigma1, sigma2, sigma3]
 
-loc_array = [loc1, loc2]
-theta_array = [theta1, theta2]
-sigma_array = [sigma1, sigma2]
+# loc_array = [loc1, loc2]
+# theta_array = [theta1, theta2]
+# sigma_array = [sigma1, sigma2]
+# ellipse = geolocate(loc_array, theta_array, sigma_array, 0.95)
 
-ellipse = geolocate(loc_array, theta_array, sigma_array, 0.95)
+request = [
+    {'mtype': 'doa_angle', 'value':  theta1, 'sigma': sigma1, 's1loc': loc1},
+    {'mtype': 'doa_angle', 'value':  theta2, 'sigma': sigma2, 's1loc': loc2}
+    ]
+ellipse = geolocate(request, 0.95)
 
 # test = np.rot90(ellipse['shape'])#, k=-1)
 # print(test[0].tolist())

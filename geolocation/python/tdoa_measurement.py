@@ -3,6 +3,7 @@ import random as rand
 import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 import sys
+from geolocation import *
 
 # constant variables
 c = 299792458   # speed of RF wave through vacuum (close enough)
@@ -107,9 +108,10 @@ if __name__ == "__main__":
     sigma_time = 0.000001
     t1 = 0              # TOA at sensor 1 is our reference point
     te = t1 - d1e/c     # emission time will be negative since we're using TOA at sensor 1 for the zero reference point
-    t2 = te + d2e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
-    t3 = te + d3e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)
-    t1 = te + d1e/c + rand.normalvariate(mu=0.0, sigma=sigma_time)    # realistic t1 has to include error, but couldn't add it to the other terms above
+    t1 = te + d1e/c + np.random.normal(0, sigma_time) # rand.normalvariate(mu=0.0, sigma=sigma_time)    # realistic t1 has to include error, but couldn't add it to the other terms above
+    t2 = te + d2e/c + np.random.normal(0, sigma_time) # rand.normalvariate(mu=0.0, sigma=sigma_time)
+    t3 = te + d3e/c + np.random.normal(0, sigma_time) # rand.normalvariate(mu=0.0, sigma=sigma_time)
+
 
     length = 10  # how long the line should be, in terms of the # of toaE's lengths..... hard to quantify but 10 gives a good picture for 2 points, would need to calculate this based on the overall scenario map limits
     tdoa21,hyperbola21 = get_tdoa_hyperbola(s1, t1, s2, t2, length)
@@ -123,7 +125,7 @@ if __name__ == "__main__":
     plt.plot(s3[0], s3[1], '^g', label='Sensor 3')
     plt.plot(hyperbola21[:,0], hyperbola21[:,1], '-k', label='S1>S2 TDOA {}'.format(tdoa21))
     plt.plot(hyperbola31[:,0], hyperbola31[:,1], '-k', label='S1>S3 TDOA {}'.format(tdoa31))
-    plt.plot(hyperbola32[:,0], hyperbola32[:,1], '-k', label='S1>S3 TDOA {}'.format(tdoa32))
+    plt.plot(hyperbola32[:,0], hyperbola32[:,1], '-k', label='S2>S3 TDOA {}'.format(tdoa32))
     plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', shadow=True, fontsize='small')
     plt.tight_layout()
     plt.draw()
@@ -137,31 +139,76 @@ if __name__ == "__main__":
     print("Geolocation")
     print("##############################\n")
 
-    # TODO There's a bug somewhere here.... it's almost like 180 degrees off?
-
     # TDOA measurements, in terms of "range differences"
     # r1 - r2 = c*(ta1-ta2)
     # r1 - r3 = c*(ta1-ta3)
-    # z = np.array([(c*np.abs(tdoa21)),(c*np.abs(tdoa31))])
+    z = np.array([(c*np.abs(tdoa21)),(c*np.abs(tdoa31))])
     # z = np.array([7298.46419703, 5368.64643455])
-    z = np.array([8000, -50])
+    # z = np.array([8000, -50])     # was uncommented ...
     # z = np.array([(c*tdoa21),(c*tdoa31)])
     # z = np.array([13000,-5600])
 
     # TDOA measurement error (std deviation), in terms of distance (m/s * s) = m
     sigma_dist = c*sigma_time
-    R = (sigma_dist*sigma_dist)*np.identity(2)
+    
 
-    xhat = np.array([0,0])          # initial guess at location of target, in real life would need to be smarter about it
+    #########################################
+    # Using the Geolocation library function
+    request = [
+        {'mtype': 'tdoa_range', 'value':  z[0], 'sigma': sigma_dist, 's1loc': s1, 's2loc': s2},
+        {'mtype': 'tdoa_range', 'value':  z[1], 'sigma': sigma_dist, 's1loc': s1, 's2loc': s3}
+        ]
+    ellipse = geolocate(request, 0.95)
+    plt.plot(ellipse['x'], ellipse['y'], '*g', label='Final Target Location Estimate')
+    plt.plot(ellipse['shape'][:,0],ellipse['shape'][:,1],'-g', label='Error Ellipse')
+    plt.legend(bbox_to_anchor=(1, 0.5), loc='center left', shadow=True, fontsize='small')
+    plt.tight_layout()
+    plt.draw()
+
+    input("Press Enter to continue...")
+    
+    #########################################
+    # Original code here
+
+    # Covariance matrix
+    R = (sigma_dist*sigma_dist)*np.identity(2)
+    
+    # Initial estimate of target position (initial guess) given by Moore-Penrose algorithm
+    # NOTE: This does work, but see below note. This initial guess is based on measurements which have random error, and depending on the result here there are errors resolving the geo.
+    # TODO: Which or how many of the sensor locations should I use here? The measurements don't align 1-to-1 with sensor locations ... 
+    #       if I'm only use two range measurements but they are related to measurements where I used all 3 sensors???
+    #       This algorithm works regardless of whether you use s1,s2 or s1,s2,s3; and either way sometimes produces singular matrix errors later 
+    Msum = []
+    MTasum = []
+    for a,t in zip([s1,s2],z):
+        u = np.vstack([[np.cos(t)], [np.sin(t)]])           # unit vector along TDOA?
+        M = np.identity(2) - u@(u.conj().transpose())       # Moore-Penrose matrix
+        Msum = M if len(Msum) == 0 else Msum + M
+        MTasum = M@a if len(MTasum) == 0 else MTasum + M@a
+    xhat = np.linalg.pinv(Msum)@MTasum
+    print("xhat: "+str(xhat))
+    print("")
+
+    # TODO: When you comment out the normalvariate error for the time measurements, and use Moore-Penrose above this is what you get every time 
+    #       When you include the error, this changes every time (as expected) but sometimes it gives Singular Matrix errors... Sometimes it converges on one or the other cross over points
+    # NOTE: Even though I *have definitely seen this provide the correct result multiple times* ... now it's not? So there's still some randomness below that determines which cross over point it converges to?
+    # xhat = np.array([251.44757026, 31248.34867717])     # initial guess at location of target that seems to convergense on the wrong side...
+    # xhat = np.array([-1895.33108933, 43617.27057437])   # another guess that **should** result in convergense on the right side... I saw it!
+
     a1 = s1 
     a2 = s2
     a3 = s3
     print("sigma: "+str(sigma_dist))
+    print("R: "+str(R))
     print("z: "+str(z))
     print("a1:"+str(a1))
     print("a2:"+str(a2))
     print("a3:"+str(a3))
     print("\n")
+
+
+    sref = [a1, a1]
+    srel = [a2, a3]
 
     count = 1
     maxcount = 10
@@ -169,13 +216,34 @@ if __name__ == "__main__":
     maxerror = .1
     while (count < maxcount and (error[0]+error[1]/2) > maxerror):
 
-        h = np.array([np.power(np.transpose(xhat-a1).dot(xhat-a1),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5), np.power(np.transpose(xhat-a3).dot(xhat-a3),0.5) - np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5)])
+        # Range h and H
+        # h = r = ((x-a)'*(x-a))^.5
+        # H = (1/r)*(x-a)'
 
-        H = np.array([(1/np.power(np.transpose(xhat-a1).dot(xhat-a1),0.5))*np.transpose(xhat-a1) - (1/np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5))*np.transpose(xhat-a2), (1/np.power(np.transpose(xhat-a3).dot(xhat-a3),0.5))*np.transpose(xhat-a3) - (1/np.power(np.transpose(xhat-a2).dot(xhat-a2),0.5))*np.transpose(xhat-a2)])
+        h = np.zeros(len(sref))
+        H = np.zeros((len(sref),2))
+        # TODO: Probably a way to do this w/o loop using matrices but too lazy to figure it out...
+        for i in range(len(sref)):
+            h[i] = (np.power(np.transpose(xhat-sref[i])@(xhat-sref[i]),0.5) - np.power(np.transpose(xhat-srel[i])@(xhat-srel[i]),0.5))
+            H[i] = ((1/np.power(np.transpose(xhat-sref[i])@(xhat-sref[i]),0.5))*np.transpose(xhat-sref[i]) - (1/np.power(np.transpose(xhat-srel[i])@(xhat-srel[i]),0.5))*np.transpose(xhat-srel[i]))
 
-        P = np.linalg.inv(np.transpose(H).dot(np.linalg.inv(R)).dot(H))
+        # Old way, had to manually add every sensor...
+        # h = np.array([
+        #     np.power(np.transpose(xhat-a1)@(xhat-a1),0.5) - np.power(np.transpose(xhat-a2)@(xhat-a2),0.5), 
+        #     np.power(np.transpose(xhat-a1)@(xhat-a1),0.5) - np.power(np.transpose(xhat-a3)@(xhat-a3),0.5)
+        #     ])
+        # H = np.array([
+        #     (1/np.power(np.transpose(xhat-a1)@(xhat-a1),0.5))*np.transpose(xhat-a1) - (1/np.power(np.transpose(xhat-a2)@(xhat-a2),0.5))*np.transpose(xhat-a2), 
+        #     (1/np.power(np.transpose(xhat-a1)@(xhat-a1),0.5))*np.transpose(xhat-a1) - (1/np.power(np.transpose(xhat-a3)@(xhat-a3),0.5))*np.transpose(xhat-a3)
+        #     ])
 
-        xhatnew = xhat + P.dot(np.transpose(H)).dot(np.linalg.inv(R)).dot(z-h)
+        # print("h: "+str(h))
+        # print("H: "+str(H))
+        # print("")
+
+        P = np.linalg.pinv(np.transpose(H)@(np.linalg.pinv(R))@(H))
+
+        xhatnew = xhat + P@(np.transpose(H))@(np.linalg.pinv(R))@(z-h)
         error = abs(xhatnew - xhat)
         xhat = xhatnew
     
@@ -202,7 +270,7 @@ if __name__ == "__main__":
     if(angle < 0):
         angle = angle + 2*np.pi
     R = np.vstack([[np.cos(angle),np.sin(angle)],[-np.sin(angle),np.cos(angle)]])
-    ellipse = ellipse.dot(R)
+    ellipse = ellipse@(R)
 
     # Shift ellipse and plot 
     plt.plot(xhat[0], xhat[1], '*g', label='Estimated location')

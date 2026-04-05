@@ -14,25 +14,39 @@ coloredlogs.install(level="DEBUG", fmt='%(asctime)s %(name)s %(levelname)s %(mes
 
 from geolocation import *
 
-GS = 100                        # With GS = 100 over a 0–100 km range, the snap resolution is 1 km per grid step
-GRID_MIN, GRID_MAX = 0, 100     # km
+GS = 100                        # snap grid resolution (points per axis)
+GRID_MIN, GRID_MAX = 0, 100     # km — default / initial view range
+
+# Ray length for DOA lines: 1.5× the initial grid diagonal guarantees overshoot
+# within the default view; Plotly clips lines that extend past the axis range.
+DOA_LINE_LENGTH = (GRID_MAX - GRID_MIN) * 1.5
 
 # NOTE: hint that red values in the UI mean that they are outside the bounds set in this code
-#   e.g. if you try to set y=101 it will show as red and probably will revert to whatever it was before. 
-# NOTE: It's also very finicky the way it works... 
+#   e.g. if you try to set y=101 it will show as red and probably will revert to whatever it was before.
+# NOTE: It's also very finicky the way it works...
 #   e.g. min=0, max=99, step=1 means you can only have integers between 0 and 99 inclusive. 100 won't work. 43.5 won't work.
 #   e.g. min=0, max=99, step=0.1 means you can now have fractions but only one decimal place, 43.5 works but 43.55 does not.
 #   e.g. min=0, max=99, step=0.01 means you can now have fractions with two decimal place, 43.55 works but 43.555 does not.
-# NOTE: Also when x,y locations are first populated in the table they may start out red b/c the resolution of the table grid is higher than the 
+# NOTE: Also when x,y locations are first populated in the table they may start out red b/c the resolution of the table grid is higher than the
 #       restrictions in the table... so you get a weird situation where you can place a point at x=35.1234 but you couldn't edit it to be 35.1235
 
-def make_fig(sensors=None, targets=None, ellipses=None):
+def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, view_range=None):
+    if view_range is None:
+        view_range = {'x': [GRID_MIN, GRID_MAX], 'y': [GRID_MIN, GRID_MAX]}
+    vx, vy = view_range['x'], view_range['y']
+
     fig = make_subplots(rows=1, cols=1)
+
+    # Invisible snap grid — regenerated to cover the current view so clicks
+    # always land on a point within the visible area.
+    # hoverinfo='none' suppresses the hover label without disabling click/zoom detection.
+    # (hoverinfo='skip' would also disable clicks, breaking sensor/target placement.)
     fig.add_traces(
-        px.scatter(x=np.repeat(np.linspace(GRID_MIN, GRID_MAX, GS), GS),
-                   y=np.tile(np.linspace(GRID_MIN, GRID_MAX, GS), GS))
-        .update_traces(marker_color="rgba(0,0,0,0)")
+        px.scatter(x=np.repeat(np.linspace(vx[0], vx[1], GS), GS),
+                   y=np.tile(np.linspace(vy[0], vy[1], GS), GS))
+        .update_traces(marker_color="rgba(0,0,0,0)", hoverinfo='none')
         .data)
+
     if sensors:
         fig.add_trace(go.Scatter(
             x=[s['x'] for s in sensors], y=[s['y'] for s in sensors],
@@ -43,6 +57,46 @@ def make_fig(sensors=None, targets=None, ellipses=None):
             x=[t['x'] for t in targets], y=[t['y'] for t in targets],
             mode='markers', marker=dict(color='rgba(152,0,0,0.8)', size=10, symbol='star'),
             name='Targets'))
+    if doa_data and sensors:
+        main_xs, main_ys = [], []
+        bound_xs, bound_ys = [], []
+        fill_xs,  fill_ys  = [], []
+        ray_len = max(vx[1] - vx[0], vy[1] - vy[0]) * 1.5
+        for t_idx, target_doas in enumerate(doa_data):
+            for s_idx, doa_deg in enumerate(target_doas):
+                sx, sy = sensors[s_idx]['x'], sensors[s_idx]['y']
+                sigma_rad = np.radians(sensors[s_idx].get('sigma', 1.0))
+                angle_rad = np.radians(doa_deg)
+
+                ex       = sx + ray_len * np.cos(angle_rad)
+                ey       = sy + ray_len * np.sin(angle_rad)
+                ex_upper = sx + ray_len * np.cos(angle_rad + sigma_rad)
+                ey_upper = sy + ray_len * np.sin(angle_rad + sigma_rad)
+                ex_lower = sx + ray_len * np.cos(angle_rad - sigma_rad)
+                ey_lower = sy + ray_len * np.sin(angle_rad - sigma_rad)
+
+                main_xs  += [sx, ex, None]
+                main_ys  += [sy, ey, None]
+                bound_xs += [sx, ex_upper, None, sx, ex_lower, None]
+                bound_ys += [sy, ey_upper, None, sy, ey_lower, None]
+                # Wedge polygon: sensor -> upper tip -> lower tip -> close
+                fill_xs  += [sx, ex_upper, ex_lower, None]
+                fill_ys  += [sy, ey_upper, ey_lower, None]
+
+        # Draw fill first so lines render on top
+        fig.add_trace(go.Scatter(
+            x=fill_xs, y=fill_ys,
+            mode='lines', line=dict(width=0),
+            fill='toself', fillcolor='rgba(255, 140, 0, 0.12)',
+            name='DOA ±σ Region', showlegend=True))
+        fig.add_trace(go.Scatter(
+            x=bound_xs, y=bound_ys,
+            mode='lines', line=dict(color='rgba(255, 140, 0, 0.6)', width=1, dash='dash'),
+            name='DOA ±σ Bounds', showlegend=True))
+        fig.add_trace(go.Scatter(
+            x=main_xs, y=main_ys,
+            mode='lines', line=dict(color='rgba(255, 140, 0, 0.85)', width=1.5),
+            name='DOA Lines', showlegend=True))
     if ellipses:
         t = np.linspace(0, 2 * np.pi, 200)
         for e in ellipses:
@@ -67,8 +121,9 @@ def make_fig(sensors=None, targets=None, ellipses=None):
     fig.update_layout(
         xaxis_title="X (km)",
         yaxis_title="Y (km)",
-        xaxis=dict(range=[GRID_MIN, GRID_MAX]),
-        yaxis=dict(range=[GRID_MIN, GRID_MAX]),
+        xaxis=dict(range=vx),
+        yaxis=dict(range=vy, scaleanchor='x', scaleratio=1),
+        uirevision='constant',
     )
     return fig
 
@@ -104,13 +159,13 @@ def make_table(points, point_type, ellipses=None):
             html.Td(dcc.Input(
                 id={'type': f'x-{pt}', 'index': i},
                 type='number', value=round(p['x'], 4),
-                min=GRID_MIN, max=GRID_MAX, step=0.0001, debounce=True,
+                step=0.0001, debounce=True,
                 style={'width': '80px'}
             )),
             html.Td(dcc.Input(
                 id={'type': f'y-{pt}', 'index': i},
                 type='number', value=round(p['y'], 4),
-                min=GRID_MIN, max=GRID_MAX, step=0.0001, debounce=True,
+                step=0.0001, debounce=True,
                 style={'width': '80px'}
             )),
         ]
@@ -235,17 +290,19 @@ def calculate_geolocation(sensors, targets, containment=0.95):
         targets: list of {'x': float, 'y': float} true/initial target positions
 
     Returns:
-        dict with estimated position {'x': float, 'y': float},
-        or None if calculation cannot be performed.
+        tuple of (ellipses, doa_data) where doa_data[target_idx][sensor_idx]
+        is the DOA measurement in degrees.
     """
     logger.debug(">calculate_geolocation")
 
     ellipses = []
+    doa_data = []   # doa_data[target_idx][sensor_idx] = DOA in degrees
     for target in targets:
         logger.debug("  |-Target: "+str(target))
         loc_array = []
         sigma_array = []
         doa_array = []
+        doa_per_sensor = []
         if False:
             for sensor in sensors:
                 loc_array.append(np.vstack([[sensor['x']],[sensor['y']]]))
@@ -263,6 +320,7 @@ def calculate_geolocation(sensors, targets, containment=0.95):
                 error = -err + (err+err)*np.random.rand(1)
                 doa = theta + error * np.pi/180
                 doa_array.append(doa)
+                doa_per_sensor.append(float(np.degrees(doa[0])))
 
                 logger.debug("    |-Sensor: "+str(sensor))
                 logger.debug("    |--DOA:   "+str(doa))
@@ -327,54 +385,87 @@ def calculate_geolocation(sensors, targets, containment=0.95):
         logger.debug("    |-orientation:  "+str(ellipse['orientation']*180/np.pi))
         ellipse['target_id'] = target
         ellipses.append(ellipse)
+        doa_data.append(doa_per_sensor)
 
-    return ellipses
+    return ellipses, doa_data
 
 
 app = dash.Dash(__name__, title='Geo', external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+# Default x range is pre-widened to match a 3:2 aspect ratio (y stays 0–100,
+# x extends 25% on each side). relayoutData will correct this if the actual
+# rendered aspect ratio differs.
+_span = GRID_MAX - GRID_MIN
+_default_view = {'x': [GRID_MIN - _span * 0.25, GRID_MAX + _span * 0.25],
+                 'y': [GRID_MIN, GRID_MAX]}
+
 app.layout = html.Div([
-    dcc.Store(id='store', data={'sensors': [], 'targets': [], 'ellipses': []}),
+    dcc.Store(id='store', data={'sensors': [], 'targets': [], 'ellipses': [], 'doa_data': [], 'show_doa': False}),
     dcc.Store(id='mode-store', data='sensor'),
+    dcc.Store(id='view-range', data=_default_view),
 
-    dcc.Graph(id='graph', figure=make_fig(), style={'height': '70vh'}),
+    dcc.Graph(id='graph', figure=make_fig(), style={'width': '100%', 'aspectRatio': '3 / 1'},
+              config={'scrollZoom': True}),
 
-    dbc.Row([
-        dbc.Col(dbc.Button('Clear All', id='btn-clear', n_clicks=0,
-                           color='secondary', outline=True), width='auto'),
-        dbc.Col(dbc.Button('Place Sensors', id='btn-place-sensor', n_clicks=0,
-                           color='success'), width='auto'),
-        dbc.Col([
-            dbc.InputGroup([
-                dcc.Input(id='sigma-input', type='number', value=3, 
-                          min=0, max=99, step=0.001, style={'width': '60px'}, 
-                          className='form-control form-control-sm'),
-                dbc.InputGroupText("σ"),
-            ], size='sm'),
-        ], width='auto', className='align-self-center'),
-        dbc.Col(dbc.Button('Place Targets', id='btn-place-target', n_clicks=0,
-                           color='secondary'), width='auto'),
-        dbc.Col([
-            dbc.InputGroup([
-                dcc.Input(id='containment-input', type='number', value=95,
-                          min=1, max=99, step=1, style={'width': '60px'},
-                          className='form-control form-control-sm'),
-                dbc.InputGroupText("%"),
-            ], size='sm'),
-        ], width='auto', className='align-self-center'),
-        dbc.Col(dbc.Button('Calculate Geolocation', id='btn-calculate', n_clicks=0,
-                           color='primary'), width='auto'),
-    ], className='mt-2 mb-3 ms-1 g-2'),
+    html.Div([
+        dbc.Row([
+            dbc.Col(dbc.Button('Clear All', id='btn-clear', n_clicks=0,
+                               color='secondary', outline=True), width='auto'),
+            dbc.Col(dbc.Button('Place Sensors', id='btn-place-sensor', n_clicks=0,
+                               color='success'), width='auto'),
+            dbc.Col([
+                dbc.InputGroup([
+                    dcc.Input(id='sigma-input', type='number', value=3,
+                              min=0, max=99, step=0.001, style={'width': '60px'},
+                              className='form-control form-control-sm'),
+                    dbc.InputGroupText("σ"),
+                ], size='sm'),
+            ], width='auto', className='align-self-center'),
+            dbc.Col(dbc.Button('Place Targets', id='btn-place-target', n_clicks=0,
+                               color='secondary'), width='auto'),
+            dbc.Col([
+                dbc.InputGroup([
+                    dcc.Input(id='containment-input', type='number', value=95,
+                              min=1, max=99, step=1, style={'width': '60px'},
+                              className='form-control form-control-sm'),
+                    dbc.InputGroupText("%"),
+                ], size='sm'),
+            ], width='auto', className='align-self-center'),
+            dbc.Col(dbc.Button('Calculate Geolocation', id='btn-calculate', n_clicks=0,
+                               color='primary'), width='auto'),
+            dbc.Col(dbc.Button('Show DOA Lines', id='btn-show-doa', n_clicks=0,
+                               color='info', disabled=True), width='auto'),
+        ], className='mt-2 mb-3 g-2'),
 
-    dbc.Row([
-        dbc.Col([html.H5('Sensors'), html.Div(id='sensors-table')], width=6),
-        dbc.Col([html.H5('Targets'), html.Div(id='targets-table')], width=6),
-    ], className='ms-1'),
+        dbc.Row([
+            dbc.Col([html.H5('Sensors'), html.Div(id='sensors-table')], width=6),
+            dbc.Col([html.H5('Targets'), html.Div(id='targets-table')], width=6),
+        ]),
 
-    dbc.Row([
-        dbc.Col(html.Div(id='geo-result'), className='ms-1 mt-3'),
-    ]),
-], className='p-3')
+        dbc.Row([
+            dbc.Col(html.Div(id='geo-result'), className='mt-3'),
+        ]),
+    ], className='px-3 pb-3'),
+])
+
+
+@app.callback(
+    Output('view-range', 'data'),
+    Input('graph', 'relayoutData'),
+    State('view-range', 'data'),
+    prevent_initial_call=True,
+)
+def update_view_range(relayout_data, current_range):
+    if not relayout_data:
+        raise dash.exceptions.PreventUpdate
+    if 'xaxis.range[0]' in relayout_data:
+        x0, x1 = relayout_data['xaxis.range[0]'], relayout_data['xaxis.range[1]']
+        y0 = relayout_data.get('yaxis.range[0]', x0)
+        y1 = relayout_data.get('yaxis.range[1]', x1)
+        return {'x': [x0, x1], 'y': [y0, y1]}
+    if 'xaxis.autorange' in relayout_data or 'autosize' in relayout_data:
+        return _default_view
+    raise dash.exceptions.PreventUpdate
 
 
 @app.callback(
@@ -383,6 +474,7 @@ app.layout = html.Div([
     Input('graph', 'clickData'),
     Input('btn-clear', 'n_clicks'),
     Input('btn-calculate', 'n_clicks'),
+    Input('btn-show-doa', 'n_clicks'),
     Input({'type': 'del-sensor', 'index': ALL}, 'n_clicks'),
     Input({'type': 'del-target', 'index': ALL}, 'n_clicks'),
     Input({'type': 'sigma-sensor', 'index': ALL}, 'value'),
@@ -395,20 +487,30 @@ app.layout = html.Div([
     State('sigma-input', 'value'),
     State('containment-input', 'value'),
 )
-def update_store(click_data, _clear, _calc, _del_s, _del_t,
+def update_store(click_data, _clear, _calc, _show_doa, _del_s, _del_t,
                  sigma_sensor_vals, x_sensor_vals, y_sensor_vals, x_target_vals, y_target_vals,
                  store, mode, sigma_val, containment_pct):
     triggered = ctx.triggered_id
     no_alert = dash.no_update
 
     if triggered == 'btn-clear':
-        return {'sensors': [], 'targets': [], 'ellipses': []}, no_alert
+        return {'sensors': [], 'targets': [], 'ellipses': [], 'doa_data': [], 'show_doa': False}, no_alert
+
+    if triggered == 'btn-show-doa':
+        store['show_doa'] = not store.get('show_doa', False)
+        return store, no_alert
 
     if isinstance(triggered, dict) and triggered['type'] == 'del-sensor':
         idx = triggered['index']
+        pruned_doa = [
+            [doa for s_idx, doa in enumerate(target_doas) if s_idx != idx]
+            for target_doas in store.get('doa_data', [])
+        ]
         return {'sensors': [s for i, s in enumerate(store['sensors']) if i != idx],
                 'targets': store['targets'],
-                'ellipses': store.get('ellipses', [])}, no_alert
+                'ellipses': store.get('ellipses', []),
+                'doa_data': pruned_doa,
+                'show_doa': store.get('show_doa', False)}, no_alert
 
     if isinstance(triggered, dict) and triggered['type'] == 'del-target':
         idx = triggered['index']
@@ -421,9 +523,12 @@ def update_store(click_data, _clear, _calc, _del_s, _del_t,
             if e['target_idx'] > idx:
                 e['target_idx'] -= 1
             remaining.append(e)
+        remaining_doa = [d for i, d in enumerate(store.get('doa_data', [])) if i != idx]
         return {'sensors': store['sensors'],
                 'targets': [t for i, t in enumerate(store['targets']) if i != idx],
-                'ellipses': remaining}, no_alert
+                'ellipses': remaining,
+                'doa_data': remaining_doa,
+                'show_doa': store.get('show_doa', False)}, no_alert
 
     if isinstance(triggered, dict) and triggered['type'] == 'sigma-sensor':
         idx = triggered['index']
@@ -478,7 +583,7 @@ def update_store(click_data, _clear, _calc, _del_s, _del_t,
         if not targets:
             return store, dbc.Alert("Add at least one target before calculating.", color='warning')
         containment = (containment_pct or 95) / 100.0
-        results = calculate_geolocation(sensors, targets, containment)
+        results, doa_data = calculate_geolocation(sensors, targets, containment)
         ellipses = []
         for target_idx, ellipse in enumerate(results):
             shape = np.rot90(ellipse['shape'])      # rotate 90 degress, original is [[x1 y1], [x2 y2], ...], result is [[y1 y2 ...], [x1 x2 ...]]
@@ -495,6 +600,7 @@ def update_store(click_data, _clear, _calc, _del_s, _del_t,
                 'target_idx': target_idx,
             })
         store['ellipses'] = ellipses
+        store['doa_data'] = doa_data
         alert = dbc.Alert(f"Calculated {len(ellipses)} ellipse(s).", color='success')
         return store, alert
 
@@ -505,15 +611,24 @@ def update_store(click_data, _clear, _calc, _del_s, _del_t,
     Output('graph', 'figure'),
     Output('sensors-table', 'children'),
     Output('targets-table', 'children'),
+    Output('btn-show-doa', 'disabled'),
+    Output('btn-show-doa', 'children'),
     Input('store', 'data'),
+    Input('view-range', 'data'),
 )
-def update_view(store):
+def update_view(store, view_range):
     sensors = store['sensors']
     targets = store['targets']
     ellipses = store.get('ellipses', [])
-    return (make_fig(sensors, targets, ellipses),
+    show_doa = store.get('show_doa', False)
+    doa_data = store.get('doa_data', []) if show_doa else None
+    btn_disabled = not bool(ellipses)
+    btn_label = 'Hide DOA Lines' if show_doa else 'Show DOA Lines'
+    return (make_fig(sensors, targets, ellipses, doa_data, view_range),
             make_table(sensors, 'Sensor'),
-            make_table(targets, 'Target', ellipses))
+            make_table(targets, 'Target', ellipses),
+            btn_disabled,
+            btn_label)
 
 
 @app.callback(
@@ -527,7 +642,6 @@ def update_mode(_s, _t):
     if ctx.triggered_id == 'btn-place-target':
         return 'target', 'secondary', 'success'
     return 'sensor', 'success', 'secondary'
-
 
 
 if __name__ == '__main__':

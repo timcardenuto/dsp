@@ -70,8 +70,8 @@ plt.plot([a1[0][0]/1852, (100*np.cos(theta1)/1852)],[a1[1][0]/1852, (100*np.sin(
 
 # Sensor 2 - range measurement
 a2 = np.vstack([[-(np.sin(60/180*np.pi)*10*1852)], [(np.cos(60/180*np.pi)*10*1852)]])
-range2 = 10*1852
-theta2 = -(90-60)/180*np.pi
+range2 = 10*1852                                                # Range measurement (meters)
+theta2 = -(90-60)/180*np.pi                                     # TODO Why am I using this? I guess if you have the DOA measurement from the same sensor then you have this...
 sigma2 = 100
 u2 = np.vstack([[np.cos(theta2)], [np.sin(theta2)]])
 M2 = np.identity(2) - u2@(u2.conj().transpose())
@@ -81,6 +81,8 @@ xunit = range2/1852 * np.cos(th) + a2[0]/1852
 yunit = range2/1852 * np.sin(th) + a2[1]/1852
 plt.plot(xunit, yunit, 'b')
 
+# TODO: Range isn't being used for this ... not really cheating since in this scenario the same sensor already has the DOA theta,
+#       But if you changed the scenario to use two different sensor locations I don't think this works anymore....
 # Initial estimate of target position (initial guess) given by Moore-Penrose algorithm
 xhat = np.linalg.inv(M1+M2)@(M1@a1+M2@a2)
 plt.plot(xhat[0]/1852, xhat[1]/1852, '*r', label='Initial Target Location Estimate w/ Moore-Penrose')
