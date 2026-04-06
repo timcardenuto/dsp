@@ -64,10 +64,18 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola
 
     fig = go.Figure()
 
-    # Invisible snap grid — covers the full grid area so any click lands on a
-    # nearby point. hoverinfo='none' suppresses hover labels without disabling clicks.
-    x_grid = np.repeat(np.linspace(GRID_MIN, GRID_MAX, GS), GS)
-    y_grid = np.tile(np.linspace(GRID_MIN, GRID_MAX, GS), GS)
+    # Invisible snap grid — centered on the current view and scaled to the visible
+    # extent so clicks snap to ~1 m precision when zoomed in.
+    # At zoom z, one map tile spans ~40 Mm / 2^z metres; 1.5× gives comfortable margin.
+    cx_m, cy_m = latlon_to_meters(center_lat, center_lon, origin_lat, origin_lon)
+    raw_half = 40_000_000.0 / (2 ** zoom)
+    half_extent = float(np.clip(raw_half * 1.5, 50.0, float(GRID_MAX)))
+    gx_min = max(GRID_MIN, cx_m - half_extent)
+    gx_max = min(GRID_MAX, cx_m + half_extent)
+    gy_min = max(GRID_MIN, cy_m - half_extent)
+    gy_max = min(GRID_MAX, cy_m + half_extent)
+    x_grid = np.repeat(np.linspace(gx_min, gx_max, GS), GS)
+    y_grid = np.tile(np.linspace(gy_min, gy_max, GS), GS)
     lat_grid, lon_grid = meters_to_latlon(x_grid, y_grid, origin_lat, origin_lon)
     fig.add_trace(go.Scattermap(
         lat=lat_grid.tolist(), lon=lon_grid.tolist(),
@@ -126,8 +134,15 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola
                 main_ys  += [sy, ey, None]
                 bound_xs += [sx, ex_upper, None, sx, ex_lower, None]
                 bound_ys += [sy, ey_upper, None, sy, ey_lower, None]
-                fill_xs  += [sx, ex_upper, ex_lower, None]
-                fill_ys  += [sy, ey_upper, ey_lower, None]
+                # Wedge polygon: sensor → arc from upper to lower bound → back to sensor.
+                # Using an arc (not just 3 points) ensures a non-degenerate polygon that
+                # fill='toself' renders reliably at all angles and sigma values.
+                arc_n = max(8, int(np.degrees(2 * sigma_rad)) + 2)
+                arc_a = np.linspace(angle_rad + sigma_rad, angle_rad - sigma_rad, arc_n)
+                arc_ex = (sx + DOA_LINE_LENGTH * np.cos(arc_a)).tolist()
+                arc_ey = (sy + DOA_LINE_LENGTH * np.sin(arc_a)).tolist()
+                fill_xs += [sx] + arc_ex + [sx, None]
+                fill_ys += [sy] + arc_ey + [sy, None]
 
         fill_lats,  fill_lons  = _xy_list_to_latlon(fill_xs,  fill_ys,  origin_lat, origin_lon)
         bound_lats, bound_lons = _xy_list_to_latlon(bound_xs, bound_ys, origin_lat, origin_lon)
@@ -625,6 +640,56 @@ def calculate_geolocation(measurements, targets, containment=0.95):
     return ellipses
 
 
+def calculate_geolocation_wgs84(measurements, targets, containment, origin_lat, origin_lon):
+    """Compute geolocation ellipses using the WGS84 / True-North algorithm.
+
+    Converts the Cartesian measurements produced by calculate_measurements() to
+    geographic coordinates, then calls geolocate_wgs84().
+
+    DOA angles are converted from the internal math convention
+    (East = 0, counterclockwise) to True-North azimuth (North = 0, clockwise).
+    Sensor positions are converted from (x, y) metres-from-origin to (lat, lon) degrees.
+    TDOA range differences are in metres and require no conversion.
+
+    Returns a list of raw ellipse dicts from geolocate_wgs84(), one per target.
+    """
+    logger.debug(">calculate_geolocation_wgs84")
+
+    ellipses = []
+    for m, target in zip(measurements, targets):
+        mtype_array = m['mtype_array']
+        s2loc_raw   = m.get('s2loc_array', [None] * len(m['loc_array']))
+        data = []
+        for mtype, s1loc_xy, s2loc_xy, value, sigma in zip(
+                mtype_array, m['loc_array'], s2loc_raw, m['doa_array'], m['sigma_array']):
+
+            lat1, lon1 = meters_to_latlon(
+                np.array([s1loc_xy[0]]), np.array([s1loc_xy[1]]), origin_lat, origin_lon)
+            s1loc_geo = [float(lat1), float(lon1)]
+
+            if mtype == 'tdoa_range':
+                lat2, lon2 = meters_to_latlon(
+                    np.array([s2loc_xy[0]]), np.array([s2loc_xy[1]]), origin_lat, origin_lon)
+                # TDOA range difference in metres is coordinate-system independent
+                data.append({'mtype': 'tdoa_range', 'value': value, 'sigma': sigma,
+                             's1loc': s1loc_geo, 's2loc': [float(lat2), float(lon2)]})
+            else:
+                # Convert DOA from math angle (East=0, CCW) to True-North azimuth (North=0, CW)
+                az_true_north = (np.pi / 2 - value) % (2 * np.pi)
+                data.append({'mtype': 'doa_angle', 'value': az_true_north, 'sigma': sigma,
+                             's1loc': s1loc_geo})
+
+        ellipse = geolocate_wgs84(data, containment)
+        logger.debug("  |-lat,lon:     {:.6f}°, {:.6f}°".format(ellipse['lat'], ellipse['lon']))
+        logger.debug("  |-semimajor:   " + str(ellipse['semimajor']))
+        logger.debug("  |-semiminor:   " + str(ellipse['semiminor']))
+        logger.debug("  |-orientation: {:.2f}°".format(np.degrees(ellipse['orientation'])))
+        ellipse['target_id'] = target
+        ellipses.append(ellipse)
+
+    return ellipses
+
+
 app = dash.Dash(__name__, title='Geo', external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 _default_view = {'center': {'lat': ORIGIN_LAT, 'lon': ORIGIN_LON}, 'zoom': 10}
@@ -634,6 +699,7 @@ app.layout = html.Div([
     dcc.Store(id='mode-store', data='sensor'),
     dcc.Store(id='view-range', data=_default_view),
     dcc.Store(id='origin-store', data={'lat': ORIGIN_LAT, 'lon': ORIGIN_LON}),
+    dcc.Store(id='algo-store', data='cartesian'),
 
     dcc.Graph(id='graph', figure=make_fig(), style={'width': '100%', 'aspectRatio': '3 / 1'},
               config={'scrollZoom': True}),
@@ -687,6 +753,16 @@ app.layout = html.Div([
             ], width='auto', className='align-self-center d-flex align-items-center'),
             dbc.Col(dbc.Button('Calculate Measurements', id='btn-measure', n_clicks=0,
                                color='warning'), width='auto'),
+            dbc.Col([
+                html.Small("Geo algorithm:", className='text-muted me-1'),
+                dbc.RadioItems(
+                    id='algo-toggle',
+                    options=[{'label': 'Cartesian', 'value': 'cartesian'},
+                             {'label': 'WGS84',     'value': 'geo'}],
+                    value='cartesian',
+                    inline=True,
+                ),
+            ], width='auto', className='align-self-center d-flex align-items-center'),
             dbc.Col(dbc.Button('Calculate Geolocation', id='btn-calculate', n_clicks=0,
                                color='primary', disabled=True), width='auto'),
             dbc.Col(dbc.Button('Show Measurements', id='btn-show-doa', n_clicks=0,
@@ -743,11 +819,12 @@ def update_view_range(relayout_data, current_range):
     State('containment-input', 'value'),
     State('measure-mode', 'value'),
     State('origin-store', 'data'),
+    State('algo-store', 'data'),
 )
 def update_store(click_data, _clear, _measure, _calc, _show_doa, _del_s, _del_t,
                  sigma_sensor_vals, mode_sensor_vals, x_sensor_vals, y_sensor_vals,
                  x_target_vals, y_target_vals,
-                 store, mode, sigma_val, containment_pct, measure_mode, origin):
+                 store, mode, sigma_val, containment_pct, measure_mode, origin, algo_mode):
     triggered = ctx.triggered_id
     no_alert = dash.no_update
 
@@ -869,23 +946,45 @@ def update_store(click_data, _clear, _measure, _calc, _show_doa, _del_s, _del_t,
         if not measurements:
             return store, dbc.Alert("Calculate measurements first.", color='warning')
         containment = (containment_pct or 95) / 100.0
-        results = calculate_geolocation(measurements, targets, containment)
+        origin_lat = (origin or {}).get('lat', ORIGIN_LAT)
+        origin_lon = (origin or {}).get('lon', ORIGIN_LON)
         ellipses = []
-        for target_idx, ellipse in enumerate(results):
-            shape = np.rot90(ellipse['shape'])      # rotate 90 degrees, original is [[x1 y1], [x2 y2], ...], result is [[y1 y2 ...], [x1 x2 ...]]
-            ellipses.append({
-                'shape_x': shape[1].tolist(),
-                'shape_y': shape[0].tolist(),
-                'cx': float(ellipse['x']),
-                'cy': float(ellipse['y']),
-                'semimajor': float(ellipse['semimajor']),
-                'semiminor': float(ellipse['semiminor']),
-                'orientation': float(ellipse['orientation']),
-                'containment': containment,
-                'target_idx': target_idx,
-            })
+        if (algo_mode or 'cartesian') == 'geo':
+            results = calculate_geolocation_wgs84(measurements, targets, containment, origin_lat, origin_lon)
+            for target_idx, ellipse in enumerate(results):
+                # Convert WGS84 centre to x/y metres-from-origin for the map renderer.
+                # geolocate_wgs84 shape is (N,2): col 0 = North_m, col 1 = East_m from centre.
+                cx_m, cy_m = latlon_to_meters(ellipse['lat'], ellipse['lon'], origin_lat, origin_lon)
+                shape_ne   = ellipse['shape']
+                ellipses.append({
+                    'shape_x': (float(cx_m) + shape_ne[:, 1]).tolist(),
+                    'shape_y': (float(cy_m) + shape_ne[:, 0]).tolist(),
+                    'cx':          float(cx_m),
+                    'cy':          float(cy_m),
+                    'semimajor':   float(ellipse['semimajor']),
+                    'semiminor':   float(ellipse['semiminor']),
+                    'orientation': float(ellipse['orientation']),
+                    'containment': containment,
+                    'target_idx':  target_idx,
+                })
+        else:
+            results = calculate_geolocation(measurements, targets, containment)
+            for target_idx, ellipse in enumerate(results):
+                shape = np.rot90(ellipse['shape'])   # (2,N): row0=y, row1=x
+                ellipses.append({
+                    'shape_x': shape[1].tolist(),
+                    'shape_y': shape[0].tolist(),
+                    'cx':          float(ellipse['x']),
+                    'cy':          float(ellipse['y']),
+                    'semimajor':   float(ellipse['semimajor']),
+                    'semiminor':   float(ellipse['semiminor']),
+                    'orientation': float(ellipse['orientation']),
+                    'containment': containment,
+                    'target_idx':  target_idx,
+                })
+        algo_label = 'WGS84' if (algo_mode or 'cartesian') == 'geo' else 'Cartesian'
         store['ellipses'] = ellipses
-        alert = dbc.Alert(f"Calculated {len(ellipses)} ellipse(s).", color='success')
+        alert = dbc.Alert(f"Calculated {len(ellipses)} ellipse(s) [{algo_label}].", color='success')
         return store, alert
 
     raise dash.exceptions.PreventUpdate
@@ -925,6 +1024,14 @@ def update_view(store, view_range, origin):
 )
 def update_calculate_button(store):
     return not bool(store.get('measurements'))
+
+
+@app.callback(
+    Output('algo-store', 'data'),
+    Input('algo-toggle', 'value'),
+)
+def update_algo_store(value):
+    return value or 'cartesian'
 
 
 @app.callback(
