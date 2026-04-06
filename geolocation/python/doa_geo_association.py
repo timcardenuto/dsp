@@ -36,7 +36,7 @@ def calculateEllipse(xhat,P):
 # Import data and assumptions
 #m = matfile('data_association_hw')
 import scipy.io
-m = scipy.io.loadmat('data_association_hw.mat')
+m = scipy.io.loadmat('../matlab/data_association_hw.mat')
 #print(m)
 xhats = np.array([m['xhat1'], m['xhat2'], m['xhat3']])  # apriori target locations
 Ps = np.array([m['P1'], m['P2'], m['P3']])              # apriori target covariances

@@ -230,7 +230,7 @@ def make_fig(sensors=None, targets=None, ellipses=None, doa_data=None, hyperbola
 
     fig.update_layout(
         map=dict(
-            style='open-street-map',
+            style='carto-positron',       # Options:  open-street-map (detail), carto-positron (light), carto-darkmatter (dark)
             center=dict(lat=center_lat, lon=center_lon),
             zoom=zoom,
         ),
