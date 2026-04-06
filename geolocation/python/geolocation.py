@@ -1,5 +1,13 @@
 import numpy as np
 
+# ══════════════════════════════════════════════════════════════════════════════
+# WGS84 constants (used by the geographic geolocation functions below)
+# ══════════════════════════════════════════════════════════════════════════════
+_WGS84_A  = 6_378_137.0              # semi-major axis (m)
+_WGS84_F  = 1.0 / 298.257_223_563   # flattening
+_WGS84_B  = _WGS84_A * (1.0 - _WGS84_F)
+_WGS84_E2 = 2.0*_WGS84_F - _WGS84_F**2   # first eccentricity squared
+
 
 
 def estimateGeolocationTDOA(mtype, z, sigma, sref, srel):
@@ -476,3 +484,304 @@ def geolocate(measurements, containment):
     ellipse = {'x': xhat[0], 'y': xhat[1], 'semimajor': semimajor, 'semiminor': semiminor, 'orientation': orientation, 'containment': containment, 'shape': shape}
 
     return ellipse
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# WGS84 / True-North geographic geolocation
+# ══════════════════════════════════════════════════════════════════════════════
+
+def _wgs84_radii(lat_rad):
+    """WGS84 meridian (M) and prime-vertical (N) radii of curvature at lat_rad (radians).
+
+    M  [m/rad]  metres per radian of latitude   (north/south scale)
+    N  [m/rad]  metres per radian of longitude at the equator; multiply by cos(lat)
+                for the actual east/west scale at that latitude.
+    """
+    sn2 = np.sin(lat_rad) ** 2
+    W   = np.sqrt(1.0 - _WGS84_E2 * sn2)
+    return _WGS84_A * (1.0 - _WGS84_E2) / W**3, _WGS84_A / W   # M, N
+
+
+def _vincenty_inverse(lat1, lon1, lat2, lon2):
+    """Geodesic distance (m) and forward azimuth (rad, True North clockwise) from
+    point 1 → point 2 on the WGS84 ellipsoid, all arguments in radians.
+    Uses Vincenty's inverse formula.  Returns (0.0, 0.0) for coincident points.
+    """
+    a, f, b = _WGS84_A, _WGS84_F, _WGS84_B
+
+    U1 = np.arctan((1.0 - f) * np.tan(lat1))
+    U2 = np.arctan((1.0 - f) * np.tan(lat2))
+    L  = lon2 - lon1
+    sinU1, cosU1 = np.sin(U1), np.cos(U1)
+    sinU2, cosU2 = np.sin(U2), np.cos(U2)
+
+    lam = L
+    sinSig = cosSig = sig = sinAz = cos2Az = cos2sigM = 0.0
+    for _ in range(1000):
+        sinLam, cosLam = np.sin(lam), np.cos(lam)
+        sinSig = np.sqrt((cosU2*sinLam)**2 + (cosU1*sinU2 - sinU1*cosU2*cosLam)**2)
+        if sinSig < 1e-15:
+            return 0.0, 0.0                                   # coincident points
+        cosSig   = sinU1*sinU2 + cosU1*cosU2*cosLam
+        sig      = np.arctan2(sinSig, cosSig)
+        sinAz    = cosU1*cosU2*sinLam / sinSig
+        cos2Az   = 1.0 - sinAz**2
+        cos2sigM = (cosSig - 2.0*sinU1*sinU2/cos2Az) if cos2Az > 1e-15 else 0.0
+        C        = f/16.0 * cos2Az * (4.0 + f*(4.0 - 3.0*cos2Az))
+        lam_new  = L + (1.0 - C)*f*sinAz*(
+                       sig + C*sinSig*(cos2sigM + C*cosSig*(-1.0 + 2.0*cos2sigM**2)))
+        if abs(lam_new - lam) < 1e-12:
+            lam = lam_new
+            break
+        lam = lam_new
+
+    u2   = cos2Az * (a**2 - b**2) / b**2
+    Ac   = 1.0 + u2/16384.0*(4096.0 + u2*(-768.0 + u2*(320.0 - 175.0*u2)))
+    Bc   = u2/1024.0*(256.0 + u2*(-128.0 + u2*(74.0 - 47.0*u2)))
+    dSig = Bc*sinSig*(cos2sigM + Bc/4.0*(
+               cosSig*(-1.0 + 2.0*cos2sigM**2)
+             - Bc/6.0*cos2sigM*(-3.0 + 4.0*sinSig**2)*(-3.0 + 4.0*cos2sigM**2)))
+    dist = b * Ac * (sig - dSig)
+    az   = np.arctan2(cosU2*sinLam, cosU1*sinU2 - sinU1*cosU2*cosLam) % (2.0*np.pi)
+    return dist, az
+
+
+def estimateGeolocationMultiGeo(mtype, z, sigma, sref_deg, srel_deg):
+    """Iterated Least Squares geolocation on the WGS84 ellipsoid.
+
+    State vector: [lat_rad, lon_rad].
+
+    DOA measurements are True-North clockwise azimuths (radians).
+    TDOA values are signed range differences dist(target, s1) − dist(target, s2) in metres.
+
+    The Jacobian H is derived analytically using WGS84 radii of curvature at the
+    current estimate, giving first-order correct ∂h/∂(lat, lon) without numerical
+    differencing:
+
+        DOA  row:  ∂az/∂lat_x = −sin(az)/d · M
+                   ∂az/∂lon_x =  cos(az)/d · N·cos(lat_x)
+
+        TDOA row:  ∂(d1−d2)/∂lat_x = (cos(az1) − cos(az2)) · M
+                   ∂(d1−d2)/∂lon_x = (sin(az1) − sin(az2)) · N·cos(lat_x)
+
+    where az is the Vincenty forward azimuth from sensor s to target x,
+    M and N are the WGS84 radii of curvature at x, and d is the geodesic distance.
+
+    Parameters
+    ----------
+    mtype    : list[str]   'doa_angle' or 'tdoa_range' for each measurement
+    z        : (N,) array  measurement values (rad for DOA, m for TDOA)
+    sigma    : (N,) array  std devs in units matching the measurement units
+    sref_deg : (N,2) array primary sensor [[lat_deg, lon_deg], ...]
+    srel_deg : (N,2) array secondary sensor [[lat_deg, lon_deg], ...];
+                           rows for DOA measurements should be [NaN, NaN]
+
+    Returns
+    -------
+    xhat : [lat_rad, lon_rad]  converged target estimate
+    P    : (2,2) covariance in (rad_lat, rad_lon)²
+    """
+    print("##################################")
+    print(">> estimateGeolocationMultiGeo()")
+    print("##################################")
+    print("Measurement Types:        " + str(mtype))
+    print("Measurement Values (z):   " + str(z))
+    print("Measurement Stds (sigma): " + str(sigma))
+
+    z     = np.asarray(z,     dtype=float)
+    sigma = np.asarray(sigma, dtype=float)
+    sref  = np.radians(np.asarray(sref_deg, dtype=float))   # (N,2) radians
+    srel  = np.radians(np.asarray(srel_deg, dtype=float))   # (N,2) radians, NaN rows for DOA
+
+    R = np.diag(sigma ** 2)
+
+    doa_idxs  = [i for i, mt in enumerate(mtype) if mt == 'doa_angle']
+    tdoa_idxs = [i for i, mt in enumerate(mtype) if mt == 'tdoa_range']
+
+    # ── Local flat-earth NE frame for the initial estimate ────────────────────
+    all_lats = list(sref[:, 0]) + [srel[i, 0] for i in tdoa_idxs if not np.isnan(srel[i, 0])]
+    all_lons = list(sref[:, 1]) + [srel[i, 1] for i in tdoa_idxs if not np.isnan(srel[i, 1])]
+    lat_ref  = float(np.mean(all_lats))
+    lon_ref  = float(np.mean(all_lons))
+    M_ref, N_ref = _wgs84_radii(lat_ref)
+
+    def _to_ne(lat_r, lon_r):
+        return np.array([(lat_r - lat_ref) * M_ref,
+                         (lon_r - lon_ref) * N_ref * np.cos(lat_ref)])
+
+    def _from_ne(north, east):
+        return np.array([lat_ref + north / M_ref,
+                         lon_ref + east  / (N_ref * np.cos(lat_ref))])
+
+    # ── Initial estimate ──────────────────────────────────────────────────────
+    if len(doa_idxs) >= 2:
+        # Moore-Penrose triangulation from ≥2 DOA lines in the local NE plane.
+        # True-North azimuth az → (North, East) unit vector [cos(az), sin(az)].
+        Msum, MTasum = np.zeros((2, 2)), np.zeros(2)
+        for i in doa_idxs:
+            a_ne = _to_ne(sref[i, 0], sref[i, 1])
+            u    = np.array([np.cos(z[i]), np.sin(z[i])])   # unit vec (North, East)
+            Mp   = np.eye(2) - np.outer(u, u)
+            Msum   += Mp
+            MTasum += Mp @ a_ne
+        xhat = _from_ne(*np.linalg.pinv(Msum) @ MTasum)
+
+    elif len(doa_idxs) == 1 and len(tdoa_idxs) >= 1:
+        # 1 DOA + ≥1 TDOA: scan the DOA ray for the TDOA root (bisect).
+        i_doa = doa_idxs[0]
+        s0_ne = _to_ne(sref[i_doa, 0], sref[i_doa, 1])
+        ray   = np.array([np.cos(z[i_doa]), np.sin(z[i_doa])])   # (North, East)
+
+        i_td  = tdoa_idxs[0]
+        s1_ne = _to_ne(sref[i_td, 0], sref[i_td, 1])
+        s2_ne = _to_ne(srel[i_td, 0], srel[i_td, 1])
+        z_td  = z[i_td]
+        t_max = max(np.linalg.norm(s1_ne - s2_ne) * 50, 1e5)
+
+        def _res(t):
+            p = s0_ne + t * ray
+            return np.linalg.norm(p - s1_ne) - np.linalg.norm(p - s2_ne) - z_td
+
+        xhat  = None
+        f_prv = _res(1.0)
+        for t in np.linspace(1.0, t_max, 600)[1:]:
+            f_cur = _res(t)
+            if f_prv * f_cur < 0:
+                a_b, b_b = t - (t_max - 1.0)/599, t
+                for _ in range(60):
+                    mid = (a_b + b_b) / 2
+                    if _res(mid) * _res(a_b) < 0:
+                        b_b = mid
+                    else:
+                        a_b = mid
+                xhat = _from_ne(*(s0_ne + (a_b + b_b)/2 * ray))
+                break
+            f_prv = f_cur
+        if xhat is None:
+            print("  WARNING: DOA/TDOA intersection not found; falling back to sensor centroid")
+            xhat = np.array([lat_ref, lon_ref])
+
+    else:
+        # Pure TDOA or degenerate: use sensor centroid
+        xhat = np.array([lat_ref, lon_ref])
+
+    print("Initial xhat: [{:.6f}°, {:.6f}°]".format(*np.degrees(xhat)))
+    print("")
+
+    # ── ILS loop ──────────────────────────────────────────────────────────────
+    P = np.eye(2)
+    for count in range(1, 21):
+        lat_x, lon_x = xhat[0], xhat[1]
+        M_x, N_x    = _wgs84_radii(lat_x)
+        metric       = np.array([M_x, N_x * np.cos(lat_x)])   # m/rad
+
+        h_vec = np.zeros(len(mtype))
+        H_mat = np.zeros((len(mtype), 2))
+
+        for i, mt in enumerate(mtype):
+            lat_s, lon_s = sref[i, 0], sref[i, 1]
+            if mt == 'doa_angle':
+                dist, az    = _vincenty_inverse(lat_s, lon_s, lat_x, lon_x)
+                dist        = max(dist, 1e-3)
+                h_vec[i]    = az
+                H_mat[i, 0] = -np.sin(az) / dist * M_x
+                H_mat[i, 1] =  np.cos(az) / dist * (N_x * np.cos(lat_x))
+            elif mt == 'tdoa_range':
+                lat_s2, lon_s2 = srel[i, 0], srel[i, 1]
+                d1, az1     = _vincenty_inverse(lat_s,  lon_s,  lat_x, lon_x)
+                d2, az2     = _vincenty_inverse(lat_s2, lon_s2, lat_x, lon_x)
+                h_vec[i]    = d1 - d2
+                H_mat[i, 0] = (np.cos(az1) - np.cos(az2)) * M_x
+                H_mat[i, 1] = (np.sin(az1) - np.sin(az2)) * (N_x * np.cos(lat_x))
+
+        # Wrap DOA residuals to (−π, π] to handle 0/2π boundary
+        dz = z - h_vec
+        for i, mt in enumerate(mtype):
+            if mt == 'doa_angle':
+                dz[i] = (dz[i] + np.pi) % (2.0*np.pi) - np.pi
+
+        P     = np.linalg.pinv(H_mat.T @ np.linalg.pinv(R) @ H_mat)
+        dxhat = P @ H_mat.T @ np.linalg.pinv(R) @ dz
+        xhat  = xhat + dxhat
+        err_m = np.abs(dxhat) * metric
+
+        print("count = ", count)
+        print("Covariance = ", P)
+        print("xhat = [{:.8f}°, {:.8f}°]".format(*np.degrees(xhat)))
+        print("error = {} m".format(err_m))
+        print("")
+
+        if np.max(err_m) < 0.01:   # 0.01 m convergence
+            break
+
+    return xhat, P
+
+
+def geolocate_wgs84(measurements, containment):
+    """Geographic geolocation using WGS84 and True-North DOA convention.
+
+    Geographic counterpart to geolocate().  All sensor/target positions are in
+    degrees; DOA values are True-North clockwise azimuths in radians.
+
+    Parameters
+    ----------
+    measurements : list of dicts, each with:
+        'mtype'  : 'doa_angle' or 'tdoa_range'
+        'value'  : DOA azimuth (rad, True North clockwise) or
+                   signed range difference dist(target,s1)−dist(target,s2) in metres
+        'sigma'  : std dev (rad for DOA, m for TDOA)
+        's1loc'  : [lat_deg, lon_deg]  primary sensor
+        's2loc'  : [lat_deg, lon_deg]  secondary sensor (TDOA only; omit or None for DOA)
+    containment : float in (0, 1) — error ellipse probability (e.g. 0.95)
+
+    Returns
+    -------
+    dict with:
+        'lat', 'lon'              estimated target position (degrees)
+        'semimajor', 'semiminor'  ellipse semi-axes (metres)
+        'orientation'             major-axis angle counterclockwise from North (radians)
+        'shape'                   (N,2) ellipse outline in (North_m, East_m) from centre;
+                                  convert to lat/lon using the WGS84 metric at 'lat','lon'
+        'containment'             echo of the input containment value
+    """
+    mtype, z_list, sig_list, sref_deg, srel_deg = [], [], [], [], []
+    for m in measurements:
+        mtype.append(m['mtype'])
+        z_list.append(m['value'])
+        sig_list.append(m['sigma'])
+        sref_deg.append(m['s1loc'])
+        srel_deg.append(m['s2loc'] if m['mtype'] == 'tdoa_range' else [float('nan'), float('nan')])
+
+    xhat, P_rad = estimateGeolocationMultiGeo(
+        mtype,
+        np.array(z_list,   dtype=float),
+        np.array(sig_list, dtype=float),
+        np.array(sref_deg, dtype=float),
+        np.array(srel_deg, dtype=float),
+    )
+
+    lat_rad, lon_rad = xhat
+    M, N = _wgs84_radii(lat_rad)
+
+    # Convert covariance from (rad_lat, rad_lon)² → (North_m, East_m)²
+    J   = np.diag([M, N * np.cos(lat_rad)])
+    P_m = J @ P_rad @ J.T
+
+    # Ellipse in (North, East) metre space centred at origin (xhat passed as zeros
+    # so calculateEllipse does not shift the shape into lat/lon radian space)
+    semimajor, semiminor, orientation, shape = calculateEllipse(np.zeros(2), P_m, containment)
+
+    print("  |--lat, lon:     {:.6f}°, {:.6f}°".format(np.degrees(lat_rad), np.degrees(lon_rad)))
+    print("  |--semimajor:    " + str(semimajor))
+    print("  |--semiminor:    " + str(semiminor))
+    print("  |--orientation:  " + str(orientation))
+
+    return {
+        'lat':         np.degrees(lat_rad),
+        'lon':         np.degrees(lon_rad),
+        'semimajor':   semimajor,
+        'semiminor':   semiminor,
+        'orientation': orientation,   # counterclockwise from North, radians
+        'shape':       shape,         # (N,2) (North_m, East_m) offsets from centre
+        'containment': containment,
+    }
