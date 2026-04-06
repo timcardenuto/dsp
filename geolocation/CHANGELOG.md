@@ -3,7 +3,30 @@
 
 
 ### Added
-
+❯ now that we have a geographic coord system are there any improvements that can be made to make it     
+more realistic                                                                                          
+                                                                                                        
+● Good question. Let me read the measurement simulation code carefully to identify the gaps before      
+  proposing anything.
+                                                                                                        
+  Read 1 file (ctrl+o to expand)                                                                        
+                                                                                                        
+● Now I have a clear picture of all the gaps. Here's what the current simulation does that's physically 
+  incorrect when using the geo estimator:                                                               
+                                                                                                        
+  1. DOA bearing: atan2(Δy, Δx) — flat-earth math angle. Vincenty gives the true geodesic bearing, which
+   diverges noticeably beyond ~10 km especially at oblique angles.                                      
+  2. TDOA distances: Euclidean sqrt(Δx²+Δy²) — should be geodesic. Flat-earth diverges at long range.   
+  3. Speed of propagation: vacuum c = 299,792,458 m/s. In the troposphere it's c/n ≈ 299,705,000 m/s    
+  (n≈1.000293). Matters for the sigma-time → sigma-range conversion.                                    
+  4. Convention mismatch: the existing calculate_measurements produces math-angle DOA, and              
+  calculate_geolocation_geo converts it. If we fix the simulation to use Vincenty, we should keep math  
+  convention in storage so that conversion path stays consistent.                                       
+                                                                                                        
+  The fix is a calculate_measurements_geo that uses _vincenty_inverse (already in geolocation.py,       
+  imported via *) for both DOA bearing and TDOA distances, uses c_air, and wires into btn-measure when  
+  in geo mode.                                                                                          
+                  
 
 ### Added
 ❯ Can you add a new estimateGeolocationMulti() function/algorithm that uses a geographic coordinate     

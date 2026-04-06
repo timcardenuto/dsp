@@ -487,6 +487,11 @@ def sim_tdoa():
         logger.debug("Ranges: "+str(doa_array))
 
 
+# Speed of light in the standard atmosphere at sea level (m/s).
+# n ≈ 1.000293 at 15 °C, 1013 hPa → c_air = c / n.  Used in the geo simulation.
+_C_AIR = 299_705_000.0
+
+
 def calculate_measurements(sensors, targets):
     """Simulate measurements for all targets using per-sensor mode.
 
@@ -584,6 +589,134 @@ def calculate_measurements(sensors, targets):
                 doa_array.append(float(-c * tdoa))
                 # Convert sigma from time to distance domain
                 sigma_array.append(c * sigma_combined)
+                s2loc_array.append(loc2)
+
+        measurements.append({
+            'mtype_array': mtype_array,
+            'loc_array':   [a.tolist() for a in loc_array],
+            'doa_array':   doa_array,
+            'sigma_array': sigma_array,
+            's2loc_array': [a.tolist() if a is not None else None for a in s2loc_array],
+        })
+        hyperbola_data.append(hyperbolas_this_target)
+        doa_data.append(doa_per_sensor)
+
+    return measurements, hyperbola_data, doa_data
+
+
+def calculate_measurements_geo(sensors, targets, origin_lat, origin_lon):
+    """Simulate DOA/TDOA measurements using WGS84 geodesic geometry.
+
+    Improvements over calculate_measurements():
+      - DOA bearing: Vincenty inverse formula gives the true geodesic azimuth from
+        sensor to target, not the flat-earth atan2 approximation.  The difference
+        grows with range and becomes significant beyond ~10 km at oblique angles.
+      - TDOA distances: geodesic propagation path lengths replace Euclidean distances.
+      - Propagation speed: uses c_air (speed of light in the standard troposphere)
+        rather than vacuum c.  This changes the sigma time→range conversion by ~0.03 %.
+
+    Output format is identical to calculate_measurements() — DOA angles in doa_array
+    use math convention (East = 0, counterclockwise, radians) so the rest of the
+    pipeline (calculate_geolocation_geo, DOA line display) works unchanged.
+    """
+    length = 10
+    logger.debug(">calculate_measurements_geo (WGS84 / Vincenty)")
+
+    measurements   = []
+    hyperbola_data = []
+    doa_data       = []
+
+    for target in targets:
+        logger.debug("  |-Target: " + str(target))
+        t_lat_arr, t_lon_arr = meters_to_latlon(
+            np.array([target['x']]), np.array([target['y']]), origin_lat, origin_lon)
+        t_lat_rad = np.radians(float(t_lat_arr))
+        t_lon_rad = np.radians(float(t_lon_arr))
+
+        mtype_array      = []
+        loc_array        = []
+        sigma_array      = []
+        doa_array        = []
+        s2loc_array      = []
+        doa_per_sensor   = [None] * len(sensors)
+        hyperbolas_this_target = []
+
+        # ── DOA measurements ─────────────────────────────────────────────────
+        for s_idx, sensor in enumerate(sensors):
+            if sensor.get('mode', 'doa') != 'doa':
+                continue
+            sigma_rad = sensor['sigma'] * np.pi / 180
+
+            s_lat_arr, s_lon_arr = meters_to_latlon(
+                np.array([sensor['x']]), np.array([sensor['y']]), origin_lat, origin_lon)
+            s_lat_rad = np.radians(float(s_lat_arr))
+            s_lon_rad = np.radians(float(s_lon_arr))
+
+            # True geodesic azimuth from sensor to target (True North, clockwise)
+            _, true_az = _vincenty_inverse(s_lat_rad, s_lon_rad, t_lat_rad, t_lon_rad)
+
+            # Add Gaussian noise in the azimuth direction
+            noisy_az = true_az + np.random.normal(0, sigma_rad)
+
+            # Convert True-North azimuth → math convention for internal storage
+            # (East=0, CCW) so calculate_geolocation_geo's conversion stays correct.
+            math_angle = (np.pi / 2 - noisy_az) % (2 * np.pi)
+
+            doa_per_sensor[s_idx] = float(np.degrees(math_angle))
+            mtype_array.append('doa_angle')
+            loc_array.append(np.array([sensor['x'], sensor['y']]))
+            sigma_array.append(sigma_rad)
+            doa_array.append(float(math_angle))
+            s2loc_array.append(None)
+            logger.debug("    |-Sensor (DOA geo): " + str(sensor))
+            logger.debug(f"    |--True-North az: {np.degrees(true_az):.3f}°  "
+                         f"noisy: {np.degrees(noisy_az):.3f}°")
+
+        # ── TDOA measurements ─────────────────────────────────────────────────
+        tdoa_indices = [i for i, s in enumerate(sensors) if s.get('mode', 'doa') == 'tdoa']
+        if len(tdoa_indices) >= 2:
+            ref    = sensors[tdoa_indices[0]]
+            r_lat_arr, r_lon_arr = meters_to_latlon(
+                np.array([ref['x']]), np.array([ref['y']]), origin_lat, origin_lon)
+            d_ref, _ = _vincenty_inverse(
+                np.radians(float(r_lat_arr)), np.radians(float(r_lon_arr)),
+                t_lat_rad, t_lon_rad)
+            te = -d_ref / _C_AIR
+
+            tns = {}
+            for idx in tdoa_indices:
+                s = sensors[idx]
+                si_lat_arr, si_lon_arr = meters_to_latlon(
+                    np.array([s['x']]), np.array([s['y']]), origin_lat, origin_lon)
+                d_si, _ = _vincenty_inverse(
+                    np.radians(float(si_lat_arr)), np.radians(float(si_lon_arr)),
+                    t_lat_rad, t_lon_rad)
+                sigma_n  = s['sigma'] * 1e-6   # µs → s
+                tns[idx] = te + d_si / _C_AIR + np.random.normal(0, sigma_n)
+                logger.debug("    |-Sensor (TDOA geo): " + str(s))
+
+            for i, j in itertools.combinations(tdoa_indices, 2):
+                loc1 = np.array([sensors[i]['x'], sensors[i]['y']])
+                loc2 = np.array([sensors[j]['x'], sensors[j]['y']])
+                sigma_i        = sensors[i]['sigma'] * 1e-6
+                sigma_j        = sensors[j]['sigma'] * 1e-6
+                sigma_combined = np.sqrt(sigma_i**2 + sigma_j**2)
+                # Hyperbola curves are drawn in Cartesian map space; TOA values
+                # drive the geometry so the curve still reflects geodesic timing.
+                tdoa,     hyp_center = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j], length)
+                _,        hyp_upper  = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j] + sigma_combined, length)
+                _,        hyp_lower  = get_tdoa_hyperbola(loc1, tns[i], loc2, tns[j] - sigma_combined, length)
+                logger.debug(f"    |--TDOA geo (s{i},s{j}): {tdoa:.3e} s")
+                hyperbolas_this_target.append({
+                    'center': hyp_center.tolist(),
+                    'upper':  hyp_upper.tolist(),
+                    'lower':  hyp_lower.tolist(),
+                    'label':  f'S{i+1}-S{j+1}',
+                })
+                mtype_array.append('tdoa_range')
+                loc_array.append(loc1)
+                doa_array.append(float(-_C_AIR * tdoa))
+                sigma_array.append(_C_AIR * sigma_combined)
                 s2loc_array.append(loc2)
 
         measurements.append({
@@ -932,12 +1065,19 @@ def update_store(click_data, _clear, _measure, _calc, _show_doa, _del_s, _del_t,
                 color='warning')
         if not targets:
             return store, dbc.Alert("Add at least one target before calculating measurements.", color='warning')
-        measurements, hyperbola_data, doa_data = calculate_measurements(sensors, targets)
+        origin_lat = (origin or {}).get('lat', ORIGIN_LAT)
+        origin_lon = (origin or {}).get('lon', ORIGIN_LON)
+        if (algo_mode or 'cartesian') == 'geo':
+            measurements, hyperbola_data, doa_data = calculate_measurements_geo(
+                sensors, targets, origin_lat, origin_lon)
+        else:
+            measurements, hyperbola_data, doa_data = calculate_measurements(sensors, targets)
         store['measurements']    = measurements
         store['hyperbola_data']  = hyperbola_data
         store['doa_data']        = doa_data
         store['ellipses']        = []   # clear stale ellipses when measurements are refreshed
-        alert = dbc.Alert(f"Calculated measurements for {len(measurements)} target(s).", color='info')
+        sim_label = 'WGS84 geodesic' if (algo_mode or 'cartesian') == 'geo' else 'Cartesian flat-earth'
+        alert = dbc.Alert(f"Calculated measurements for {len(measurements)} target(s) [{sim_label}].", color='info')
         return store, alert
 
     if triggered == 'btn-calculate':

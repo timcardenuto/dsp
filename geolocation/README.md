@@ -3,6 +3,7 @@ This software was originally made based on a class I took, and added to over tim
 I've started using AI to assist me with things I've wanted to do and haven't had time for, like creating an interactive tool for simulating geolocation measurements.
 
 ## TODO
+* Some new functions in geolocation.py aren't being found by the sim file?
 * Darkmode support, there's a dark map but colors of sensors/targets/measurements need to change. Also should just have a full dark mode for the rest of the page as well.
 * Want the DOA measurement shown on the angles drawn. Want them relative to True North, I think they all might be relative to positive x axis (East). We want to change the math for the carteasian geo algorithm to use North as the zero point if possible.... 
 * Probably want a dropdown menu for setting lat/lon and also other settings
