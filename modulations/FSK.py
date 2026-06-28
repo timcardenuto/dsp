@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from matplotlib import pyplot as plt
 import sys
 
