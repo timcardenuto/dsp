@@ -1,0 +1,4 @@
+# Pair every notebook in this project with a markdown twin.
+# Edit either file — jupytext keeps them in sync when you save from Jupyter/VS Code
+# (or run `jupytext --sync <file>` manually).
+formats = "ipynb,md"

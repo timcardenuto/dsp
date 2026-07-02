@@ -1,2 +1,17 @@
 generateGenericPRN
 generateGPSPRN
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+
+# Editor / OS cruft
+.vscode/
+.idea/
+.DS_Store
